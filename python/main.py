@@ -28,7 +28,7 @@ def home():
     form.longitude.data = 10.9887
 
     #Standard-Werte
-    form.radius.data = 50
+    form.radius.data = "50 km"
     form.stationCount.data = 5
     form.startYear.data = 2000 #Keine Anforderung
     form.endYear.data = 2024 #Keine Anforderung
