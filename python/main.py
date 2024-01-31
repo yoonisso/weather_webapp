@@ -23,20 +23,20 @@ class searchData:
 def home():
     form = searchForm(request.form)
 
-    #Standort Fürth
-    form.latitude.data = 49.4771
-    form.longitude.data = 10.9887
-
-    #Standard-Werte
-    form.radius.data = "50 km"
-    form.stationCount.data = 5
-    form.startYear.data = 2000 #Keine Anforderung
-    form.endYear.data = 2024 #Keine Anforderung
-    
     if request.method == 'POST' and form.validate_on_submit():
         s1 = searchData(form.longitude.data,form.latitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)
-        
+        test = s1.radius
         return redirect(url_for('home'))
+    else:
+        #Standort Fürth
+        form.latitude.data = 49.4771
+        form.longitude.data = 10.9887
+
+        #Standard-Werte
+        form.radius.data = 50
+        form.stationCount.data = 5
+        form.startYear.data = 2000 #Keine Anforderung
+        form.endYear.data = 2024 #Keine Anforderung
     
     return render_template('Startseite.html', form=form)
 
