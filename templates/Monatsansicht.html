@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wetter App</title>
+    <link rel="stylesheet" href="/static/stylesheets/Monats_Tagesansicht.css">
+</head>
+<body>
+
+    <header>
+        <div>
+            <label for="longitude">Längengrad:</label>
+            <input type="text" id="longitude" name="longitude">
+            <br>
+            <label for="latitude">Breitengrad:</label>
+            <input type="text" id="latitude" name="latitude">
+        </div>
+
+        <div>
+            <label for="valueRange">Suchradius:</label>
+            <input type="range" id="valueRange" name="valueRange" min="5" max="100" step="5">
+        </div>
+
+        <div>
+            <label for="startYear">Startjahr:</label>
+            <input type="number" id="startYear" name="startYear" step="1">
+            <label for="endYear">Endjahr:</label>
+            <input type="number" id="endYear" name="endYear" step="1">
+            <label for="stationCount">Anzahl Stationen:</label>
+            <input type="number" id="stationCount" name="stationCount" min="1" max="15" step="1">
+        </div>
+
+        <div>
+            <a href="Jahresansicht.html">
+            <img src="/static/assets/Lupe.png" alt="Bild" onclick="search(x)" class="Kopfzeile">
+            </a>
+        </div>
+    </header>
+
+    <div class="Koerper">
+        <div class="Station">
+            WetterstationX | 1991 | Januar
+        </div>
+
+        <div class="MaxMin">
+            <div>
+                Minimumskurve<input type="checkbox" id="min" name="min">
+            </div>
+            <div>
+                Maximumskurve<input type="checkbox" id="max" name="max">
+            </div>
+        </div>
+        <a href="Jahresansicht.html">
+            <input type="button" id="return" name="return" value="Zurück" onclick="return(x)">
+        </a> 
+    </div>
+    <canvas id="linechart" width="50" height="50"></canvas>
+</body>
+</html>
