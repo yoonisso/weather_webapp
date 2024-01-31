@@ -23,38 +23,42 @@ class searchData:
 def home():
     form = searchForm(request.form)
 
-    #Standort Fürth
-    form.latitude.data = 49.4771
-    form.longitude.data = 10.9887
-
-    #Standard-Werte
-    form.radius.data = "50 km"
-    form.stationCount.data = 5
-    form.startYear.data = 2000 #Keine Anforderung
-    form.endYear.data = 2024 #Keine Anforderung
-    
     if request.method == 'POST' and form.validate_on_submit():
         s1 = searchData(form.longitude.data,form.latitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)
-        
-        return redirect(url_for('home'))
+        flash(f"Übermittelte Werte: {s1.latitude}, {s1.longitude}, {s1.radius}, {s1.startYear}, {s1.endYear}, {s1.stationCount}")
+        return redirect(url_for('yearView'))
+    else:
+        #Standort Fürth
+        form.latitude.data = 49.4771
+        form.longitude.data = 10.9887
+
+        #Standard-Werte
+        form.radius.data = 50
+        form.stationCount.data = 5
+        form.startYear.data = 2000 #Keine Anforderung
+        form.endYear.data = 2024 #Keine Anforderung
     
     return render_template('Startseite.html', form=form)
 
 @app.route("/jahresansicht")
-def jahresansicht():
-    return render_template('Jahresansicht.html')
+def yearView():
+    form = searchForm(request.form)
+    return render_template('Jahresansicht.html', form=form)
 
 @app.route("/liste")
 def liste():
-    return render_template('Liste.html')
+    form = searchForm(request.form)
+    return render_template('Liste.html',form=form)
 
 @app.route("/monatsansicht")
-def monatsansicht():
-    return render_template('Monatsansicht.html')
+def monthView():
+    form = searchForm(request.form)
+    return render_template('Monatsansicht.html', form=form)
 
 @app.route("/tagesansicht")
-def tagesansicht():
-    return render_template('Tagesansicht.html')
+def dayView():
+    form = searchForm(request.form)
+    return render_template('Tagesansicht.html', form=form)
 
 
 if __name__ == '__main__':

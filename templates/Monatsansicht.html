@@ -9,33 +9,71 @@
 <body>
 
     <header>
-        <div>
-            <label for="longitude">Längengrad:</label>
-            <input type="text" id="longitude" name="longitude">
-            <br>
-            <label for="latitude">Breitengrad:</label>
-            <input type="text" id="latitude" name="latitude">
-        </div>
-
-        <div>
-            <label for="valueRange">Suchradius:</label>
-            <input type="range" id="valueRange" name="valueRange" min="5" max="100" step="5">
-        </div>
-
-        <div>
-            <label for="startYear">Startjahr:</label>
-            <input type="number" id="startYear" name="startYear" step="1">
-            <label for="endYear">Endjahr:</label>
-            <input type="number" id="endYear" name="endYear" step="1">
-            <label for="stationCount">Anzahl Stationen:</label>
-            <input type="number" id="stationCount" name="stationCount" min="1" max="15" step="1">
-        </div>
-
-        <div>
-            <a href="Jahresansicht.html">
-            <img src="/static/assets/Lupe.png" alt="Bild" onclick="search(x)" class="Kopfzeile">
-            </a>
-        </div>
+        <form action="/" method="post">
+            {{ form.csrf_token }}
+            <div>
+                <p class="form_field">
+                    {{ form.longitude.label }}
+                    {{ form.longitude() }}
+                </p>
+                <p>
+                    {{ form.latitude.label }}
+                    {{ form.latitude() }}
+                </p>
+            </div>
+            <div>
+                <div id="search_range_slider">
+                    <div>
+                        <p>
+                            {{ form.radius.label }}
+                        </p>
+                    </div>
+                    <div>
+                        <p>
+                            <output for="radius" id="selected_radius">{{ form.radius.data }} km</output>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <p>
+                        {{ form.radius(oninput="outputUpdate(value)") }}
+                    </p>
+                </div>
+            </div>
+            <div class="align_input_fields">
+                <div id="input_discriptions">
+                    <div>
+                        <p>
+                            {{ form.startYear.label }}
+                        </p>
+                    </div>
+                    <div>
+                        <p>
+                            {{ form.endYear.label }}
+                        </p>
+                    </div>
+                    <div>
+                        <p>
+                            {{ form.stationCount.label }}
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <p>
+                        {{ form.startYear() }}
+                    </p>
+                    <p>
+                        {{ form.endYear() }}
+                    </p>
+                    <p>
+                        {{ form.stationCount() }}
+                    </p>
+                </div>
+            </div>
+            <div>
+                <input type="image" src="/static/assets/Lupe.png", alt="Submit Form">
+            </div>
+        </form>
     </header>
 
     <div class="Koerper">
