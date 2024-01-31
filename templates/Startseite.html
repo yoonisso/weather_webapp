@@ -11,38 +11,68 @@
         <form action="/" method="post">
             {{ form.csrf_token }}
             <div>
-                <p>
+                <p class="form_field">
                     {{ form.longitude.label }}
-                    {{ form.longitude(rows=5, cols=40) }}
+                    {{ form.longitude() }}
                 </p>
                 <p>
                     {{ form.latitude.label }}
-                    {{ form.latitude(rows=5, cols=40) }}
+                    {{ form.latitude() }}
                 </p>
             </div>
 
             <div>
-                <p>
-                    {{ form.valueRange.label }}
-                    {{ form.valueRange(rows=5, cols=40) }}
-                </p>
+                <div id="search_range_slider">
+                    <div>
+                        <p>
+                            {{ form.valueRange.label }}
+                        </p>
+                    </div>
+                    <div>
+                        <p>
+                            Test
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <p>
+                        {{ form.valueRange() }}
+                    </p>
+                </div>
             </div>
 
-            <div>
-                <p>
-                    {{ form.startYear.label }}
-                    {{ form.startYear(rows=5, cols=40) }}
-                </p>
-                <p>
-                    {{ form.endYear.label }}
-                    {{ form.endYear(rows=5, cols=40) }}
-                </p>
-                <p>
-                    {{ form.stationCount.label }}
-                    {{ form.stationCount(rows=5, cols=40) }}
-                </p>
-
+            <div class="align_input_fields">
+                <div id="input_discriptions">
+                    <div>
+                        <p>
+                            {{ form.startYear.label }}
+                        </p>
+                    </div>
+                    <div>
+                        <p>
+                            {{ form.endYear.label }}
+                        </p>
+                    </div>
+                    <div>
+                        <p>
+                            {{ form.stationCount.label }}
+                        </p>
+                    </div>
+                </div>
+    
+                <div>
+                    <p>
+                        {{ form.startYear() }}
+                    </p>
+                    <p>
+                        {{ form.endYear() }}
+                    </p>
+                    <p>
+                        {{ form.stationCount() }}
+                    </p>
+                </div>
             </div>
+
             <div>
                 <input type="image" src="/static/assets/Lupe.png", alt="Submit Form">
             </div>

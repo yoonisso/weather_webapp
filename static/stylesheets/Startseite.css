@@ -14,14 +14,32 @@ header {
     align-items: center;
 }
 
-input[type="text"], input[type="number"] {
-    padding: 1px;
-    margin: 1px;
-    display: inline-flex;
+form {
+    display: contents;
 }
 
-label {
-    margin-right: 2px;
+.align_input_fields {
+    display: flex;
+}
+
+.align_input_fields p {
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    justify-items: center;
+}
+
+#input_discriptions {
+    display: grid;
+    margin-right: 10px;
+}
+
+#search_range_slider {
+    display: flex;
+}
+
+#search_range_slider div{
+    width: 50%;
 }
 
 .Kopfzeile {
