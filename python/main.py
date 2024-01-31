@@ -25,7 +25,7 @@ def home():
 
     if request.method == 'POST' and form.validate_on_submit():
         s1 = searchData(form.longitude.data,form.latitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)
-        test = s1.radius
+        flash(f"{s1.latitude}, {s1.longitude}, {s1.radius}, {s1.startYear}, {s1.endYear}, {s1.stationCount}")
         return redirect(url_for('home'))
     else:
         #Standort Fürth

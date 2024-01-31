@@ -80,10 +80,18 @@
         </form>
         
     </header>
-
+    <!-- Zum Testen -->
+    {% for message in get_flashed_messages() %}
+    <div>
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+     </div>
+    {% endfor %}
     <div class="Koerper">
         <img src="/static/assets/Logo.png" alt="Bild" id="Logo">
     </div>
+
+
 
 </body>
 </html>
