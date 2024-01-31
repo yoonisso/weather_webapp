@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wetter App</title>
     <link rel="stylesheet" href="/static/stylesheets/Startseite.css">
+    <link rel="script" href="/scripts/script.js">
 </head>
 <body>
     <header>
@@ -30,13 +31,13 @@
                     </div>
                     <div>
                         <p>
-                            Test
+                            <output for="radius" id="selected_radius">{{ form.radius.data }}</output>
                         </p>
                     </div>
                 </div>
                 <div>
                     <p>
-                        {{ form.radius() }}
+                        {{ form.radius(oninput="outputUpdate(value)") }}
                     </p>
                 </div>
             </div>
