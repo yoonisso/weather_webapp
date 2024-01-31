@@ -1,14 +1,13 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 from forms import searchForm
 import secrets
-import sys
 
-foo = secrets.token_urlsafe(16)
+secret_key = secrets.token_urlsafe(16)
 
 
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
-app.secret_key = foo
+app.secret_key = secret_key
 
 class searchData:
     def __init__(self,longitude,latitude,radius,startYear,endYear,stationCount):
