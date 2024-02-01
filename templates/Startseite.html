@@ -53,20 +53,20 @@
                             {{ form.endYear.label }}
                         </p>
                     </div>
-                    <div>
+                    <div class="last_element">
                         <p>
                             {{ form.stationCount.label }}
                         </p>
                     </div>
                 </div>
-                <div>
+                <div id="stacked_input_fields">
                     <p>
                         {{ form.startYear() }}
                     </p>
                     <p>
                         {{ form.endYear() }}
                     </p>
-                    <p>
+                    <p class="last_element">
                         {{ form.stationCount() }}
                     </p>
                 </div>
@@ -76,8 +76,8 @@
             </div>
         </form>
     </header>
-    <div class="Koerper">
-        <img src="/static/assets/Logo.png" alt="Bild" id="Logo">
+    <div class="main">
+        <img src="/static/assets/Logo.png" alt="Bild" id="logo">
     </div>
 
 
