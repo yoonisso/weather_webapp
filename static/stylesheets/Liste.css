@@ -1,17 +1,22 @@
 #logo {
-    max-width: 70%;
-    height: fit-content;
+    max-height: 80vh;
 }
 #right_box {
     display: flex;
     justify-content: center;
+    width: 70%;
 }
 #left_box {
+    height: auto;
+    width: 30%;
     border-style: solid;
-    border-color: #f7c203;
-    border-inline-color: black;
+    border-color: black;
     border-width: 10px;
     padding: 20px;
+    border-inline-style: solid;
+    border-inline-color: #f7c203;
+    border-inline-width: 10px;
+
 
     ul {
         margin: 0;
