@@ -43,7 +43,7 @@ def loadAllStations():
                 lat = float(line[12:20].strip())
                 lon = float(line[21:30].strip())
                 stid = line[:11]
-                city = line[42:71].strip()
+                city = line[41:71].strip()
                 
                 coords = {'id': stid, 'city': city, 'latitude': lat, 'longitude': lon}
 
