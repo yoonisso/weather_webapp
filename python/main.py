@@ -63,9 +63,9 @@ def home():
         form.endYear.data = 2024 #Keine Anforderung
     return render_template('Startseite.html', form=form)
 
-@app.route("/jahresansicht")
-def yearView():
-    
+@app.route("/jahresansicht/<id>")
+def yearView(id):
+    #TODO: Wetterdaten für Station(ID)
     return render_template('Jahresansicht.html',)
 
 @app.route("/liste", methods=['POST', 'GET'])
