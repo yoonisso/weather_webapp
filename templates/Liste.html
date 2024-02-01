@@ -87,11 +87,18 @@
 
     <div class="main">
         <div id="left_box">
-            <ul> 
+            <table id="table">
+                <caption>Wetterstationen</caption>
+                <tr>
+                    <th>Bezeichnung</th>
+                    <th>Ort</th>
+                    <th>Distanz im km</th>
+                    <th>Koordinaten</th>
+                </tr>
                 {%for station in stations%} 
-                    <li>{{station['id']}} {{station['city']}} {{station['latitude']}} {{station['longitude']}} {{station['distance']}}</li> 
-                {%endfor%} 
-            </ul>
+                    <a href="/jahresansicht/{{station['id']}}"><tr><td>{{station['id']}}</td><td>{{station['city']}}</td><td>{{station['distance']}}</td><td>{{station['latitude']}} {{station['longitude']}}</td></tr></a> 
+                {%endfor%}
+            </table>
         </div>
         <div id="right_box">
             <img src="/static/assets/Logo.png" alt="Bild" id="logo">

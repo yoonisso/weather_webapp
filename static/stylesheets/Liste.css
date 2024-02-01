@@ -8,20 +8,28 @@
 }
 #left_box {
     height: auto;
-    width: 30%;
     border-style: solid;
     border-color: black;
     border-width: 10px;
-    padding: 20px;
     border-inline-style: solid;
     border-inline-color: #f7c203;
     border-inline-width: 10px;
+}
+#table {
+    border: thin solid;
+    border-collapse: collapse;
+    font-size: 1vw;
 
+    th {
+        border: thin solid;
+    }
 
-    ul {
-        margin: 0;
-        list-style: none;
-        padding: 0;
-        font-size: 1vw;
+    td {
+        border: thin solid;
+    }
+
+    caption {
+        border: thin solid;
+        background-color: lightgray;
     }
 }
