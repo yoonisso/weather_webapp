@@ -89,7 +89,7 @@
         <div id="left_box">
             <ul> 
                 {%for station in stations%} 
-                    <li>{{station}}</li> 
+                    <li>{{station['id']}} {{station['city']}} {{station['latitude']}} {{station['longitude']}} {{station['distance']}}</li> 
                 {%endfor%} 
             </ul>
         </div>

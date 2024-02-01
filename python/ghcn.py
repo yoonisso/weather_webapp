@@ -39,10 +39,13 @@ def loadAllStations():
             if line[12:20].strip() == '' or line[21:30].strip() == '':
                 continue
             else:
+                
                 lat = float(line[12:20].strip())
                 lon = float(line[21:30].strip())
                 stid = line[:11]
-                coords = (lat, lon, stid)
+                city = line[42:71].strip()
+                
+                coords = {'id': stid, 'city': city, 'latitude': lat, 'longitude': lon}
 
                 all_coords.append(coords)
 
@@ -60,17 +63,19 @@ def getStationsByCoordinates(allStations, latitude, longitude, radius, stationCo
     filtered_coords = []
 
     for station in allStations:
-        distance = haversine(latitude, longitude, station[0], station[1])
+        distance = haversine(latitude, longitude, station['latitude'], station['longitude'])
         if distance <= radius:
-            coords = (station[0], station[1], station[2], distance) #(Latitude, Longitude, ID, distance)
-            filtered_coords.append(coords)
+            # coords = (station['id'], station['city'],station['latitude'],station['longitude'], distance) #Siehe oben coords + distance
+            # coords = {'id': stid, 'city': city, 'latitude': lat, 'longitude': lon, 'distance': distance}
+            station['distance'] = distance
+            filtered_coords.append(station)
 
     # #Testdaten
     # filtered_coords = [(49.5042, 11.0567, 'GME00102380', 5.762299315009502),
     #                    (49.6506, 11.0083, 'GME00121882', 19.344037382016104),
     #                    (49.5703, 10.9942, 'GME00121894', 10.370968197733994),
     #                    (49.1792, 11.375, 'GME00122494', 43.369941499575)]
-    filtered_coords.sort(key=lambda a: a[3])
+    filtered_coords.sort(key=lambda a: a['distance'])
 
     if len(filtered_coords) < stationCount:
         return filtered_coords

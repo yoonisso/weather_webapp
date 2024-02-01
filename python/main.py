@@ -13,31 +13,29 @@ app.secret_key = secret_key
 #Initialization
 app.allStations = loadAllStations()
 
-
-
 def createSearchForm():
     form = searchForm(request.form)
 
-    if(session.get('latitude') is None):
-        # session.permanent = True
-        #Standort Fürth
-        form.latitude.data = 49.4771
-        form.longitude.data = 10.9887
+    # if(session.get('latitude') is None):
+    # session.permanent = True
+    #Standort Fürth
+    form.latitude.data = 49.4771
+    form.longitude.data = 10.9887
 
-        #Standard-Werte
-        form.radius.data = 50
-        form.stationCount.data = 5
-        form.startYear.data = 2000 #Keine Anforderung
-        form.endYear.data = 2024 #Keine Anforderung
-    else:
-        form.latitude.data = session['latitude']
-        form.longitude.data = session['longitude']
+    #Standard-Werte
+    form.radius.data = 50
+    form.stationCount.data = 5
+    form.startYear.data = 2000 #Keine Anforderung
+    form.endYear.data = 2024 #Keine Anforderung
+    # else:
+    #     form.latitude.data = session['latitude']
+    #     form.longitude.data = session['longitude']
 
-        #Standard-Werte
-        form.radius.data = session['radius']
-        form.stationCount.data = session['stationCount']
-        form.startYear.data = session['startYear'] #Keine Anforderung
-        form.endYear.data = session['endYear'] #Keine Anforderung
+    #     #Standard-Werte
+    #     form.radius.data = session['radius']
+    #     form.stationCount.data = session['stationCount']
+    #     form.startYear.data = session['startYear'] #Keine Anforderung
+    #     form.endYear.data = session['endYear'] #Keine Anforderung
     return form
 
 class searchData:
@@ -53,9 +51,10 @@ class searchData:
         print("Stationen werden ermittelt...")
         return getStationsByCoordinates(app.allStations,latitude, longitude, radius, stationCount)
 
+
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    form = createSearchForm()
+    form = searchForm(request.form)
 
     if request.method == 'POST' and form.validate_on_submit():
         formData = searchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)
@@ -70,8 +69,25 @@ def home():
         session['stationCount'] = formData.stationCount
         session['startYear'] = formData.startYear #Keine Anforderung
         session['endYear'] = formData.endYear #Keine Anforderung
-        
         return redirect(url_for('list'))   
+    
+    if(session.get('latitude') is not None):
+        form.latitude.data = session['latitude']
+        form.longitude.data = session['longitude']
+        form.radius.data = session['radius']
+        form.stationCount.data = session['stationCount']
+        form.startYear.data = session['startYear'] #Keine Anforderung
+        form.endYear.data = session['endYear'] #Keine Anforderung
+    else:
+        #Standort Fürth
+        form.latitude.data = 49.4771
+        form.longitude.data = 10.9887
+
+        #Standard-Werte
+        form.radius.data = 50
+        form.stationCount.data = 5
+        form.startYear.data = 2000 #Keine Anforderung
+        form.endYear.data = 2024 #Keine Anforderung
     return render_template('Startseite.html', form=form)
 
 @app.route("/jahresansicht")
@@ -79,9 +95,29 @@ def yearView():
     form = createSearchForm()
     return render_template('Jahresansicht.html', form=createSearchForm)
 
-@app.route("/liste")
+@app.route("/liste", methods=['POST', 'GET'])
 def list():
     form = createSearchForm()
+    if(session.get('latitude') is not None):
+            form.latitude.data = session['latitude']
+            form.longitude.data = session['longitude']
+            form.radius.data = session['radius']
+            form.stationCount.data = session['stationCount']
+            form.startYear.data = session['startYear'] #Keine Anforderung
+            form.endYear.data = session['endYear'] #Keine Anforderung
+    if request.method == 'POST' and form.validate_on_submit():
+        print('test')
+    elif request.method == 'GET':
+        if(session.get('latitude') is not None):
+            form.latitude.data = float(session['latitude'])
+            form.longitude.data = float(session['longitude'])
+            form.radius.data = session['radius']
+            form.stationCount.data = session['stationCount']
+            form.startYear.data = session['startYear'] #Keine Anforderung
+            form.endYear.data = session['endYear'] #Keine Anforderung
+
+
+    
     return render_template('Liste.html',form=form, stations=session['userStations'])
 
 @app.route("/monatsansicht")
