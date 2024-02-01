@@ -12,8 +12,8 @@ class MyFloatField(FloatField):
                 raise ValueError(self.gettext('Not a valid float value'))
 
 class searchForm(FlaskForm):
-    longitude = DecimalField('Längengrad', places=6, validators=[InputRequired()]) 
     latitude = DecimalField('Breitengrad', places=6, validators=[InputRequired()])
+    longitude = DecimalField('Längengrad', places=6, validators=[InputRequired()]) 
     radius =  IntegerRangeField('Radius', validators = [NumberRange(5, 100),InputRequired()] )
     startYear = IntegerField('Startjahr', validators = [NumberRange(1800, 2999), InputRequired()])
     endYear = IntegerField('Endjahr', validators = [NumberRange(1800, 2999), InputRequired()])

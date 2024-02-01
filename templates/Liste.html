@@ -77,15 +77,19 @@
         </form>
     </header>
 
-    <div class="Koerper">
+    <!-- Zum Testen -->
+    {% for message in get_flashed_messages() %}
+    <div>
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+     </div>
+    {% endfor %}
 
-        <ol>
-            <li>WetterstationA</li>
-            <li>WetterstationB</li>
-            <li>WetterstationC</li>
-            <li>WetterstationX</li>
-            <li>WetterstationY</li>
-            <li>WetterstationZ</li>
+    <div class="Koerper">
+        <ol> 
+        {%for station in stations%} 
+            <li>{{station}}</li> 
+        {%endfor%} 
         </ol>
         
         <img src="/static/assets/Logo.png" alt="Bild" id="Logo">
