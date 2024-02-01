@@ -12,7 +12,6 @@ header {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    height: 10vh;
     font-size: 1vw;
     border-style: solid;
     border-width: 1px;
@@ -54,6 +53,7 @@ form {
 
 .main {
     display: flex;
+    height: 100vh;
 }
 
 #logo {
