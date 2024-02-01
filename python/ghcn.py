@@ -51,9 +51,9 @@ def loadAllStations():
     except requests.exceptions.RequestException as e:
         print(f'Fehler bei der Anfrage: {e}')
 
-def getStationsByCoordinates(allStations, latitude, longitude, radius, maxStations):
+def getStationsByCoordinates(allStations, latitude, longitude, radius, stationCount):
     """
-    TODO: Beschreibung einfügen
+    Sorts the stations by distance and returns the closest ones (stationCount)
     
     """
 
@@ -72,7 +72,13 @@ def getStationsByCoordinates(allStations, latitude, longitude, radius, maxStatio
     #                    (49.1792, 11.375, 'GME00122494', 43.369941499575)]
     filtered_coords.sort(key=lambda a: a[3])
 
-    return filtered_coords
+    if len(filtered_coords) < stationCount:
+        return filtered_coords
+    else:
+        return filtered_coords[0:stationCount]
+
+
+  
 
 
 

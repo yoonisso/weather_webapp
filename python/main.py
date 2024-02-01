@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, current_app
+from flask import Flask, render_template, request, flash, redirect, url_for, session
 from forms import searchForm
 import secrets
 
@@ -15,33 +15,11 @@ app.allStations = loadAllStations()
 
 
 
-class searchData:
-    def __init__(self,latitude,longitude,radius,startYear,endYear,stationCount):
-        self.latitude = latitude
-        self.longitude = longitude
-        self.radius = radius
-        self.startYear = startYear
-        self.endYear = endYear
-        self.stationCount = stationCount
-
-    def getStations(latitude, longitude, radius):
-        print("Stationen werden ermittelt...")
-        return getStationsByCoordinates(app.allStations,latitude, longitude, radius, 69)
-
-
-@app.route("/", methods=['GET', 'POST'])
-def home():
+def createSearchForm():
     form = searchForm(request.form)
 
-    if request.method == 'POST' and form.validate_on_submit():
-        s1 = searchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)
-        # flash(f"Übermittelte Werte: {s1.latitude}, {s1.longitude}, {s1.radius}, {s1.startYear}, {s1.endYear}, {s1.stationCount}")
-        
-        stations = searchData.getStations(s1.latitude, s1.longitude, s1.radius)
-        #TODO: session?
-        # return redirect(url_for(list, stations=stations))   
-        return render_template('Liste.html', form=form, stations=stations)
-    else:
+    if(session.get('latitude') is None):
+        # session.permanent = True
         #Standort Fürth
         form.latitude.data = 49.4771
         form.longitude.data = 10.9887
@@ -51,27 +29,69 @@ def home():
         form.stationCount.data = 5
         form.startYear.data = 2000 #Keine Anforderung
         form.endYear.data = 2024 #Keine Anforderung
-    
+    else:
+        form.latitude.data = session['latitude']
+        form.longitude.data = session['longitude']
+
+        #Standard-Werte
+        form.radius.data = session['radius']
+        form.stationCount.data = session['stationCount']
+        form.startYear.data = session['startYear'] #Keine Anforderung
+        form.endYear.data = session['endYear'] #Keine Anforderung
+    return form
+
+class searchData:
+    def __init__(self,latitude,longitude,radius,startYear,endYear,stationCount):
+        self.latitude = latitude
+        self.longitude = longitude
+        self.radius = radius
+        self.startYear = startYear
+        self.endYear = endYear
+        self.stationCount = stationCount
+
+    def getStations(latitude, longitude, radius, stationCount):
+        print("Stationen werden ermittelt...")
+        return getStationsByCoordinates(app.allStations,latitude, longitude, radius, stationCount)
+
+@app.route("/", methods=['GET', 'POST'])
+def home():
+    form = createSearchForm()
+
+    if request.method == 'POST' and form.validate_on_submit():
+        formData = searchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)
+        # flash(f"Übermittelte Werte: {s1.latitude}, {s1.longitude}, {s1.radius}, {s1.startYear}, {s1.endYear}, {s1.stationCount}")
+        
+        session["userStations"] = searchData.getStations(formData.latitude, formData.longitude, formData.radius, formData.stationCount)
+        
+        #Update Session (Form)
+        session['latitude'] = formData.latitude
+        session['longitude'] = formData.longitude
+        session['radius'] = formData.radius
+        session['stationCount'] = formData.stationCount
+        session['startYear'] = formData.startYear #Keine Anforderung
+        session['endYear'] = formData.endYear #Keine Anforderung
+        
+        return redirect(url_for('list'))   
     return render_template('Startseite.html', form=form)
 
 @app.route("/jahresansicht")
 def yearView():
-    form = searchForm(request.form)
-    return render_template('Jahresansicht.html', form=form)
+    form = createSearchForm()
+    return render_template('Jahresansicht.html', form=createSearchForm)
 
 @app.route("/liste")
 def list():
-    form = searchForm(request.form)
-    return render_template('Liste.html',form=form, stations=app.allStations)
+    form = createSearchForm()
+    return render_template('Liste.html',form=form, stations=session['userStations'])
 
 @app.route("/monatsansicht")
 def monthView():
-    form = searchForm(request.form)
+    form = createSearchForm()
     return render_template('Monatsansicht.html', form=form)
 
 @app.route("/tagesansicht")
 def dayView():
-    form = searchForm(request.form)
+    form = createSearchForm()
     return render_template('Tagesansicht.html', form=form)
 
 
