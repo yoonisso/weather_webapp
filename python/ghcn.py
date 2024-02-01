@@ -1,5 +1,7 @@
 import requests
 from math import radians, sin, cos, sqrt, atan2
+from io import BytesIO
+from helpers.fileextractor import FileExtractor
 
 def haversine(lat1, lon1, lat2, lon2):
     # Radius der Erde in Kilometern
@@ -81,6 +83,20 @@ def getStationsByCoordinates(allStations, latitude, longitude, radius, stationCo
         return filtered_coords
     else:
         return filtered_coords[0:stationCount]
+
+def getWeatherDataOfStationByStationId(stationId, startYear, endYear):
+    base_url = "https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_station/"
+    response = requests.get((base_url+stationId), stream=True)
+
+    if response.status_code == 200:
+        compressed_StationWeatherData = BytesIO(response.content)
+
+    stationWeatherData = FileExtractor.extract_file(compressed_StationWeatherData)
+    print(stationWeatherData)
+
+#Currently testing getWeatherDataOfStationByStationId-Method
+if __name__ == "__main__":
+    getWeatherDataOfStationByStationId("ACW00011604.csv.gz", 2000, 2020)
 
 
   
