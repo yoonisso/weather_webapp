@@ -80,19 +80,22 @@
     <!-- Zum Testen -->
     {% for message in get_flashed_messages() %}
     <div>
-    {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-     </div>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     {% endfor %}
 
     <div class="main">
-        <ol> 
-        {%for station in stations%} 
-            <li>{{station}}</li> 
-        {%endfor%} 
-        </ol>
-        
-        <img src="/static/assets/Logo.png" alt="Bild" id="logo">
+        <div id="left_box">
+            <ul> 
+                {%for station in stations%} 
+                    <li>{{station}}</li> 
+                {%endfor%} 
+            </ul>
+        </div>
+        <div id="right_box">
+            <img src="/static/assets/Logo.png" alt="Bild" id="logo">
+        </div>
     </div>
         
 
