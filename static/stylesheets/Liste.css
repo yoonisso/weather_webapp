@@ -1,0 +1,21 @@
+#logo {
+    max-width: 70%;
+    height: fit-content;
+}
+#right_box {
+    display: flex;
+    justify-content: center;
+}
+#left_box {
+    border-style: solid;
+    border-color: #f7c203;
+    border-inline-color: black;
+    border-width: 10px;
+    padding: 20px;
+
+    ul {
+        margin: 0;
+        list-style: none;
+        padding: 0;
+    }
+}
