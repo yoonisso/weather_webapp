@@ -83,12 +83,11 @@
                 <tr>
                     <th>Jahr</th>
                     <th>Mittleres Temperatur Minimum</th>
-                    {%for year in averageTemperaturesYear%} 
-                    <p>{{year}}: {{averageTemperaturesYear[year]['TMIN']}} {{averageTemperaturesYear[year]['TMAX']}}</p>
-                {%endfor%}
                     <th>Mittleres Temperatur Maximum</th>
                 </tr>
-
+                {%for year in averageTemperaturesYear%} 
+                    <tr><td><a href="">{{year}}</a></td><td><a href="">{{averageTemperaturesYear[year]['TMIN']}}</a></td><td><a href="">{{averageTemperaturesYear[year]['TMAX']}}</a></td></tr>
+                {%endfor%}
             </table>
         </div>
         <div class="middle_box">
