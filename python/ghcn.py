@@ -86,39 +86,46 @@ def getStationsByCoordinates(allStations, latitude, longitude, radius, stationCo
         return filtered_coords[0:stationCount]
 
 def getWeatherDataOfStationByStationId(stationId, startYear, endYear):
-    base_url = "https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_station/"
-    response = requests.get((base_url+stationId), stream=True)
+    url = f"https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_station/{stationId}.csv.gz"
+    response = requests.get((url), stream=True)
 
     if response.status_code == 200:
         compressed_StationWeatherData = BytesIO(response.content)
 
     stationTemperatures = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
-    # stationTemperatures = defaultdict()
-    test = {'1970': {'01': {'1': {'TMIN': 16, 'TMAX': 32}, '2':{'TMIN': 16, 'TMAX': 32}}, '02': {'1': {'TMIN': 16, 'TMAX': 32}, '2':{'TMIN': 16, 'TMAX': 32}},}}
 
     stationWeatherData = FileExtractor.extract_file(compressed_StationWeatherData)
 
     for record in stationWeatherData:
-        year = record[1][0:4]
+        year = int(record[1][0:4])
         if year < startYear or year > endYear:
             continue
         month = record[1][4:6]
+        if month[0] == '0':
+            month = int(month[1])
+        else:
+            month = int(month)
         day = record[1][6:8]
+        if day[0] == '0':
+            day = int(day[1])
+        else:
+            day = int(day)
         match record[2]:
             case 'TMIN':
                 temperature = float(record[3]) / 10
-                stationTemperatures[year][month][day][record[2]] = temperature
+                stationTemperatures[year][month][day]['TMIN'] = temperature
                 
             case 'TMAX':
                 temperature = float(record[3]) / 10
                 stationTemperatures[year][month][day]['TMAX'] = temperature
-            
+    # print(dict(stationTemperatures))
+    # print(dict(stationTemperatures)[1953][1][1])
     return stationTemperatures
     
 
 #Currently testing getWeatherDataOfStationByStationId-Method
 if __name__ == "__main__":
-    getWeatherDataOfStationByStationId("ACW00011604.csv.gz", 2000, 2020)
+    getWeatherDataOfStationByStationId("GME00122614", 1949, 1980)
 
 
   

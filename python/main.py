@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, url_for, ses
 from forms import searchForm
 import secrets
 
-from ghcn import getStationsByCoordinates, loadAllStations
+from ghcn import getStationsByCoordinates, loadAllStations, getWeatherDataOfStationByStationId
 
 secret_key = secrets.token_urlsafe(16)
 
@@ -22,6 +22,7 @@ class searchData:
         self.endYear = endYear
         self.stationCount = stationCount
 
+    #TODO: in klasse lassen? oder direkt aufruden?
     def getStations(latitude, longitude, radius, stationCount):
         print("Stationen werden ermittelt...")
         return getStationsByCoordinates(app.allStations,latitude, longitude, radius, stationCount)
@@ -66,8 +67,12 @@ def home():
 @app.route("/jahresansicht/<id>")
 def yearView(id):
     form = searchForm(request.form)
-    #TODO: Wetterdaten für Station(ID)
-    return render_template('Jahresansicht.html',form=form)
+    
+    if request.method == 'GET':
+        stationTemperatures = getWeatherDataOfStationByStationId(id, session['startYear'], session['endYear'])
+        stationTemperatures = dict(stationTemperatures)
+
+    return render_template('Jahresansicht.html',form=form, stationTemperatures = stationTemperatures, id=id)
 
 @app.route("/liste", methods=['POST', 'GET'])
 def list():
