@@ -2,6 +2,7 @@ import requests
 from math import radians, sin, cos, sqrt, atan2
 from io import BytesIO
 from helpers.fileextractor import FileExtractor
+from collections import defaultdict
 
 def haversine(lat1, lon1, lat2, lon2):
     # Radius der Erde in Kilometern
@@ -67,9 +68,7 @@ def getStationsByCoordinates(allStations, latitude, longitude, radius, stationCo
     for station in allStations:
         distance = haversine(latitude, longitude, station['latitude'], station['longitude'])
         if distance <= radius:
-            # coords = (station['id'], station['city'],station['latitude'],station['longitude'], distance) #Siehe oben coords + distance
-            # coords = {'id': stid, 'city': city, 'latitude': lat, 'longitude': lon, 'distance': distance}
-            station['distance'] = distance
+            station['distance'] = round(distance,2)
             filtered_coords.append(station)
 
     # #Testdaten
@@ -85,25 +84,52 @@ def getStationsByCoordinates(allStations, latitude, longitude, radius, stationCo
         return filtered_coords[0:stationCount]
 
 def getWeatherDataOfStationByStationId(stationId, startYear, endYear):
-    base_url = "https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_station/"
-    response = requests.get((base_url+stationId), stream=True)
+    url = f"https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_station/{stationId}.csv.gz"
+    response = requests.get((url), stream=True)
 
     if response.status_code == 200:
         compressed_StationWeatherData = BytesIO(response.content)
 
+    stationTemperatures = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
+
     stationWeatherData = FileExtractor.extract_file(compressed_StationWeatherData)
-    print(stationWeatherData)
+
+    for record in stationWeatherData:
+        year = int(record[1][0:4])
+        if year < startYear or year > endYear:
+            continue
+        month = record[1][4:6]
+        if month[0] == '0':
+            month = int(month[1])
+        else:
+            month = int(month)
+        day = record[1][6:8]
+        if day[0] == '0':
+            day = int(day[1])
+        else:
+            day = int(day)
+        match record[2]:
+            case 'TMIN':
+                temperature = float(record[3]) / 10
+                stationTemperatures[year][month][day]['TMIN'] = temperature
+                
+            case 'TMAX':
+                temperature = float(record[3]) / 10
+                stationTemperatures[year][month][day]['TMAX'] = temperature
+    # print(dict(stationTemperatures))
+    # print(dict(stationTemperatures)[1953][1][1])
+
+        
+
+    return stationTemperatures
+    
 
 #Currently testing getWeatherDataOfStationByStationId-Method
 if __name__ == "__main__":
-    getWeatherDataOfStationByStationId("ACW00011604.csv.gz", 2000, 2020)
+    getWeatherDataOfStationByStationId("GME00122614", 1949, 1951)
 
 
   
-
-
-
-
 
 
 
