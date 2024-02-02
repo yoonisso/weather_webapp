@@ -9,15 +9,25 @@
 
     td {
         border: thin solid;
+        padding: 5px;
     }
 
     caption {
         border: thin solid;
         background-color: lightgray;
     }
+
+    a {
+        display: block;
+        text-decoration: none;
+        transition: all 0.25s ease-out;
+        color: black;
+    }
 }
 .left_box {
     width: 20%;
+    height: 80%;
+    overflow-y: auto;
 }
 .middle_box {
     width: 65%;
