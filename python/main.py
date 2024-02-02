@@ -61,7 +61,7 @@ def home():
         #Standard-Werte
         form.radius.data = 50
         form.stationCount.data = 5
-        form.startYear.data = 2000 #Keine Anforderung
+        form.startYear.data = 1949 #Keine Anforderung
         form.endYear.data = 2024 #Keine Anforderung
     return render_template('Startseite.html', form=form)
 
