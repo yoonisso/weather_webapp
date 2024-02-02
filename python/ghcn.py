@@ -113,11 +113,7 @@ def getWeatherDataOfStationByStationId(stationId, startYear, endYear):
                 stationTemperatures[year][month][day]['TMIN'] = temperature
         elif record[2] == 'TMAX':
                 temperature = float(record[3]) / 10
-                stationTemperatures[year][month][day]['TMAX'] = temperature
-    # print(dict(stationTemperatures))
-    # print(dict(stationTemperatures)[1953][1][1])
-
-        
+                stationTemperatures[year][month][day]['TMAX'] = temperature        
 
     return stationTemperatures
     
