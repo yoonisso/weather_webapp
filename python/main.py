@@ -29,25 +29,36 @@ class SearchData:
         return get_stations_by_coordinates(app.allStations,latitude, longitude, radius, stationCount)
 
 def update_session_form(form):
-    print()
+    #Update Session (Form)
+    session['latitude'] = form.latitude.data
+    session['longitude'] = form.longitude.data
+    session['radius'] = form.radius.data
+    session['stationCount'] = form.stationCount.data
+    session['startYear'] = form.startYear.data #Keine Anforderung
+    session['endYear'] = form.endYear.data #Keine Anforderung
+
+def fill_form():
+    form = searchForm(request.form)
+    form.latitude.data = float(session['latitude'])
+    form.longitude.data = float(session['longitude'])
+    form.radius.data = session['radius']
+    form.stationCount.data = session['stationCount']
+    form.startYear.data = session['startYear']
+    form.endYear.data = session['endYear']
+    return form
+
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
     form = searchForm(request.form)
 
     if request.method == 'POST' and form.validate_on_submit():
-        formData = SearchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)    
-        session["userStations"] = SearchData.getStations(formData.latitude, formData.longitude, formData.radius, formData.stationCount)
-        
-        #Update Session (Form)
-        session['latitude'] = formData.latitude
-        session['longitude'] = formData.longitude
-        session['radius'] = formData.radius
-        session['stationCount'] = formData.stationCount
-        session['startYear'] = formData.startYear #Keine Anforderung
-        session['endYear'] = formData.endYear #Keine Anforderung
+        update_session_form(form)
+        # formData = SearchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)    
+        session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
         return redirect(url_for('list'))   
     
+    #Beim ersten mal aufrufen der App
     if(session.get('latitude') is not None):
         form.latitude.data = float(session['latitude'])
         form.longitude.data = float(session['longitude'])
@@ -124,42 +135,48 @@ def yearView(id):
                         # Füge hier weitere Jahre mit den entsprechenden Temperaturwerten hinzu
                     }
 
-
-
     return render_template('Jahresansicht.html',form=form, averageTemperaturesYear = averageTemperaturesYear, id=id)
 
 @app.route("/liste", methods=['POST', 'GET'])
 def list():
-    form = searchForm(request.form)
+    
     if(session.get('latitude') is not None):
-            form.latitude.data = session['latitude']
-            form.longitude.data = session['longitude']
-            form.radius.data = session['radius']
-            form.stationCount.data = session['stationCount']
-            form.startYear.data = session['startYear'] #Keine Anforderung
-            form.endYear.data = session['endYear'] #Keine Anforderung
+        form = fill_form()
+    else:
+        form = searchForm(request.form)
+            # form.latitude.data = session['latitude']
+            # form.longitude.data = session['longitude']
+            # form.radius.data = session['radius']
+            # form.stationCount.data = session['stationCount']
+            # form.startYear.data = session['startYear'] #Keine Anforderung
+            # form.endYear.data = session['endYear'] #Keine Anforderung
 
     if request.method == 'POST' and form.validate_on_submit():
-        formData = SearchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)    
-        session["userStations"] = SearchData.getStations(formData.latitude, formData.longitude, formData.radius, formData.stationCount)
+        # formData = SearchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)    
+        session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
         
         #Update Session (Form)
-        session['latitude'] = formData.latitude
-        session['longitude'] = formData.longitude
-        session['radius'] = formData.radius
-        session['stationCount'] = formData.stationCount
-        session['startYear'] = formData.startYear #Keine Anforderung
-        session['endYear'] = formData.endYear #Keine Anforderung
+        update_session_form(form)
+        # session['latitude'] = formData.latitude
+        # session['longitude'] = formData.longitude
+        # session['radius'] = formData.radius
+        # session['stationCount'] = formData.stationCount
+        # session['startYear'] = formData.startYear #Keine Anforderung
+        # session['endYear'] = formData.endYear #Keine Anforderung
         return redirect(url_for('list'))
     
     elif request.method == 'GET':
         if(session.get('latitude') is not None):
-            form.latitude.data = float(session['latitude'])
-            form.longitude.data = float(session['longitude'])
-            form.radius.data = session['radius']
-            form.stationCount.data = session['stationCount']
-            form.startYear.data = session['startYear'] #Keine Anforderung
-            form.endYear.data = session['endYear'] #Keine Anforderung
+            form = fill_form()
+        else:
+            form = searchForm(request.form)
+
+            # form.latitude.data = float(session['latitude'])
+            # form.longitude.data = float(session['longitude'])
+            # form.radius.data = session['radius']
+            # form.stationCount.data = session['stationCount']
+            # form.startYear.data = session['startYear'] #Keine Anforderung
+            # form.endYear.data = session['endYear'] #Keine Anforderung
 
     return render_template('Liste.html',form=form, stations=session['userStations'])
 
