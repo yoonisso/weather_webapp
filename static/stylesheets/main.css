@@ -80,3 +80,18 @@ input {
 #stacked_input_fields {
     display: grid;
 }
+
+.right_box {
+    display: flex;
+    justify-content: center;
+    width: 70%;
+}
+.left_box {
+    height: auto;
+    border-style: solid;
+    border-color: black;
+    border-width: 10px;
+    border-inline-style: solid;
+    border-inline-color: #f7c203;
+    border-inline-width: 10px;
+}

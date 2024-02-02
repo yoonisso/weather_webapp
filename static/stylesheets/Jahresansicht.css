@@ -1,1 +1,106 @@
+.detail_table {
+    border: thin solid;
+    border-collapse: collapse;
+    font-size: 1vw;
 
+    th {
+        border: thin solid;
+    }
+
+    td {
+        border: thin solid;
+    }
+
+    caption {
+        border: thin solid;
+        background-color: lightgray;
+    }
+}
+.left_box {
+    width: 20%;
+}
+.middle_box {
+    width: 65%;
+}
+.right_box {
+    width: 15%;
+}
+.grid_container {
+    height: 10%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(6, 35%);
+    align-items: center;
+}
+#year {
+    grid-column: 1;
+    grid-row: 2;
+}
+#spring {
+    grid-column: 1;
+    grid-row: 3;
+}
+#summer {
+    grid-column: 1;
+    grid-row: 4;
+}
+#autumn {
+    grid-column: 1;
+    grid-row: 5;
+}
+#winter {
+    grid-column: 1;
+    grid-row: 6;
+}
+#tmin {
+    grid-column: 2;
+    grid-row: 1;
+}
+#tmax {
+    grid-column: 3;
+    grid-row: 1;
+}
+#min_year {
+    grid-column: 2;
+    grid-row: 2;
+}
+#min_spring {
+    grid-column: 2;
+    grid-row: 3;
+}
+#min_summer {
+    grid-column: 2;
+    grid-row: 4;
+}
+#min_autumn {
+    grid-column: 2;
+    grid-row: 5;
+}
+#min_winter {
+    grid-column: 2;
+    grid-row: 6;
+}
+#max_year {
+    grid-column: 3;
+    grid-row: 2;
+}
+#max_spring {
+    grid-column: 3;
+    grid-row: 3;
+}
+#max_summer {
+    grid-column: 3;
+    grid-row: 4;
+}
+#max_autumn {
+    grid-column: 3;
+    grid-row: 5;
+}
+#max_winter {
+    grid-column: 3;
+    grid-row: 6;
+}
+input {
+    width: fit-content;
+}

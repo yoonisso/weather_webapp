@@ -83,62 +83,45 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
      </div>
     {% endfor %}
-    
-    <div class="Station">
-        WetterstationX
-    </div>
 
     <div class="main">
-        <div class="Tabelle_Diagramm">
-        
-            <table>
-                <thead>
-                    <tr>
-                        <th>Spalte 1</th>
-                        <th>Spalte 2</th>
-                        <th>Spalte 3</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Inhalt 1-1</td>
-                        <td>Inhalt 1-2</td>
-                        <td>Inhalt 1-3</td>
-                    </tr>
-                    <tr>
-                        <td>Inhalt 2-1</td>
-                        <td>Inhalt 2-2</td>
-                        <td>Inhalt 2-3</td>
-                    </tr>
-                </tbody>
+        <div class="left_box">
+            <table class="detail_table">
+                <caption>Wetterstationen</caption>
+                <tr>
+                    <th>Jahr</th>
+                    <th>Mittleres Temperatur Minimum</th>
+                    <th>Mittleres Temperatur Maximum</th>
+                </tr>
+                {%for station in stations%} 
+                    <tr><td><a href=""></a></td><td><a href=""></a></td><td><a href=""></a></td><td><a href=""></a></td></tr>
+                {%endfor%}
             </table>
-
-            <canvas id="linechart" width="50" height="50"></canvas>
         </div>
-        <div class="Checkboxen">
-            <div class="Kategorien">
-                <p>Jahr</p>
-                <p>Fr&uuml;hling</p>
-                <p>Sommer</p>
-                <p>Herbst</p>
-                <p>Winter</p>
+        <div class="middle_box">
+            <div>
+                Diagramm hier
             </div>
-
-            <div class="Checkboxen_min">
-                TMIN
-                <input type="checkbox" id="minYear" name="minYear"> 
-                <input type="checkbox" id="minSpring" name="minSpring">
-                <input type="checkbox" id="minSummer" name="minSummer"> 
-                <input type="checkbox" id="minAutumn" name="minAutumn">
-                <input type="checkbox" id="minWinter" name="minWinter">
-            </div>
-            <div class="Checkboxen_max">
-                TMAX
-                <input type="checkbox" id="maxYear" name="maxYear">
-                <input type="checkbox" id="maxSpring" name="maxSpring">
-                <input type="checkbox" id="maxSummer" name="maxSummer">   
-                <input type="checkbox" id="maxAutumn" name="maxAutumn">
-                <input type="checkbox" id="maxWinter" name="maxWinter">
+        </div>
+        <div class="right_box">
+            <div class="grid_container">
+                <p id="year">Year</p>
+                <p id="spring">Spring</p>
+                <p id="summer">Summer</p>
+                <p id="autumn">Autumn</p>
+                <p id="winter">Winter</p>
+                <p id="tmin">TMIN</p>
+                <input type="checkbox" id="min_year" name="minYear"> 
+                <input type="checkbox" id="min_spring" name="minSpring">
+                <input type="checkbox" id="min_summer" name="minSummer"> 
+                <input type="checkbox" id="min_autumn" name="minAutumn">
+                <input type="checkbox" id="min_winter" name="minWinter">
+                <p id="tmax">TMAX</p>
+                <input type="checkbox" id="max_year" name="maxYear">
+                <input type="checkbox" id="max_spring" name="maxSpring">
+                <input type="checkbox" id="max_summer" name="maxSummer">   
+                <input type="checkbox" id="max_autumn" name="maxAutumn">
+                <input type="checkbox" id="max_winter" name="maxWinter">
             </div>
         </div>
     </div>
