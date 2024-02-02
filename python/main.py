@@ -71,6 +71,9 @@ def yearView(id):
     if request.method == 'GET':
         stationTemperatures = getWeatherDataOfStationByStationId(id, session['startYear'], session['endYear'])
         stationTemperatures = dict(stationTemperatures)
+        if not stationTemperatures:
+            flash('Der ausgewählte Zeitraum enthält keine Daten')
+
 
     return render_template('Jahresansicht.html',form=form, stationTemperatures = stationTemperatures, id=id)
 
