@@ -68,9 +68,7 @@ def getStationsByCoordinates(allStations, latitude, longitude, radius, stationCo
     for station in allStations:
         distance = haversine(latitude, longitude, station['latitude'], station['longitude'])
         if distance <= radius:
-            # coords = (station['id'], station['city'],station['latitude'],station['longitude'], distance) #Siehe oben coords + distance
-            # coords = {'id': stid, 'city': city, 'latitude': lat, 'longitude': lon, 'distance': distance}
-            station['distance'] = distance
+            station['distance'] = round(distance,2)
             filtered_coords.append(station)
 
     # #Testdaten
@@ -120,17 +118,18 @@ def getWeatherDataOfStationByStationId(stationId, startYear, endYear):
                 stationTemperatures[year][month][day]['TMAX'] = temperature
     # print(dict(stationTemperatures))
     # print(dict(stationTemperatures)[1953][1][1])
+
+        
+
     return stationTemperatures
     
 
 #Currently testing getWeatherDataOfStationByStationId-Method
 if __name__ == "__main__":
-    getWeatherDataOfStationByStationId("GME00122614", 1949, 1980)
+    getWeatherDataOfStationByStationId("GME00122614", 1949, 1951)
 
 
   
-
-
 
 
 

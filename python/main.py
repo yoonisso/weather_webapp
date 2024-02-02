@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, session
 from forms import searchForm
 import secrets
+from collections import defaultdict
 
 from ghcn import getStationsByCoordinates, loadAllStations, getWeatherDataOfStationByStationId
 
@@ -73,9 +74,26 @@ def yearView(id):
         stationTemperatures = dict(stationTemperatures)
         if not stationTemperatures:
             flash('Der ausgewählte Zeitraum enthält keine Daten')
+        else:
+            session['stationWeatherData'] = stationTemperatures
+            #Mittelwerte berechnen
+                            
+            averageTemperaturesYear = defaultdict(lambda: dict())
+            #Test Mittelwert Jahr
+            for year in stationTemperatures:
+                divisor = 0
+                sumMin = 0
+                sumMax = 0
+                for month in stationTemperatures[year]:
+                    for day in stationTemperatures[year][month]:
+                        divisor += 1
+                        sumMin += stationTemperatures[year][month][day]['TMIN']
+                        sumMax += stationTemperatures[year][month][day]['TMAX']
+                averageTemperaturesYear[year]['TMIN'] = round(sumMin/divisor,1)
+                averageTemperaturesYear[year]['TMAX'] = round(sumMax/divisor,1)
 
 
-    return render_template('Jahresansicht.html',form=form, stationTemperatures = stationTemperatures, id=id)
+    return render_template('Jahresansicht.html',form=form, averageTemperaturesYear = dict(averageTemperaturesYear), id=id)
 
 @app.route("/liste", methods=['POST', 'GET'])
 def list():
