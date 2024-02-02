@@ -2,6 +2,7 @@ import requests
 from math import radians, sin, cos, sqrt, atan2
 from io import BytesIO
 from helpers.fileextractor import FileExtractor
+from collections import defaultdict
 
 def haversine(lat1, lon1, lat2, lon2):
     # Radius der Erde in Kilometern
@@ -91,8 +92,29 @@ def getWeatherDataOfStationByStationId(stationId, startYear, endYear):
     if response.status_code == 200:
         compressed_StationWeatherData = BytesIO(response.content)
 
+    stationTemperatures = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
+    # stationTemperatures = defaultdict()
+    test = {'1970': {'01': {'1': {'TMIN': 16, 'TMAX': 32}, '2':{'TMIN': 16, 'TMAX': 32}}, '02': {'1': {'TMIN': 16, 'TMAX': 32}, '2':{'TMIN': 16, 'TMAX': 32}},}}
+
     stationWeatherData = FileExtractor.extract_file(compressed_StationWeatherData)
-    print(stationWeatherData)
+
+    for record in stationWeatherData:
+        year = record[1][0:4]
+        if year < startYear or year > endYear:
+            continue
+        month = record[1][4:6]
+        day = record[1][6:8]
+        match record[2]:
+            case 'TMIN':
+                temperature = float(record[3]) / 10
+                stationTemperatures[year][month][day][record[2]] = temperature
+                
+            case 'TMAX':
+                temperature = float(record[3]) / 10
+                stationTemperatures[year][month][day]['TMAX'] = temperature
+            
+    return stationTemperatures
+    
 
 #Currently testing getWeatherDataOfStationByStationId-Method
 if __name__ == "__main__":
@@ -100,8 +122,6 @@ if __name__ == "__main__":
 
 
   
-
-
 
 
 

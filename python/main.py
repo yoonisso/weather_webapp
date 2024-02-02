@@ -109,10 +109,11 @@ def monthView():
     form = searchForm(request.form)
     return render_template('Monatsansicht.html', form=form)
 
-@app.route("/tagesansicht")
-def dayView():
-    form = searchForm(request.form)
-    return render_template('Tagesansicht.html', form=form)
+#! Es gibt keine Tagesansicht?
+# @app.route("/tagesansicht")
+# def dayView():
+#     form = searchForm(request.form)
+#     return render_template('Tagesansicht.html', form=form)
 
 
 if __name__ == '__main__':
