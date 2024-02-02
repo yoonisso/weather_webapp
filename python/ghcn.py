@@ -25,7 +25,7 @@ def haversine(lat1, lon1, lat2, lon2):
     return distance
 
 
-def loadAllStations():
+def load_all_stations():
     """
     Loads all stations from given URL. Result is list of coords and id 
 
@@ -57,7 +57,7 @@ def loadAllStations():
     except requests.exceptions.RequestException as e:
         print(f'Fehler bei der Anfrage: {e}')
 
-def getStationsByCoordinates(allStations, latitude, longitude, radius, stationCount):
+def get_stations_by_coordinates(allStations, latitude, longitude, radius, stationCount):
     """
     Sorts the stations by distance and returns the closest ones (stationCount)
     
@@ -83,7 +83,7 @@ def getStationsByCoordinates(allStations, latitude, longitude, radius, stationCo
     else:
         return filtered_coords[0:stationCount]
 
-def getWeatherDataOfStationByStationId(stationId, startYear, endYear):
+def get_weather_data_of_station_by_station_id(stationId, startYear, endYear):
     url = f"https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_station/{stationId}.csv.gz"
     response = requests.get((url), stream=True)
 
@@ -120,7 +120,7 @@ def getWeatherDataOfStationByStationId(stationId, startYear, endYear):
 
 #Currently testing getWeatherDataOfStationByStationId-Method
 if __name__ == "__main__":
-    getWeatherDataOfStationByStationId("GME00122614", 1949, 1951)
+    get_weather_data_of_station_by_station_id("GME00122614", 1949, 1951)
 
 
   

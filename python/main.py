@@ -3,7 +3,7 @@ from forms import searchForm
 import secrets
 from collections import defaultdict
 
-from ghcn import getStationsByCoordinates, loadAllStations, getWeatherDataOfStationByStationId
+from ghcn import get_stations_by_coordinates, load_all_stations, get_weather_data_of_station_by_station_id
 
 secret_key = secrets.token_urlsafe(16)
 
@@ -12,9 +12,9 @@ app = Flask(__name__, template_folder='../templates', static_folder='../static')
 app.secret_key = secret_key
 
 #Initialization
-app.allStations = loadAllStations()
+app.allStations = load_all_stations()
 
-class searchData:
+class SearchData:
     def __init__(self,latitude,longitude,radius,startYear,endYear,stationCount):
         self.latitude = latitude
         self.longitude = longitude
@@ -26,16 +26,18 @@ class searchData:
     #TODO: in klasse lassen? oder direkt aufruden?
     def getStations(latitude, longitude, radius, stationCount):
         print("Stationen werden ermittelt...")
-        return getStationsByCoordinates(app.allStations,latitude, longitude, radius, stationCount)
+        return get_stations_by_coordinates(app.allStations,latitude, longitude, radius, stationCount)
 
+def update_session_form(form):
+    print()
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
     form = searchForm(request.form)
 
     if request.method == 'POST' and form.validate_on_submit():
-        formData = searchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)    
-        session["userStations"] = searchData.getStations(formData.latitude, formData.longitude, formData.radius, formData.stationCount)
+        formData = SearchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)    
+        session["userStations"] = SearchData.getStations(formData.latitude, formData.longitude, formData.radius, formData.stationCount)
         
         #Update Session (Form)
         session['latitude'] = formData.latitude
@@ -73,7 +75,7 @@ def yearView(id):
 
         #! Folgendes nicht löschen
         
-        # stationTemperatures = getWeatherDataOfStationByStationId(id, session['startYear'], session['endYear'])
+        # stationTemperatures = get_weather_data_of_station_by_station_id(id, session['startYear'], session['endYear'])
         # stationTemperatures = dict(stationTemperatures)
 
         # if not stationTemperatures:
@@ -138,8 +140,8 @@ def list():
             form.endYear.data = session['endYear'] #Keine Anforderung
 
     if request.method == 'POST' and form.validate_on_submit():
-        formData = searchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)    
-        session["userStations"] = searchData.getStations(formData.latitude, formData.longitude, formData.radius, formData.stationCount)
+        formData = SearchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)    
+        session["userStations"] = SearchData.getStations(formData.latitude, formData.longitude, formData.radius, formData.stationCount)
         
         #Update Session (Form)
         session['latitude'] = formData.latitude
