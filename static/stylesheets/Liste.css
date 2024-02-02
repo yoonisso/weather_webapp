@@ -32,4 +32,11 @@
         border: thin solid;
         background-color: lightgray;
     }
+
+    a {
+        display: block;
+        text-decoration: none;
+        transition: all 0.25s ease-out;
+        color: black;
+    }
 }

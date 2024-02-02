@@ -6,6 +6,7 @@
     <title>Wetter App</title>
     <link rel="stylesheet" href="/static/stylesheets/main.css">
     <link rel="stylesheet" href="/static/stylesheets/Liste.css">
+    <script src="/static/scripts/script.js"></script>
 </head>
 <body>
 
@@ -96,7 +97,7 @@
                     <th>Koordinaten</th>
                 </tr>
                 {%for station in stations%} 
-                    <a href="/jahresansicht/{{station['id']}}"><tr><td>{{station['id']}}</td><td>{{station['city']}}</td><td>{{station['distance']}}</td><td>{{station['latitude']}} {{station['longitude']}}</td></tr></a> 
+                    <tr><td><a href="/jahresansicht/{{station['id']}}">{{station['id']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['city']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['distance']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['latitude']}} {{station['longitude']}}</a></td></tr>
                 {%endfor%}
             </table>
         </div>
