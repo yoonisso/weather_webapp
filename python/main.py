@@ -45,8 +45,8 @@ def home():
         return redirect(url_for('list'))   
     
     if(session.get('latitude') is not None):
-        form.latitude.data = session['latitude']
-        form.longitude.data = session['longitude']
+        form.latitude.data = float(session['latitude'])
+        form.longitude.data = float(session['longitude'])
         form.radius.data = session['radius']
         form.stationCount.data = session['stationCount']
         form.startYear.data = session['startYear'] #Keine Anforderung
@@ -65,8 +65,9 @@ def home():
 
 @app.route("/jahresansicht/<id>")
 def yearView(id):
+    form = searchForm(request.form)
     #TODO: Wetterdaten für Station(ID)
-    return render_template('Jahresansicht.html',)
+    return render_template('Jahresansicht.html',form=form)
 
 @app.route("/liste", methods=['POST', 'GET'])
 def list():
