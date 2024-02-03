@@ -120,7 +120,7 @@ def get_weather_data_of_station_by_station_id(stationId, startYear, endYear):
 
 #Currently testing getWeatherDataOfStationByStationId-Method
 if __name__ == "__main__":
-    get_weather_data_of_station_by_station_id("GME00122614", 1949, 1951)
+    print(get_weather_data_of_station_by_station_id("GME00122614", 1949, 1951))
 
 
   
