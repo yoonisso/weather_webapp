@@ -3,7 +3,7 @@ from forms import searchForm
 import secrets
 from collections import defaultdict
 
-from ghcn import get_stations_by_coordinates, load_all_stations, get_weather_data_of_station_by_station_id
+from api_caller import get_stations_by_coordinates, load_all_stations, get_weather_data_of_station_by_station_id
 
 secret_key = secrets.token_urlsafe(16)
 
