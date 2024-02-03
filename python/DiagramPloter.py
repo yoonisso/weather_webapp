@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-#Testdata
+#Testdata yearly
 averageTemperaturesYear = {
     1949: {'TMIN': 4.3, 'TMAX': 14.7},
     1950: {'TMIN': 5.1, 'TMAX': 15.2},
@@ -25,8 +25,24 @@ averageTemperaturesYear = {
     # Füge hier weitere Jahre mit den entsprechenden Temperaturwerten hinzu
 }
 
+#Testdata monthly
+averageTemperaturesMonthly = {
+    1: {'TMIN': 4.3, 'TMAX': 14.7},
+    2: {'TMIN': 5.1, 'TMAX': 15.2},
+    3: {'TMIN': 3.8, 'TMAX': 14.5},
+    4: {'TMIN': 6.2, 'TMAX': 16.8},
+    5: {'TMIN': 4.5, 'TMAX': 15.0},
+    6: {'TMIN': 5.3, 'TMAX': 15.7},
+    7: {'TMIN': 4.8, 'TMAX': 14.9},
+    8: {'TMIN': 6.0, 'TMAX': 16.5},
+    9: {'TMIN': 5.7, 'TMAX': 15.4},
+    10: {'TMIN': 4.1, 'TMAX': 14.2},
+    11: {'TMIN': 5.6, 'TMAX': 15.8},
+    12: {'TMIN': 4.9, 'TMAX': 15.1}
+}
+
 class DiagramPloter:
-    def plotDiagram(averageTemperaturesYears, startYear, endYear):
+    def plotYearlyDiagram(averageTemperaturesYears, startYear, endYear):
 
         years = list(averageTemperaturesYear.keys())
         tmin_values = [data['TMIN'] for data in averageTemperaturesYear.values()]
@@ -47,6 +63,7 @@ class DiagramPloter:
 
         # Show the plot
         plt.show()
+
 
 if(__name__ == "__main__"):
     DiagramPloter.plotDiagram(averageTemperaturesYear, "1949", "1968")
