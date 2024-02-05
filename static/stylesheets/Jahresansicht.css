@@ -26,14 +26,16 @@
 }
 .left_box {
     width: 20%;
-    height: 80%;
     overflow-y: auto;
+    border: 0.7vw solid #f7c203;
+    outline: 0.15vw solid black;
+    box-sizing: border-box;
 }
 .middle_box {
     width: 65%;
 }
 .right_box {
-    width: 31%;
+    width: 15%;
 }
 .grid_container {
     height: 10%;
@@ -41,7 +43,19 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(6, 35%);
-    align-items: center;
+    align-items: center;    
+    font-size: 1vw;
+
+    p {
+        margin: 0;
+        padding: 0;
+    }
+
+    input {
+        margin: 0;
+        padding: 0;
+    }
+
 }
 #year {
     grid-column: 1;

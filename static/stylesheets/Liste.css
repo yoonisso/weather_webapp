@@ -26,3 +26,8 @@
         color: black;
     }
 }
+.left_box {
+    border: 0.7vw solid #f7c203;
+    outline: 0.15vw solid black;
+    box-sizing: border-box;
+}

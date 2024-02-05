@@ -8,18 +8,17 @@
     <link rel="stylesheet" href="/static/stylesheets/Monats_Tagesansicht.css">
 </head>
 <body>
-
-    <header>
+    <div class="header">
         <form action="/" method="post">
             {{ form.csrf_token }}
-            <div>
-                <p>
-                    {{ form.longitude.label }}
-                    {{ form.longitude() }}
-                </p>
+            <div class="m_left">
                 <p>
                     {{ form.latitude.label }}
                     {{ form.latitude() }}
+                </p>
+                <p>
+                    {{ form.longitude.label }}
+                    {{ form.longitude() }}
                 </p>
             </div>
             <div>
@@ -53,30 +52,29 @@
                             {{ form.endYear.label }}
                         </p>
                     </div>
-                    <div>
+                    <div class="last_element">
                         <p>
                             {{ form.stationCount.label }}
                         </p>
                     </div>
                 </div>
-                <div>
+                <div id="stacked_input_fields">
                     <p>
                         {{ form.startYear() }}
                     </p>
                     <p>
                         {{ form.endYear() }}
                     </p>
-                    <p>
+                    <p class="last_element">
                         {{ form.stationCount() }}
                     </p>
                 </div>
             </div>
-            <div>
+            <div class="m_right">
                 <input id="search_icon" type="image" src="/static/assets/Lupe.png", alt="Submit Form">
             </div>
         </form>
-    </header>
-
+    </div>
     <div class="main">
         <div class="Station">
             WetterstationX | 1991 | Januar

@@ -8,11 +8,10 @@
     <link rel="stylesheet" href="/static/stylesheets/Monats_Tagesansicht.css">
 </head>
 <body>
-
-    <header>
+    <div class="header">
         <form action="/" method="post">
             {{ form.csrf_token }}
-            <div>
+            <div class="m_left">
                 <p>
                     {{ form.latitude.label }}
                     {{ form.latitude() }}
@@ -71,12 +70,11 @@
                     </p>
                 </div>
             </div>
-            <div>
+            <div class="m_right">
                 <input id="search_icon" type="image" src="/static/assets/Lupe.png", alt="Submit Form">
             </div>
         </form>
-    </header>
-
+    </div>
     <div class="main">
         <div class="Station">
             WetterstationX | 1991 | Januar

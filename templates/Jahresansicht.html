@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="/static/stylesheets/Jahresansicht.css">
 </head>
 <body>
-    <header>
+    <div class="header">
         <form action="/" method="post">
             {{ form.csrf_token }}
-            <div>
+            <div class="m_left">
                 <p>
                     {{ form.latitude.label }}
                     {{ form.latitude() }}
@@ -70,16 +70,15 @@
                     </p>
                 </div>
             </div>
-            <div>
+            <div class="m_right">
                 <input id="search_icon" type="image" src="/static/assets/Lupe.png", alt="Submit Form">
             </div>
         </form>
-    </header>
-
+    </div>
     <div class="main">
         <div class="left_box">
             <table class="detail_table">
-                <caption>Wetterstationen</caption>
+                <caption>Wetterstation</caption>
                 <tr>
                     <th>Jahr</th>
                     <th>Mittleres Temperatur Minimum</th>
@@ -102,13 +101,13 @@
                 <p id="summer">Sommer</p>
                 <p id="autumn">Herbst</p>
                 <p id="winter">Winter</p>
-                <p id="tmin">Minimaltemperatur</p>
+                <p id="tmin">MinTemp</p>
                 <input type="checkbox" id="min_year" name="minYear"> 
                 <input type="checkbox" id="min_spring" name="minSpring">
                 <input type="checkbox" id="min_summer" name="minSummer"> 
                 <input type="checkbox" id="min_autumn" name="minAutumn">
                 <input type="checkbox" id="min_winter" name="minWinter">
-                <p id="tmax">Maximaltemperatur</p>
+                <p id="tmax">MaxTemp</p>
                 <input type="checkbox" id="max_year" name="maxYear">
                 <input type="checkbox" id="max_spring" name="maxSpring">
                 <input type="checkbox" id="max_summer" name="maxSummer">   

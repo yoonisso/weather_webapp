@@ -131,7 +131,16 @@ def yearView(id):
                         1965: {'TMIN': 4.7, 'TMAX': 15.5},
                         1966: {'TMIN': 5.4, 'TMAX': 15.9},
                         1967: {'TMIN': 4.2, 'TMAX': 14.3},
-                        1968: {'TMIN': 5.5, 'TMAX': 16.0},
+                        1969: {'TMIN': 5.5, 'TMAX': 16.0},
+                        1970: {'TMIN': 5.5, 'TMAX': 16.0},
+                        1971: {'TMIN': 5.5, 'TMAX': 16.0},
+                        1972: {'TMIN': 5.5, 'TMAX': 16.0},
+                        1973: {'TMIN': 5.5, 'TMAX': 16.0},
+                        1974: {'TMIN': 5.5, 'TMAX': 16.0},
+                        1975: {'TMIN': 5.5, 'TMAX': 16.0},
+                        1976: {'TMIN': 5.5, 'TMAX': 16.0},
+                        1977: {'TMIN': 5.5, 'TMAX': 16.0},
+                        1978: {'TMIN': 5.5, 'TMAX': 16.0},
                         # Füge hier weitere Jahre mit den entsprechenden Temperaturwerten hinzu
                     }
 
