@@ -106,18 +106,7 @@ def home():
 
 @app.route("/<id>")
 def yearView(id):
-    p = figure(height=350, sizing_mode="stretch_width")
-
-    p.circle(
-        [i for i in range(10)],
-        [random.randint(1, 50) for j in range(10)],
-        size=20,
-        color="navy",
-        alpha=0.5
-    )
-
-    script, div = components(p)
-
+    
     #Suchfunktion
     if request.method == 'POST' and form.validate_on_submit():
         try:
@@ -195,6 +184,25 @@ def yearView(id):
                         1978: {'TMIN': 5.5, 'TMAX': 16.0},
                         # Füge hier weitere Jahre mit den entsprechenden Temperaturwerten hinzu
                     }
+        p = figure(height=350, sizing_mode="stretch_width")
+
+        #    p.circle(
+        #     [year for year in averageTemperaturesYear.keys()],
+        #     [averageTemperaturesYear[]],
+        #     size=20,
+        #     color="navy",
+        #     alpha=0.5
+        # )
+
+        p.circle(
+            [i for i in range(10)],
+            [random.randint(1, 50) for j in range(10)],
+            size=20,
+            color="navy",
+            alpha=0.5
+        )
+
+    script, div = components(p)
 
     return render_template('Jahresansicht.html',form=form, averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
 

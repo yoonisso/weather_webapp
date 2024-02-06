@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/static/stylesheets/main.css">
     <link rel="stylesheet" href="/static/stylesheets/Jahresansicht.css">
     <script src="/static/scripts/script.js"></script>
-    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.0.1.min.js"></script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.3.4.min.js"></script>
 </head>
 <body>
     <div class="header">
@@ -94,8 +94,10 @@
         <div class="middle_box">
             <div>
                 BOKEH Diagram here
-                { div }
-                { script }
+
+                {{ div | safe }}
+                {{ script | safe }}
+             
             </div>
         </div>
         <div class="right_box">
