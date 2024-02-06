@@ -1,9 +1,16 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, session
+from flask import Flask, render_template, request, flash, redirect, url_for, session, Response
 from forms import searchForm
 import secrets
 from collections import defaultdict
+import io
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+import random
+
+
 
 from api_caller import get_stations_by_coordinates, load_all_stations, get_weather_data_of_station_by_station_id
+from diagram_ploter import DiagramPloter
 
 secret_key = secrets.token_urlsafe(16)
 
@@ -47,6 +54,22 @@ def fill_form():
     form.endYear.data = session['endYear']
     return form
 
+#START BEISPIEL
+@app.route('/plot.png')
+def plot_png():
+    fig = create_figure()
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+def create_figure():
+    fig = Figure()
+    axis = fig.add_subplot(1, 1, 1)
+    xs = range(100)
+    ys = [random.randint(1, 50) for x in xs]
+    axis.plot(xs, ys)
+    return fig
+#ENDE BESIPIEL
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
@@ -153,25 +176,11 @@ def list():
         form = fill_form()
     else:
         form = searchForm(request.form)
-            # form.latitude.data = session['latitude']
-            # form.longitude.data = session['longitude']
-            # form.radius.data = session['radius']
-            # form.stationCount.data = session['stationCount']
-            # form.startYear.data = session['startYear'] #Keine Anforderung
-            # form.endYear.data = session['endYear'] #Keine Anforderung
 
     if request.method == 'POST' and form.validate_on_submit():
         # formData = SearchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)    
         session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
-        
-        #Update Session (Form)
         update_session_form(form)
-        # session['latitude'] = formData.latitude
-        # session['longitude'] = formData.longitude
-        # session['radius'] = formData.radius
-        # session['stationCount'] = formData.stationCount
-        # session['startYear'] = formData.startYear #Keine Anforderung
-        # session['endYear'] = formData.endYear #Keine Anforderung
         return redirect(url_for('list'))
     
     elif request.method == 'GET':
@@ -179,13 +188,6 @@ def list():
             form = fill_form()
         else:
             form = searchForm(request.form)
-
-            # form.latitude.data = float(session['latitude'])
-            # form.longitude.data = float(session['longitude'])
-            # form.radius.data = session['radius']
-            # form.stationCount.data = session['stationCount']
-            # form.startYear.data = session['startYear'] #Keine Anforderung
-            # form.endYear.data = session['endYear'] #Keine Anforderung
 
     return render_template('Liste.html',form=form, stations=session['userStations'])
 
