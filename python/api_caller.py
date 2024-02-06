@@ -17,15 +17,19 @@ def load_all_stations():
         #Inventory
         response_inventory = requests.get(inventory_url)
         response_inventory.raise_for_status()
-        inventory_content_lines = response_stations.text.split('\n')
+        inventory_content_lines = response_inventory.text.split('\n')
         
         inventory = {}
 
         for line in inventory_content_lines:
-            if(line[32:36] == 'TMIN' or line[32:36] == 'TMAX'):
-                station_id = line[1:11]
-                first_year = line[37:40]
-                last_year = line[42:45]
+            # station_id = line[0:10]
+            # first_year = line[36:40]
+            # last_year = line[41:45]
+            # element = line[31:36].strip()
+            if(line[31:36].strip() == 'TMIN' or line[31:36].strip() == 'TMAX'):
+                station_id = line[0:11]
+                first_year = line[36:40]
+                last_year = line[41:45]
                 inventory[station_id] = [first_year,last_year]  
 
 
@@ -47,8 +51,12 @@ def load_all_stations():
                 stid = line[:11]
                 city = line[41:71].strip()
 
-                first_year = inventory[stid][0]
-                last_year = inventory[stid][1]
+                if(stid in inventory.keys()):
+                    first_year = inventory[stid][0]
+                    last_year = inventory[stid][1]
+                else:
+                    first_year = 0
+                    last_year = 0
                 
                 coords = {'id': stid, 'city': city, 'latitude': lat, 'longitude': lon, 'first_year': first_year, 'last_year': last_year}
 

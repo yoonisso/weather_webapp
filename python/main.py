@@ -97,14 +97,28 @@ def home():
         current_year = date.today().year
         #Standard-Werte
         form.radius.data = 50
-        form.stationCount.data = 5
-        form.startYear.data = 1960 
-        form.endYear.data = current_year
+        form.station_count.data = 5
+        form.start_year.data = 1960 
+        form.end_year.data = current_year
     return render_template('Startseite.html', form=form)
 
 @app.route("/<id>")
 def yearView(id):
-    form = searchForm(request.form)
+    #Suchfunktion
+    if request.method == 'POST' and form.validate_on_submit():
+        try:
+            session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
+            update_session_form(form)
+        except:
+            print(f"FEHLER:")
+            return redirect()
+        return redirect(url_for('list'))
+    
+    elif request.method == 'GET':
+        if(session.get('latitude') is not None):
+            form = fill_form()
+        else:
+            form = searchForm(request.form)
     
     if request.method == 'GET':
 
@@ -173,13 +187,13 @@ def yearView(id):
 @app.route("/liste", methods=['POST', 'GET'])
 def list():
     
-    if(session.get('latitude') is not None):
-        form = fill_form()
-    else:
-        form = searchForm(request.form)
+    # if(session.get('latitude') is not None):
+    #     form = fill_form()
+    # else:
+    #     form = searchForm(request.form)
 
+    #Suchfunktion
     if request.method == 'POST' and form.validate_on_submit():
-        # formData = SearchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)    
         try:
             session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
             update_session_form(form)
@@ -194,16 +208,47 @@ def list():
         else:
             form = searchForm(request.form)
 
-    return render_template('Liste.html',form=form, stations=session['userStations'])
+    return render_template('Liste.html',form=form, stations=session["user_stations"])
 
 @app.route("/<id>/<year>")
 def monthView(id, year):
-    form = searchForm(request.form)
+
+    #Suchfunktion
+    if request.method == 'POST' and form.validate_on_submit():
+        try:
+            session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
+            update_session_form(form)
+        except:
+            print(f"FEHLER:")
+            return redirect()
+        return redirect(url_for('list'))
+    
+    elif request.method == 'GET':
+        if(session.get('latitude') is not None):
+            form = fill_form()
+        else:
+            form = searchForm(request.form)
     return render_template('Monatsansicht.html', form=form)
 
 @app.route("/<id>/<year>/<month>")
 def dayView(id,year,month):
-    form = searchForm(request.form)
+    
+    #Suchfunktion
+    if request.method == 'POST' and form.validate_on_submit():
+        try:
+            session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
+            update_session_form(form)
+        except:
+            print(f"FEHLER:")
+            return redirect()
+        return redirect(url_for('list'))
+    
+    elif request.method == 'GET':
+        if(session.get('latitude') is not None):
+            form = fill_form()
+        else:
+            form = searchForm(request.form)
+
     return render_template('Tagesansicht.html', form=form)
 
 

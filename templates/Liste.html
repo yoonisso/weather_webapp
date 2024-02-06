@@ -45,29 +45,29 @@
                 <div id="input_discriptions">
                     <div>
                         <p>
-                            {{ form.startYear.label }}
+                            {{ form.start_year.label }}
                         </p>
                     </div>
                     <div>
                         <p>
-                            {{ form.endYear.label }}
+                            {{ form.end_year.label }}
                         </p>
                     </div>
                     <div class="last_element">
                         <p>
-                            {{ form.stationCount.label }}
+                            {{ form.station_count.label }}
                         </p>
                     </div>
                 </div>
                 <div id="stacked_input_fields">
                     <p>
-                        {{ form.startYear() }}
+                        {{ form.start_year() }}
                     </p>
                     <p>
-                        {{ form.endYear() }}
+                        {{ form.end_year() }}
                     </p>
                     <p class="last_element">
-                        {{ form.stationCount() }}
+                        {{ form.station_count() }}
                     </p>
                 </div>
             </div>
@@ -85,10 +85,14 @@
                     <th>Ort</th>
                     <th>Distanz in km</th>
                     <th>Koordinaten</th>
-                    <th>Letzes Jahr mit Daten</th>
+                    <th>Zeitraum vorhandene Daten</th>
                 </tr>
                 {%for station in stations%} 
-                    <tr><td><a href="/{{station['id']}}">{{station['id']}}</a></td><td><a href="/{{station['id']}}">{{station['city']}}</a></td><td><a href="/{{station['id']}}">{{station['distance']}}</a></td><td><a href="/{{station['id']}}">{{station['latitude']}} {{station['longitude']}}</a></td></tr>
+                    {% if station['first_year'] == 0 %}
+                        <tr><td><a href="/{{station['id']}}">{{station['id']}}</a></td><td><a href="/{{station['id']}}">{{station['city']}}</a></td><td><a href="/{{station['id']}}">{{station['distance']}}</a></td><td><a href="/{{station['id']}}">{{station['latitude']}} {{station['longitude']}}</a></td><td><a href="/{{station['id']}}">keine Temperaturwerte vorhanden</a></td></tr>
+                    {% else %}
+                        <tr><td><a href="/{{station['id']}}">{{station['id']}}</a></td><td><a href="/{{station['id']}}">{{station['city']}}</a></td><td><a href="/{{station['id']}}">{{station['distance']}}</a></td><td><a href="/{{station['id']}}">{{station['latitude']}} {{station['longitude']}}</a></td><td><a href="/{{station['id']}}">{{station['first_year']}}-{{station['last_year']}}</a></td></tr>
+                    {% endif %}
                 {%endfor%}
             </table>
         </div>

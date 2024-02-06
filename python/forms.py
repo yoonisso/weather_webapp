@@ -15,7 +15,7 @@ class searchForm(FlaskForm):
     latitude = DecimalField('Breitengrad', places=6, validators=[InputRequired()])
     longitude = DecimalField('Längengrad', places=6, validators=[InputRequired()]) 
     radius =  IntegerRangeField('Radius', validators = [NumberRange(1, 100),InputRequired()] )
-    startYear = IntegerField('Startjahr', validators = [NumberRange(1800, 2999), InputRequired()])
-    endYear = IntegerField('Endjahr', validators = [NumberRange(1800, 2999), InputRequired()])
-    stationCount = IntegerField('Anzahl Stationen', validators= [NumberRange(1, 20), InputRequired()])
+    start_year = IntegerField('Startjahr', validators = [NumberRange(1800, 2999), InputRequired()])
+    end_year = IntegerField('Endjahr', validators = [NumberRange(1800, 2999), InputRequired()])
+    station_count = IntegerField('Anzahl Stationen', validators= [NumberRange(1, 20), InputRequired()])
 
