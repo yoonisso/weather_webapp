@@ -87,7 +87,7 @@
                     <th>Koordinaten</th>
                 </tr>
                 {%for station in stations%} 
-                    <tr><td><a href="/jahresansicht/{{station['id']}}">{{station['id']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['city']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['distance']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['latitude']}} {{station['longitude']}}</a></td></tr>
+                    <tr><td><a href="/{{station['id']}}">{{station['id']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['city']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['distance']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['latitude']}} {{station['longitude']}}</a></td></tr>
                 {%endfor%}
             </table>
         </div>

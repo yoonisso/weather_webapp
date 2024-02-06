@@ -7,10 +7,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import random
 
-
-
 from api_caller import get_stations_by_coordinates, load_all_stations, get_weather_data_of_station_by_station_id
-from diagram_ploter import DiagramPloter
 
 secret_key = secrets.token_urlsafe(16)
 
@@ -76,9 +73,12 @@ def home():
     form = searchForm(request.form)
 
     if request.method == 'POST' and form.validate_on_submit():
-        update_session_form(form)
-        # formData = SearchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)    
-        session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
+        try:
+
+            update_session_form(form)
+            session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
+        except:
+            print("FEHLER")
         return redirect(url_for('list'))   
     
     #Beim ersten mal aufrufen der App
@@ -101,7 +101,7 @@ def home():
         form.endYear.data = 2024 #Keine Anforderung
     return render_template('Startseite.html', form=form)
 
-@app.route("/jahresansicht/<id>")
+@app.route("/<id>")
 def yearView(id):
     form = searchForm(request.form)
     
@@ -179,8 +179,12 @@ def list():
 
     if request.method == 'POST' and form.validate_on_submit():
         # formData = SearchData(form.latitude.data,form.longitude.data,form.radius.data,form.startYear.data, form.endYear.data,form.stationCount.data)    
-        session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
-        update_session_form(form)
+        try:
+            session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
+            update_session_form(form)
+        except:
+            print(f"FEHLER:")
+            return redirect()
         return redirect(url_for('list'))
     
     elif request.method == 'GET':
@@ -191,16 +195,15 @@ def list():
 
     return render_template('Liste.html',form=form, stations=session['userStations'])
 
-@app.route("/monatsansicht")
-def monthView():
+@app.route("/<id>/<year>")
+def monthView(id, year):
     form = searchForm(request.form)
     return render_template('Monatsansicht.html', form=form)
 
-#! Es gibt keine Tagesansicht?
-# @app.route("/tagesansicht")
-# def dayView():
-#     form = searchForm(request.form)
-#     return render_template('Tagesansicht.html', form=form)
+@app.route("/<id>/<year>/<month>")
+def dayView(id,year,month):
+    form = searchForm(request.form)
+    return render_template('Tagesansicht.html', form=form)
 
 
 if __name__ == '__main__':
