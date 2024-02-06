@@ -89,7 +89,7 @@ input {
 .right_box {
     display: flex;
     justify-content: center;
-    width: 70%;
+    width: 50%;
     height: 100%;
 }
 .left_box {

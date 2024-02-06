@@ -83,16 +83,19 @@
                 <tr>
                     <th>Bezeichnung</th>
                     <th>Ort</th>
-                    <th>Distanz im km</th>
+                    <th>Distanz in km</th>
                     <th>Koordinaten</th>
+                    <th>Letzes Jahr mit Daten</th>
                 </tr>
                 {%for station in stations%} 
-                    <tr><td><a href="/{{station['id']}}">{{station['id']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['city']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['distance']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['latitude']}} {{station['longitude']}}</a></td></tr>
+                    <tr><td><a href="/{{station['id']}}">{{station['id']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['city']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['distance']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['latitude']}}<br>{{station['longitude']}}</a></td><td><a href="/jahresansicht/{{station['id']}}">{{station['last_year']}}</a></td></tr>
                 {%endfor%}
             </table>
         </div>
         <div class="right_box">
-            <img src="/static/assets/Logo.png" alt="Bild" id="logo">
+            <div class="image_container">
+                <img src="/static/assets/Logo.png" alt="Bild" id="logo">
+            </div>
         </div>
     </div>
         
