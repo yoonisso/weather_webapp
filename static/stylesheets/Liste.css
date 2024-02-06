@@ -1,11 +1,3 @@
-.image_container {
-    width: 	100%;
-    height: auto;
-}
-#logo {
-    width: 100%;
-    height: 100%;
-}
 #table {
     border: thin solid;
     border-collapse: collapse;
@@ -30,6 +22,9 @@
         transition: all 0.25s ease-out;
         color: black;
     }
+}
+#table tr:hover {
+    background-color: #f7c203;
 }
 .left_box {
     border: 0.7vw solid #f7c203;

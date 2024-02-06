@@ -1,32 +1,5 @@
-.detail_table {
-    border: thin solid;
-    border-collapse: collapse;
-    font-size: 1vw;
-
-    th {
-        border: thin solid;
-    }
-
-    td {
-        border: thin solid;
-        padding: 5px;
-    }
-
-    caption {
-        border: thin solid;
-        background-color: lightgray;
-    }
-
-    a {
-        display: block;
-        text-decoration: none;
-        transition: all 0.25s ease-out;
-        color: black;
-    }
-}
 .left_box {
     width: 20%;
-    overflow-y: auto;
     border: 0.7vw solid #f7c203;
     outline: 0.15vw solid black;
     box-sizing: border-box;

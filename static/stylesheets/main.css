@@ -62,6 +62,8 @@ form {
 }
 
 #logo {
+    max-width: 80%;
+    height: auto;
     cursor: pointer;
 }
 
@@ -95,11 +97,48 @@ input {
 .left_box {
     height: 100%;
     max-height: 100%;
-    width: auto;
+    width: 50%;
+    overflow-y: auto;
 }
 .m_left {
     margin-left: 1%;
 }
 .m_right {
     margin-right: 1%;
+}
+.image_container {
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    max-width: 100%;
+}
+.detail_table {
+    border: thin solid;
+    border-collapse: collapse;
+    font-size: 1vw;
+
+    th {
+        border: thin solid;
+    }
+
+    td {
+        border: thin solid;
+        padding: 5px;
+    }
+
+    caption {
+        border: thin solid;
+        background-color: lightgray;
+    }
+
+    a {
+        display: block;
+        text-decoration: none;
+        transition: all 0.25s ease-out;
+        color: black;
+    }
+}
+.detail_table tr:hover {
+    background-color: #f7c203;
 }
