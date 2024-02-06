@@ -3,21 +3,41 @@ from io import BytesIO
 from helpers.file_extractor import FileExtractor
 from collections import defaultdict
 from helpers.haversine_calculator import HarversineCalculator
+from collections import defaultdict
 
 def load_all_stations():
     """
-    Loads all stations from given URL. Result is list of coords and id 
+    Loads all stations from given URL + load inventory. Result is list of coords and id 
 
     """
     file_url = 'https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt'
+    inventory_url = 'https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-inventory.txt'
     try:
-        response = requests.get(file_url)
-        response.raise_for_status()
+
+        #Inventory
+        response_inventory = requests.get(inventory_url)
+        response_inventory.raise_for_status()
+        inventory_content_lines = response_stations.text.split('\n')
+        
+        inventory = {}
+
+        for line in inventory_content_lines:
+            if(line[32:36] == 'TMIN' or line[32:36] == 'TMAX'):
+                station_id = line[1:11]
+                first_year = line[37:40]
+                last_year = line[42:45]
+                inventory[station_id] = [first_year,last_year]  
+
+
+
+        #Stations
+        response_stations = requests.get(file_url)
+        response_stations.raise_for_status()
 
         # Dateiinhalt als Liste von Zeilen erhalten
-        file_content_lines = response.text.split('\n')
+        stations_content_lines = response_stations.text.split('\n')
         all_coords = []
-        for line in file_content_lines:
+        for line in stations_content_lines:
             if line[12:20].strip() == '' or line[21:30].strip() == '':
                 continue
             else:
@@ -26,8 +46,11 @@ def load_all_stations():
                 lon = float(line[21:30].strip())
                 stid = line[:11]
                 city = line[41:71].strip()
+
+                first_year = inventory[stid][0]
+                last_year = inventory[stid][1]
                 
-                coords = {'id': stid, 'city': city, 'latitude': lat, 'longitude': lon}
+                coords = {'id': stid, 'city': city, 'latitude': lat, 'longitude': lon, 'first_year': first_year, 'last_year': last_year}
 
                 all_coords.append(coords)
 

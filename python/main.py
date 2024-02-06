@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, session, Response
 from forms import searchForm
 import secrets
-from collections import defaultdict
 import io
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import random
+from datetime import date
 
 from api_caller import get_stations_by_coordinates, load_all_stations, get_weather_data_of_station_by_station_id
 
@@ -19,13 +19,13 @@ app.secret_key = secret_key
 app.allStations = load_all_stations()
 
 class SearchData:
-    def __init__(self,latitude,longitude,radius,startYear,endYear,stationCount):
+    def __init__(self,latitude,longitude,radius,start_year,end_year,station_count):
         self.latitude = latitude
         self.longitude = longitude
         self.radius = radius
-        self.startYear = startYear
-        self.endYear = endYear
-        self.stationCount = stationCount
+        self.startYear = start_year
+        self.endYear = end_year
+        self.stationCount = station_count
 
     #TODO: in klasse lassen? oder direkt aufruden?
     def getStations(latitude, longitude, radius, stationCount):
@@ -37,18 +37,18 @@ def update_session_form(form):
     session['latitude'] = form.latitude.data
     session['longitude'] = form.longitude.data
     session['radius'] = form.radius.data
-    session['stationCount'] = form.stationCount.data
-    session['startYear'] = form.startYear.data #Keine Anforderung
-    session['endYear'] = form.endYear.data #Keine Anforderung
+    session['station_count'] = form.station_count.data
+    session['start_year'] = form.start_year.data #Keine Anforderung
+    session['end_year'] = form.end_year.data #Keine Anforderung
 
 def fill_form():
     form = searchForm(request.form)
     form.latitude.data = float(session['latitude'])
     form.longitude.data = float(session['longitude'])
     form.radius.data = session['radius']
-    form.stationCount.data = session['stationCount']
-    form.startYear.data = session['startYear']
-    form.endYear.data = session['endYear']
+    form.station_count.data = session['station_count']
+    form.start_year.data = session['start_year']
+    form.end_year.data = session['end_year']
     return form
 
 #START BEISPIEL
@@ -76,7 +76,7 @@ def home():
         try:
 
             update_session_form(form)
-            session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
+            session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
         except:
             print("FEHLER")
         return redirect(url_for('list'))   
@@ -86,19 +86,20 @@ def home():
         form.latitude.data = float(session['latitude'])
         form.longitude.data = float(session['longitude'])
         form.radius.data = session['radius']
-        form.stationCount.data = session['stationCount']
-        form.startYear.data = session['startYear'] #Keine Anforderung
-        form.endYear.data = session['endYear'] #Keine Anforderung
+        form.station_count.data = session['station_count']
+        form.start_year.data = session['start_year']
+        form.end_year.data = session['end_year'] 
     else:
         #Standort Fürth
         form.latitude.data = 49.4771
         form.longitude.data = 10.9887
 
+        current_year = date.today().year
         #Standard-Werte
         form.radius.data = 50
         form.stationCount.data = 5
-        form.startYear.data = 1949 #Keine Anforderung
-        form.endYear.data = 2024 #Keine Anforderung
+        form.startYear.data = 1960 
+        form.endYear.data = current_year
     return render_template('Startseite.html', form=form)
 
 @app.route("/<id>")
