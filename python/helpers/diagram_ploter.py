@@ -1,4 +1,5 @@
-import matplotlib.pyplot as plt
+from bokeh.plotting import figure
+from bokeh.embed import components
 
 #Testdata yearly
 averageTemperaturesYear = {
@@ -41,29 +42,75 @@ averageTemperaturesMonthly = {
     12: {'TMIN': 4.9, 'TMAX': 15.1}
 }
 
+def countAverageTempByDict(averageTemperatures):
+    return [(data['TMAX'] + data['TMIN']) / 2 for data in averageTemperatures.values()]
+
+
 class DiagramPloter:
-    def plotYearlyDiagram(averageTemperaturesYears, startYear, endYear):
+    @staticmethod
+    def plotDiagram(averageTemperatures, diagram_type):
 
-        years = list(averageTemperaturesYear.keys())
-        tmin_values = [data['TMIN'] for data in averageTemperaturesYear.values()]
-        tmax_values = [data['TMAX'] for data in averageTemperaturesYear.values()]
+        #TODO needs to be adjusted for laptop and monitor screens
+        min_width = 300
+        min_height = 300
+        max_width = 800
+        max_height = 600
 
-        #size (can be adjusted)
-        plt.figure(figsize=(10, 5))
+        p = figure(sizing_mode="scale_both", min_width=min_width,
+                   min_height=min_height, max_height=max_height,
+                   max_width=max_width, title=diagram_type,
+                   x_axis_label='Jahre', y_axis_label='Temperatur',
+                   toolbar_location=None, tools=[])
 
-        plt.plot(years, tmin_values, label='TMIN', marker='o')
-        plt.plot(years, tmax_values, label='TMAX', marker='o')
+        #TMAX plot
+        p.line(
+            [year for year in averageTemperatures.keys()],
+            [data['TMAX'] for data in averageTemperatures.values()],
+            color="red"
+        )
 
-        #Costumization
-        plt.title(f'Average Temperatures from {startYear} to {endYear}')
-        plt.xlabel('Year')
-        plt.ylabel('Temperature')
-        plt.legend()
-        plt.grid(True)
+        p.circle(
+            [year for year in averageTemperatures.keys()],
+            [data['TMAX'] for data in averageTemperatures.values()],
+            color="red",
+            size=5
+        )
 
-        # Show the plot
-        plt.show()
+        #TMIN plot
+        p.line(
+            [year for year in averageTemperatures.keys()],
+            [data['TMIN'] for data in averageTemperatures.values()],
+            color="blue"
+        )
+
+        p.circle(
+            [year for year in averageTemperatures.keys()],
+            [data['TMIN'] for data in averageTemperatures.values()],
+            color="blue",
+            size=5
+        )
+
+        #TAVG plot
+        average_temperatures= countAverageTempByDict(averageTemperatures)
+
+        p.line(
+            [year for year in averageTemperatures.keys()],
+            average_temperatures,
+            color="green",
+            line_dash='dashed'
+        )
+
+        p.circle(
+            [year for year in averageTemperatures.keys()],
+            average_temperatures,
+            color="green",
+            size=5
+        )
+        script, div = components(p)
+
+        return script, div
 
 
 if(__name__ == "__main__"):
-    DiagramPloter.plotDiagram(averageTemperaturesYear, "1949", "1968")
+    #Testing only
+    DiagramPloter.plotDiagram(averageTemperaturesYear, "Jahresansicht")

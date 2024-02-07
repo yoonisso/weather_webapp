@@ -8,6 +8,7 @@ import random
 from datetime import date
 from bokeh.plotting import figure
 from bokeh.embed import components
+from helpers.diagram_ploter import DiagramPloter
 
 from api_caller import get_stations_by_coordinates, load_all_stations, get_weather_data_of_station_by_station_id
 
@@ -184,47 +185,8 @@ def yearView(id):
                         1978: {'TMIN': 5.5, 'TMAX': 16.0},
                         # Füge hier weitere Jahre mit den entsprechenden Temperaturwerten hinzu
                     }
-        p = figure(height=500, sizing_mode="stretch_width", title="Jahresansicht", x_axis_label='Jahre', y_axis_label='Temperatur') #TODO height adjust by screensize with Percent
-        #TODO hardcoded stuff like title with own func.
-        #TODO outsource plotting functionality
-        #TODO turn resizing off, only zoom in should be possible
 
-        # Maxtemp plot
-        p.line(
-            [year for year in averageTemperaturesYear.keys()],
-            [data['TMAX'] for data in averageTemperaturesYear.values()],
-            color="red"
-        )
-
-        p.circle(
-            [year for year in averageTemperaturesYear.keys()],
-            [data['TMAX'] for data in averageTemperaturesYear.values()],
-            color="red",
-            size=5
-        )
-
-        # Mintemp plot
-        p.line(
-            [year for year in averageTemperaturesYear.keys()],
-            [data['TMIN'] for data in averageTemperaturesYear.values()],
-            color="blue"
-        )
-
-        p.circle(
-            [year for year in averageTemperaturesYear.keys()],
-            [data['TMIN'] for data in averageTemperaturesYear.values()],
-            color="blue",
-            size=5
-        )
-
-        # TODO Avg. plot
-        #p.line(
-        #    [year for year in averageTemperaturesYear.keys()],
-        #    [data['TMIN'] for data in averageTemperaturesYear.values()], #TODO implement own math func to calc. avergage
-        #    color="yellow"
-        #)
-
-    script, div = components(p)
+    script, div = DiagramPloter.plotDiagram(averageTemperaturesYear, "Jahresansicht")
 
     return render_template('Jahresansicht.html',form=form, averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
 
@@ -272,7 +234,26 @@ def monthView(id, year):
             form = fill_form()
         else:
             form = searchForm(request.form)
-    return render_template('Monatsansicht.html', form=form)
+
+    #Testdata monthly
+    averageTemperaturesMonthly = {
+        1: {'TMIN': 4.3, 'TMAX': 14.7},
+        2: {'TMIN': 5.1, 'TMAX': 15.2},
+        3: {'TMIN': 3.8, 'TMAX': 14.5},
+        4: {'TMIN': 6.2, 'TMAX': 16.8},
+        5: {'TMIN': 4.5, 'TMAX': 15.0},
+        6: {'TMIN': 5.3, 'TMAX': 15.7},
+        7: {'TMIN': 4.8, 'TMAX': 14.9},
+        8: {'TMIN': 6.0, 'TMAX': 16.5},
+        9: {'TMIN': 5.7, 'TMAX': 15.4},
+        10: {'TMIN': 4.1, 'TMAX': 14.2},
+        11: {'TMIN': 5.6, 'TMAX': 15.8},
+        12: {'TMIN': 4.9, 'TMAX': 15.1}
+    }
+
+    script, div = DiagramPloter.plotDiagram(averageTemperaturesMonthly, "Monatsansicht")
+
+    return render_template('Monatsansicht.html', averageTemperaturesMonthly = averageTemperaturesMonthly, id=id, form=form, script=script, div=div)
 
 @app.route("/<id>/<year>/<month>")
 def dayView(id,year,month):
@@ -297,4 +278,4 @@ def dayView(id,year,month):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False) #changed because of performance
