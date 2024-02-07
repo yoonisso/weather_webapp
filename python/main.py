@@ -196,11 +196,25 @@ def yearView(id):
             color="red"
         )
 
+        p.circle(
+            [year for year in averageTemperaturesYear.keys()],
+            [data['TMAX'] for data in averageTemperaturesYear.values()],
+            color="red",
+            size=5
+        )
+
         # Mintemp plot
         p.line(
             [year for year in averageTemperaturesYear.keys()],
             [data['TMIN'] for data in averageTemperaturesYear.values()],
             color="blue"
+        )
+
+        p.circle(
+            [year for year in averageTemperaturesYear.keys()],
+            [data['TMIN'] for data in averageTemperaturesYear.values()],
+            color="blue",
+            size=5
         )
 
         # TODO Avg. plot
