@@ -143,3 +143,6 @@ input {
 .detail_table tr:hover {
     background-color: #f7c203;
 }
+.plot_container {
+    margin: 5%;
+}
