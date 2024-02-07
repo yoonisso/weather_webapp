@@ -48,7 +48,7 @@ def countAverageTempByDict(averageTemperatures):
 
 class DiagramPloter:
     @staticmethod
-    def plotDiagram(averageTemperatures, diagram_type):
+    def plotDiagram(averageTemperatures, diagram_type, x_axis_label):
 
         #TODO needs to be adjusted for laptop and monitor screens
         min_width = 300
@@ -59,7 +59,7 @@ class DiagramPloter:
         p = figure(sizing_mode="scale_both", min_width=min_width,
                    min_height=min_height, max_height=max_height,
                    max_width=max_width, title=diagram_type,
-                   x_axis_label='Jahre', y_axis_label='Temperatur',
+                   x_axis_label=x_axis_label, y_axis_label='Temperatur',
                    toolbar_location=None, tools=[])
 
         #TMAX plot
@@ -113,4 +113,4 @@ class DiagramPloter:
 
 if(__name__ == "__main__"):
     #Testing only
-    DiagramPloter.plotDiagram(averageTemperaturesYear, "Jahresansicht")
+    DiagramPloter.plotDiagram(averageTemperaturesYear, "Jahresansicht", "Jahre")

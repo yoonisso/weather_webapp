@@ -186,7 +186,7 @@ def yearView(id):
                         # Füge hier weitere Jahre mit den entsprechenden Temperaturwerten hinzu
                     }
 
-    script, div = DiagramPloter.plotDiagram(averageTemperaturesYear, "Jahresansicht")
+    script, div = DiagramPloter.plotDiagram(averageTemperaturesYear, "Jahresansicht", "Jahre")
 
     return render_template('Jahresansicht.html',form=form, averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
 
@@ -251,7 +251,7 @@ def monthView(id, year):
         12: {'TMIN': 4.9, 'TMAX': 15.1}
     }
 
-    script, div = DiagramPloter.plotDiagram(averageTemperaturesMonthly, "Monatsansicht")
+    script, div = DiagramPloter.plotDiagram(averageTemperaturesMonthly, "Monatsansicht", "Monate") #TODO change x_axis of month to jan. feb. view
 
     return render_template('Monatsansicht.html', averageTemperaturesMonthly = averageTemperaturesMonthly, id=id, form=form, script=script, div=div)
 
