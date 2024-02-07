@@ -33,6 +33,13 @@ form {
     display: contents;
 }
 
+input {
+    width: 	10vw;
+    height: 2vh;
+    font-size: 1vw;
+    padding-left: 1px;
+}
+
 .align_input_fields {
     display: flex;
 
@@ -76,13 +83,6 @@ form {
 
 .last_element {
     margin-bottom: 0px !important;
-}
-
-input {
-    width: 	10vw;
-    height: 2vh;
-    font-size: 1vw;
-    padding-left: 1px;
 }
 
 #stacked_input_fields {
