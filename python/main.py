@@ -184,7 +184,7 @@ def yearView(id):
                         1978: {'TMIN': 5.5, 'TMAX': 16.0},
                         # Füge hier weitere Jahre mit den entsprechenden Temperaturwerten hinzu
                     }
-        p = figure(height=500, sizing_mode="stretch_width", title="Jahresansicht", x_axis_label='Jahre', y_axis_label='Temperatur', ) #TODO height adjust by screensize with Percent
+        p = figure(height=500, sizing_mode="stretch_width", title="Jahresansicht", x_axis_label='Jahre', y_axis_label='Temperatur') #TODO height adjust by screensize with Percent
         #TODO hardcoded stuff like title with own func.
         #TODO outsource plotting functionality
         #TODO turn resizing off, only zoom in should be possible
