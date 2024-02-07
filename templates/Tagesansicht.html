@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wetter App</title>
     <link rel="stylesheet" href="/static/stylesheets/main.css">
-    <link rel="stylesheet" href="/static/stylesheets/Monats_Tagesansicht.css">
-    <script src="/static/scripts/script.js"></script> 
+    <link rel="stylesheet" href="/static/stylesheets/Jahresansicht.css">
+    <script src="/static/scripts/script.js"></script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.3.4.min.js"></script>
 </head>
 <body>
     <div class="header">
@@ -77,22 +78,37 @@
         </form>
     </div>
     <div class="main">
-        <div class="Station">
-            WetterstationX | 1991 | Januar
+        <div class="left_box">
+            <table class="detail_table">
+                <caption>Wetterstation {{id}}</caption>
+                <tr>
+                    <th>Tag</th>
+                    <th>Mittleres Temperatur Minimum</th>
+                    <th>Mittleres Temperatur Maximum</th>
+                </tr>
+                {%for year in averageTemperaturesYear%} 
+                    <tr><td><a href="/{{id}}/{{year}}">{{year}}</a></td><td><a href="/{{id}}/{{year}}">{{averageTemperaturesYear[year]['TMIN']}}</a></td><td><a href="/{{id}}/{{year}}">{{averageTemperaturesYear[year]['TMAX']}}</a></td></tr>
+                {%endfor%}
+            </table>
         </div>
+        <div class="middle_box">
+            <div>
+                BOKEH Diagram here
 
-        <div class="MaxMin">
-            <div>
-                Minimumskurve<input type="checkbox" id="min" name="min">
-            </div>
-            <div>
-                Maximumskurve<input type="checkbox" id="max" name="max">
+                {{ div | safe }}
+                {{ script | safe }}
+             
             </div>
         </div>
-        <a href="Monatsansicht.html">
-            <input type="button" id="return" name="return" value="Zurück" onclick="return(x)">
-        </a> 
+        <div class="right_box">
+            <div class="grid_container">
+                <p id="year">Tag</p>
+                <p id="tmin">MinTemp</p>
+                <input type="checkbox" id="min_year" name="minYear"> 
+                <p id="tmax">MaxTemp</p>
+                <input type="checkbox" id="max_year" name="maxYear">
+            </div>
+        </div>
     </div>
-    <canvas id="linechart" width="50" height="50"></canvas>
 </body>
 </html>
