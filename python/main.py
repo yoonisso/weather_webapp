@@ -184,23 +184,31 @@ def yearView(id):
                         1978: {'TMIN': 5.5, 'TMAX': 16.0},
                         # Füge hier weitere Jahre mit den entsprechenden Temperaturwerten hinzu
                     }
-        p = figure(height=350, sizing_mode="stretch_width")
+        p = figure(height=500, sizing_mode="stretch_width", title="Jahresansicht", x_axis_label='Jahre', y_axis_label='Temperatur', ) #TODO height adjust by screensize with Percent
+        #TODO hardcoded stuff like title with own func.
+        #TODO outsource plotting functionality
+        #TODO turn resizing off, only zoom in should be possible
 
-        #    p.circle(
-        #     [year for year in averageTemperaturesYear.keys()],
-        #     [averageTemperaturesYear[]],
-        #     size=20,
-        #     color="navy",
-        #     alpha=0.5
-        # )
-
-        p.circle(
-            [i for i in range(10)],
-            [random.randint(1, 50) for j in range(10)],
-            size=20,
-            color="navy",
-            alpha=0.5
+        # Maxtemp plot
+        p.line(
+            [year for year in averageTemperaturesYear.keys()],
+            [data['TMAX'] for data in averageTemperaturesYear.values()],
+            color="red"
         )
+
+        # Mintemp plot
+        p.line(
+            [year for year in averageTemperaturesYear.keys()],
+            [data['TMIN'] for data in averageTemperaturesYear.values()],
+            color="blue"
+        )
+
+        # TODO Avg. plot
+        #p.line(
+        #    [year for year in averageTemperaturesYear.keys()],
+        #    [data['TMIN'] for data in averageTemperaturesYear.values()], #TODO implement own math func to calc. avergage
+        #    color="yellow"
+        #)
 
     script, div = components(p)
 
