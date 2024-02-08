@@ -184,39 +184,23 @@ def yearView(id):
     
         #TESTDATEN
         averageTemperaturesYear = {
-                        1949: {'spring': {'TMIN': 4.3, 'TMAX': 14.7}, 'summer': {'TMIN': 4.3, 'TMAX': 14.7}, 'fall': {'TMIN': 4.3, 'TMAX': 14.7},'winter': {'TMIN': 4.3, 'TMAX': 14.7},'year': {'TMIN': 4.3, 'TMAX': 14.7},},
-                        1950: {'spring': {'TMIN': 4.1, 'TMAX': 14.1}, 'summer': {'TMIN': 3.4, 'TMAX': 13.7}, 'fall': {'TMIN': 4.3, 'TMAX': 14.7},'winter': {'TMIN': 4.3, 'TMAX': 14.7},'year': {'TMIN': 4.3, 'TMAX': 14.7},},
-                        1951: {'TMIN': 3.8, 'TMAX': 14.5},
-                        1952: {'TMIN': 6.2, 'TMAX': 16.8},
-                        1953: {'TMIN': 4.5, 'TMAX': 15.0},
-                        1954: {'TMIN': 5.3, 'TMAX': 15.7},
-                        1955: {'TMIN': 4.8, 'TMAX': 14.9},
-                        1956: {'TMIN': 6.0, 'TMAX': 16.5},
-                        1957: {'TMIN': 5.7, 'TMAX': 15.4},
-                        1958: {'TMIN': 4.1, 'TMAX': 14.2},
-                        1959: {'TMIN': 5.6, 'TMAX': 15.8},
-                        1960: {'TMIN': 4.9, 'TMAX': 15.1},
-                        1961: {'TMIN': 5.2, 'TMAX': 15.3},
-                        1962: {'TMIN': 4.4, 'TMAX': 14.6},
-                        1963: {'TMIN': 5.0, 'TMAX': 15.6},
-                        1964: {'TMIN': 6.1, 'TMAX': 16.2},
-                        1965: {'TMIN': 4.7, 'TMAX': 15.5},
-                        1966: {'TMIN': 5.4, 'TMAX': 15.9},
-                        1967: {'TMIN': 4.2, 'TMAX': 14.3},
-                        1969: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1970: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1971: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1972: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1973: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1974: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1975: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1976: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1977: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1978: {'TMIN': 5.5, 'TMAX': 16.0},
-                        # Füge hier weitere Jahre mit den entsprechenden Temperaturwerten hinzu
-                    }
+                1951: {'spring': {'TMIN': 5.2, 'TMAX': 15.3}, 'summer': {'TMIN': 6.3, 'TMAX': 18.5}, 'fall': {'TMIN': 4.8, 'TMAX': 14.2}, 'winter': {'TMIN': 2.1, 'TMAX': 9.8}, 'year': {'TMIN': 4.6, 'TMAX': 14.5}},
+                1952: {'spring': {'TMIN': 4.9, 'TMAX': 14.8}, 'summer': {'TMIN': 6.1, 'TMAX': 17.9}, 'fall': {'TMIN': 5.2, 'TMAX': 14.7}, 'winter': {'TMIN': 1.9, 'TMAX': 9.5}, 'year': {'TMIN': 4.8, 'TMAX': 14.2}},
+                1953: {'spring': {'TMIN': 5.4, 'TMAX': 15.9}, 'summer': {'TMIN': 6.0, 'TMAX': 18.3}, 'fall': {'TMIN': 5.0, 'TMAX': 15.1}, 'winter': {'TMIN': 2.5, 'TMAX': 10.2}, 'year': {'TMIN': 4.8, 'TMAX': 14.8}},
+                1954: {'spring': {'TMIN': 5.1, 'TMAX': 15.4}, 'summer': {'TMIN': 6.2, 'TMAX': 18.7}, 'fall': {'TMIN': 4.9, 'TMAX': 14.4}, 'winter': {'TMIN': 2.0, 'TMAX': 9.7}, 'year': {'TMIN': 4.8, 'TMAX': 14.6}},
+                1955: {'spring': {'TMIN': 5.3, 'TMAX': 15.7}, 'summer': {'TMIN': 6.5, 'TMAX': 19.0}, 'fall': {'TMIN': 5.2, 'TMAX': 14.8}, 'winter': {'TMIN': 2.3, 'TMAX': 10.1}, 'year': {'TMIN': 4.8, 'TMAX': 14.9}},
+                1956: {'spring': {'TMIN': 5.0, 'TMAX': 15.2}, 'summer': {'TMIN': 6.4, 'TMAX': 18.9}, 'fall': {'TMIN': 5.1, 'TMAX': 14.6}, 'winter': {'TMIN': 2.2, 'TMAX': 9.9}, 'year': {'TMIN': 4.8, 'TMAX': 14.7}},
+                1957: {'spring': {'TMIN': 5.5, 'TMAX': 16.1}, 'summer': {'TMIN': 6.7, 'TMAX': 19.4}, 'fall': {'TMIN': 5.4, 'TMAX': 15.3}, 'winter': {'TMIN': 2.7, 'TMAX': 10.4}, 'year': {'TMIN': 4.8, 'TMAX': 15.0}},
+                1958: {'spring': {'TMIN': 5.2, 'TMAX': 15.7}, 'summer': {'TMIN': 6.8, 'TMAX': 19.2}, 'fall': {'TMIN': 5.6, 'TMAX': 15.5}, 'winter': {'TMIN': 2.8, 'TMAX': 10.6}, 'year': {'TMIN': 4.8, 'TMAX': 15.1}},
+                1959: {'spring': {'TMIN': 5.6, 'TMAX': 16.3}, 'summer': {'TMIN': 7.0, 'TMAX': 19.7}, 'fall': {'TMIN': 5.7, 'TMAX': 15.7}, 'winter': {'TMIN': 3.0, 'TMAX': 10.9}, 'year': {'TMIN': 4.8, 'TMAX': 15.3}},
+                1960: {'spring': {'TMIN': 5.4, 'TMAX': 16.0}, 'summer': {'TMIN': 7.2, 'TMAX': 20.0}, 'fall': {'TMIN': 5.5, 'TMAX': 16.0}, 'winter': {'TMIN': 3.2, 'TMAX': 11.2}, 'year': {'TMIN': 4.8, 'TMAX': 15.5}},
+                1961: {'spring': {'TMIN': 5.8, 'TMAX': 16.7}, 'summer': {'TMIN': 7.5, 'TMAX': 20.5}, 'fall': {'TMIN': 5.9, 'TMAX': 16.5}, 'winter': {'TMIN': 3.5, 'TMAX': 11.7}, 'year': {'TMIN': 4.8, 'TMAX': 15.8}},
+                1962: {'spring': {'TMIN': 5.7, 'TMAX': 16.5}, 'summer': {'TMIN': 7.4, 'TMAX': 20.3}, 'fall': {'TMIN': 5.8, 'TMAX': 16.3}, 'winter': {'TMIN': 3.3, 'TMAX': 11.4}, 'year': {'TMIN': 4.8, 'TMAX': 15.9}},
+                1963: {'spring': {'TMIN': 6.1, 'TMAX': 17.2}, 'summer': {'TMIN': 7.8, 'TMAX': 20.9}, 'fall': {'TMIN': 6.0, 'TMAX': 17.0}, 'winter': {'TMIN': 3.8, 'TMAX': 12.0}, 'year': {'TMIN': 4.8, 'TMAX': 16.2}},
+                }
+                     
 
-    chosen_views = {'spring':{'TMIN': True, 'TMAX': True},'summer':{'TMIN': True, 'TMAX': True},'fall':{'TMIN': True, 'TMAX': True},'winter':{'TMIN': True, 'TMAX': True},'year':{'TMIN': True, 'TMAX': True}, }
+    chosen_views = {'spring':{'TMIN': True, 'TMAX': True},'summer':{'TMIN': True, 'TMAX': True},'fall':{'TMIN': True, 'TMAX': True},'winter':{'TMIN': True, 'TMAX': True},'spring':{'TMIN': True, 'TMAX': True}, }
     script, div = DiagramPloter.plotDiagram(averageTemperaturesYear, "Jahresansicht", "Jahre")
 
     return render_template('Jahresansicht.html',form=form, averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
