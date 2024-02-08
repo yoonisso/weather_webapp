@@ -184,8 +184,8 @@ def yearView(id):
     
         #TESTDATEN
         averageTemperaturesYear = {
-                        1949: {'TMIN': 4.3, 'TMAX': 14.7},
-                        1950: {'TMIN': 5.1, 'TMAX': 15.2},
+                        1949: {'spring': {'TMIN': 4.3, 'TMAX': 14.7}, 'summer': {'TMIN': 4.3, 'TMAX': 14.7}, 'fall': {'TMIN': 4.3, 'TMAX': 14.7},'winter': {'TMIN': 4.3, 'TMAX': 14.7},'year': {'TMIN': 4.3, 'TMAX': 14.7},},
+                        1950: {'spring': {'TMIN': 4.1, 'TMAX': 14.1}, 'summer': {'TMIN': 3.4, 'TMAX': 13.7}, 'fall': {'TMIN': 4.3, 'TMAX': 14.7},'winter': {'TMIN': 4.3, 'TMAX': 14.7},'year': {'TMIN': 4.3, 'TMAX': 14.7},},
                         1951: {'TMIN': 3.8, 'TMAX': 14.5},
                         1952: {'TMIN': 6.2, 'TMAX': 16.8},
                         1953: {'TMIN': 4.5, 'TMAX': 15.0},
@@ -216,6 +216,7 @@ def yearView(id):
                         # Füge hier weitere Jahre mit den entsprechenden Temperaturwerten hinzu
                     }
 
+    chosen_views = {'spring':{'TMIN': True, 'TMAX': True},'summer':{'TMIN': True, 'TMAX': True},'fall':{'TMIN': True, 'TMAX': True},'winter':{'TMIN': True, 'TMAX': True},'year':{'TMIN': True, 'TMAX': True}, }
     script, div = DiagramPloter.plotDiagram(averageTemperaturesYear, "Jahresansicht", "Jahre")
 
     return render_template('Jahresansicht.html',form=form, averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
@@ -272,6 +273,8 @@ def monthView(id, year):
     #             sumMax += monthlyRaw[month][day]['TMAX']
     #     averageTemperaturesMonthly[month]['TMIN'] = round(sumMin/divisor,1)
     #     averageTemperaturesMonthly[month]['TMAX'] = round(sumMax/divisor,1)
+
+    
 
     script, div = DiagramPloter.plotDiagram(averageTemperaturesMonthly, "Monatsansicht", "Monate") #TODO change x_axis of month to jan. feb. view
 
