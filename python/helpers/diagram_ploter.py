@@ -66,28 +66,30 @@ class DiagramPloter:
         p.line(
             [year for year in averageTemperatures.keys()],
             [data['TMAX'] for data in averageTemperatures.values()],
-            color="red"
+            color="red",
+            line_width=3
         )
 
         p.circle(
             [year for year in averageTemperatures.keys()],
             [data['TMAX'] for data in averageTemperatures.values()],
             color="red",
-            size=5
+            size=10
         )
 
         #TMIN plot
         p.line(
             [year for year in averageTemperatures.keys()],
             [data['TMIN'] for data in averageTemperatures.values()],
-            color="blue"
+            color="blue",
+            line_width=4
         )
 
         p.circle(
             [year for year in averageTemperatures.keys()],
             [data['TMIN'] for data in averageTemperatures.values()],
             color="blue",
-            size=5
+            size=10
         )
 
         #TAVG plot
@@ -97,14 +99,15 @@ class DiagramPloter:
             [year for year in averageTemperatures.keys()],
             average_temperatures,
             color="green",
-            line_dash='dashed'
+            line_dash='dashed',
+            line_width=3
         )
 
         p.circle(
             [year for year in averageTemperatures.keys()],
             average_temperatures,
             color="green",
-            size=5
+            size=10
         )
         script, div = components(p)
 
