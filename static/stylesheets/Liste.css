@@ -31,3 +31,14 @@
     outline: 0.15vw solid black;
     box-sizing: border-box;
 }
+@keyframes flyInFromRight {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+.fly_in_right {
+    animation: flyInFromRight 1s ease-out; /* Die Animation dauert 1 Sekunde und endet mit einer Abbremsung */
+}

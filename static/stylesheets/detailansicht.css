@@ -6,6 +6,7 @@
 }
 .middle_box {
     width: 65%;
+    height: 100%;
 }
 .right_box {
     width: 15%;
@@ -29,6 +30,38 @@
         padding: 0;
     }
 
+}
+
+@keyframes flyInFromBottom {
+    0% {
+        transform: translateY(100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Wende die Keyframe-Animation auf das Div-Element an */
+.fly_in_bottom {
+    animation: flyInFromBottom 1s ease-out; /* Die Animation dauert 1 Sekunde und endet mit einer Abbremsung */
+}
+
+.plot_container {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80%;
+    width: 60%;
+}
+
+.bk-Figure {
+    height: 85%;
+    width: 85%;
+    min-width: 0%;
+    min-height: 0%;
+    max-width: 85%;
+    max-height: 85%;
 }
 #year {
     grid-column: 1;
