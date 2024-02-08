@@ -9,6 +9,7 @@ from datetime import date
 from bokeh.plotting import figure
 from bokeh.embed import components
 from helpers.diagram_ploter import DiagramPloter
+from collections import defaultdict
 
 from api_caller import get_stations_by_coordinates, load_all_stations, get_weather_data_of_station_by_station_id
 
@@ -104,7 +105,34 @@ def home():
         else: #Fehlerhaftes Form
             first_key = next(iter(form.errors))
             flash(f"{form.errors[first_key][0]}!")
+            
             return render_template("Startseite.html", form=form)
+
+@app.route("/liste", methods=['POST', 'GET'])
+def list():
+    
+    # if(session.get('latitude') is not None):
+    #     form = fill_form()
+    # else:
+    #     form = searchForm(request.form)
+
+    #Suchfunktion
+    if request.method == 'POST' and form.validate_on_submit():
+        try:
+            session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
+            update_session_form(form)
+        except:
+            print(f"FEHLER:")
+            return redirect()
+        return redirect(url_for('list'))
+    
+    elif request.method == 'GET':
+        if(session.get('latitude') is not None):
+            form = fill_form()
+        else:
+            form = searchForm(request.form)
+
+    return render_template('Liste.html',form=form, stations=session["user_stations"])
 
 @app.route("/<id>")
 def yearView(id):
@@ -129,13 +157,14 @@ def yearView(id):
 
         #! Folgendes nicht löschen
         
+        #Ermittlung jährlicher Mittelwert
         # stationTemperatures = get_weather_data_of_station_by_station_id(id, session['startYear'], session['endYear'])
         # stationTemperatures = dict(stationTemperatures)
 
         # if not stationTemperatures:
         #     flash('Der ausgewählte Zeitraum enthält keine Daten')
         # else:
-        #     session['stationWeatherData'] = stationTemperatures
+        #     session['station_weather_data_selected_period'] = stationTemperatures #TODO: Dieser ansatz oder bei jeder Seite Daten neu laden, damit auch eine Navigation über Adresszeile öglich wäre??
         #     #Mittelwerte berechnen
                             
         #     averageTemperaturesYear = defaultdict(lambda: dict())
@@ -191,35 +220,9 @@ def yearView(id):
 
     return render_template('Jahresansicht.html',form=form, averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
 
-@app.route("/liste", methods=['POST', 'GET'])
-def list():
-    
-    # if(session.get('latitude') is not None):
-    #     form = fill_form()
-    # else:
-    #     form = searchForm(request.form)
-
-    #Suchfunktion
-    if request.method == 'POST' and form.validate_on_submit():
-        try:
-            session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
-            update_session_form(form)
-        except:
-            print(f"FEHLER:")
-            return redirect()
-        return redirect(url_for('list'))
-    
-    elif request.method == 'GET':
-        if(session.get('latitude') is not None):
-            form = fill_form()
-        else:
-            form = searchForm(request.form)
-
-    return render_template('Liste.html',form=form, stations=session["user_stations"])
-
 @app.route("/<id>/<year>")
 def monthView(id, year):
-
+    year = int(year)
     #Suchfunktion
     if request.method == 'POST' and form.validate_on_submit():
         try:
@@ -236,7 +239,8 @@ def monthView(id, year):
         else:
             form = searchForm(request.form)
 
-    #Testdata monthly
+    averageTemperaturesMonthly = defaultdict(lambda: dict())
+    # #Testdata monthly
     averageTemperaturesMonthly = {
         1: {'TMIN': 4.3, 'TMAX': 14.7},
         2: {'TMIN': 5.1, 'TMAX': 15.2},
@@ -252,9 +256,26 @@ def monthView(id, year):
         12: {'TMIN': 4.9, 'TMAX': 15.1}
     }
 
+    #Ermittlung monatlicher Mittelwert
+    # stationTemperatures = session['station_weather_data_selected_period'] 
+    # stationTemperatures = dict(stationTemperatures)
+
+    # monthlyRaw = stationTemperatures[year]
+
+    # for month in monthlyRaw:
+    #     divisor = 0
+    #     sumMin = 0
+    #     sumMax = 0
+    #     for day in monthlyRaw[month]:
+    #             divisor += 1
+    #             sumMin += monthlyRaw[month][day]['TMIN']
+    #             sumMax += monthlyRaw[month][day]['TMAX']
+    #     averageTemperaturesMonthly[month]['TMIN'] = round(sumMin/divisor,1)
+    #     averageTemperaturesMonthly[month]['TMAX'] = round(sumMax/divisor,1)
+
     script, div = DiagramPloter.plotDiagram(averageTemperaturesMonthly, "Monatsansicht", "Monate") #TODO change x_axis of month to jan. feb. view
 
-    return render_template('Monatsansicht.html', averageTemperaturesMonthly = averageTemperaturesMonthly, id=id, form=form, script=script, div=div)
+    return render_template('Monatsansicht.html', averageTemperaturesMonthly = averageTemperaturesMonthly, id=id, form=form, script=script, div=div, year=year)
 
 @app.route("/<id>/<year>/<month>")
 def dayView(id,year,month):
@@ -275,7 +296,47 @@ def dayView(id,year,month):
         else:
             form = searchForm(request.form)
 
-    return render_template('Tagesansicht.html', form=form)
+    #Tageswerte ermitteln
+    # stationTemperatures = session['station_weather_data_selected_period'] 
+    # stationTemperatures = dict(stationTemperatures)
+    # temperatures_daily = stationTemperatures[year][month]
+ 
+    #Testdaten
+    temperatures_daily = { 
+    1: {'TMIN': 4.3, 'TMAX': 14.7},
+    2: {'TMIN': 4.1, 'TMAX': 15.0},
+    3: {'TMIN': 3.8, 'TMAX': 14.5},
+    4: {'TMIN': 4.5, 'TMAX': 14.8},
+    5: {'TMIN': 4.0, 'TMAX': 15.2},
+    6: {'TMIN': 3.7, 'TMAX': 14.9},
+    7: {'TMIN': 4.2, 'TMAX': 14.6},
+    8: {'TMIN': 3.9, 'TMAX': 15.1},
+    9: {'TMIN': 4.4, 'TMAX': 14.4},
+    10: {'TMIN': 3.6, 'TMAX': 15.3},
+    11: {'TMIN': 4.3, 'TMAX': 14.7},
+    12: {'TMIN': 4.1, 'TMAX': 15.0},
+    13: {'TMIN': 3.8, 'TMAX': 14.5},
+    14: {'TMIN': 4.5, 'TMAX': 14.8},
+    15: {'TMIN': 4.0, 'TMAX': 15.2},
+    16: {'TMIN': 3.7, 'TMAX': 14.9},
+    17: {'TMIN': 4.2, 'TMAX': 14.6},
+    18: {'TMIN': 3.9, 'TMAX': 15.1},
+    19: {'TMIN': 4.4, 'TMAX': 14.4},
+    20: {'TMIN': 3.6, 'TMAX': 15.3},
+    21: {'TMIN': 4.3, 'TMAX': 14.7},
+    22: {'TMIN': 4.1, 'TMAX': 15.0},
+    23: {'TMIN': 3.8, 'TMAX': 14.5},
+    24: {'TMIN': 4.5, 'TMAX': 14.8},
+    25: {'TMIN': 4.0, 'TMAX': 15.2},
+    26: {'TMIN': 3.7, 'TMAX': 14.9},
+    27: {'TMIN': 4.2, 'TMAX': 14.6},
+    28: {'TMIN': 3.9, 'TMAX': 15.1},
+    29: {'TMIN': 4.4, 'TMAX': 14.4},
+    30: {'TMIN': 3.6, 'TMAX': 15.3},
+    31: {'TMIN': 4.3, 'TMAX': 14.7}
+}
+
+    return render_template('Tagesansicht.html', form=form, temperatures_daily=temperatures_daily)
 
 
 if __name__ == '__main__':

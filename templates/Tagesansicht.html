@@ -86,8 +86,8 @@
                     <th>Mittleres Temperatur Minimum</th>
                     <th>Mittleres Temperatur Maximum</th>
                 </tr>
-                {%for year in averageTemperaturesYear%} 
-                    <tr><td><a href="/{{id}}/{{year}}">{{year}}</a></td><td><a href="/{{id}}/{{year}}">{{averageTemperaturesYear[year]['TMIN']}}</a></td><td><a href="/{{id}}/{{year}}">{{averageTemperaturesYear[year]['TMAX']}}</a></td></tr>
+                {%for day in temperatures_daily%} 
+                    <tr><td><a href="">{{day}}</a></td><td><a href="">{{temperatures_daily[day]['TMIN']}}</a></td><td><a href="">{{temperatures_daily[day]['TMAX']}}</a></td></tr>
                 {%endfor%}
             </table>
         </div>
