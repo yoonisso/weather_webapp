@@ -74,36 +74,37 @@ def create_figure():
 @app.route("/", methods=['GET', 'POST'])
 def home():
     form = searchForm(request.form)
+    if request.method == 'GET':
+        #Beim ersten mal aufrufen der App
+        if(session.get('latitude') is not None):
+            form = fill_form()
+        else:
+            form = searchForm(request.form)
+            #Standort Fürth
+            form.latitude.data = 49.4771
+            form.longitude.data = 10.9887
 
-    if request.method == 'POST' and form.validate_on_submit():
-        try:
+            current_year = date.today().year
+            #Standard-Werte
+            form.radius.data = 50
+            form.station_count.data = 5
+            form.start_year.data = 1960 
+            form.end_year.data = current_year
+        return render_template('Startseite.html', form=form)
 
-            update_session_form(form)
-            session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
-        except:
-            print("FEHLER")
-        return redirect(url_for('list'))   
-    
-    #Beim ersten mal aufrufen der App
-    if(session.get('latitude') is not None):
-        form.latitude.data = float(session['latitude'])
-        form.longitude.data = float(session['longitude'])
-        form.radius.data = session['radius']
-        form.station_count.data = session['station_count']
-        form.start_year.data = session['start_year']
-        form.end_year.data = session['end_year'] 
-    else:
-        #Standort Fürth
-        form.latitude.data = 49.4771
-        form.longitude.data = 10.9887
+    elif request.method == 'POST':
+        if form.validate_on_submit():
+            try:
+                update_session_form(form)
+                session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
+            except:
+                print("FEHLER")
+            return redirect(url_for('list'))   
 
-        current_year = date.today().year
-        #Standard-Werte
-        form.radius.data = 50
-        form.station_count.data = 5
-        form.start_year.data = 1960 
-        form.end_year.data = current_year
-    return render_template('Startseite.html', form=form)
+        else: #Fehlerhaftes Form
+            first_key = next(iter(form.errors))
+            flash(f"{form.errors[first_key][0]}!")
+            return render_template("Startseite.html", form=form)
 
 @app.route("/<id>")
 def yearView(id):
