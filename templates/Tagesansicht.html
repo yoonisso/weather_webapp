@@ -89,7 +89,7 @@
                     <th>Mittleres Temperatur Maximum</th>
                 </tr>
                 {%for day in temperatures_daily%} 
-                    <tr><td><a href="">{{day}}</a></td><td><a href="">{{temperatures_daily[day]['TMIN']}}</a></td><td><a href="">{{temperatures_daily[day]['TMAX']}}</a></td></tr>
+                    <tr><td>{{day}}</td><td>{{temperatures_daily[day]['TMIN']}}</td><td>{{temperatures_daily[day]['TMAX']}}</td></tr>
                 {%endfor%}
             </table>
         </div>

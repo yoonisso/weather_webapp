@@ -89,7 +89,7 @@
                     <th>Mittleres Temperatur Maximum</th>
                 </tr>
                 {%for month in averageTemperaturesMonthly%} 
-                    <tr><td><a href="/{{id}}/{{year}}/{{month}}">{{month}}</a></td><td><a href="/{{id}}/{{year}}/{{month}}">{{averageTemperaturesMonthly[month]['TMIN']}}</a></td><td><a href="/{{id}}/{{year}}/{{month}}">{{averageTemperaturesMonthly[month]['TMAX']}}</a></td></tr>
+                    <tr data-href="/station/{{id}}/{{year}}/{{month}}"><td>{{month}}</td><td>{{averageTemperaturesMonthly[month]['TMIN']}}</td><td>{{averageTemperaturesMonthly[month]['TMAX']}}</td></tr>
                 {%endfor%}
             </table>
         </div>
