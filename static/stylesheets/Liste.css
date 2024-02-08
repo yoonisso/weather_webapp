@@ -2,6 +2,7 @@
     border: thin solid;
     border-collapse: collapse;
     font-size: 1vw;
+    caption-side: top;
 
     th {
         border: thin solid;
@@ -14,6 +15,8 @@
     caption {
         border: thin solid;
         background-color: lightgray;
+        color: black;
+        text-align: center;
     }
 
     a {

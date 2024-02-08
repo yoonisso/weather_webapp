@@ -103,11 +103,19 @@
             <div class="grid_container">
                 <p id="year">Tag</p>
                 <p id="tmin">MinTemp</p>
-                <input type="checkbox" id="min_year" name="minYear"> 
+                <input class="checkbox" type="checkbox" id="min_year" name="minYear"> 
                 <p id="tmax">MaxTemp</p>
-                <input type="checkbox" id="max_year" name="maxYear">
+                <input class="checkbox" type="checkbox" id="max_year" name="maxYear">
             </div>
         </div>
+    </div>
+    <div class="error_container">
+        {% for message in get_flashed_messages() %}
+            <div class="alert alert-warning alert-dismissible fade show absolute" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
     </div>
 </body>
 </html>

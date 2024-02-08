@@ -105,19 +105,27 @@
                 <p id="autumn">Herbst</p>
                 <p id="winter">Winter</p>
                 <p id="tmin">MinTemp</p>
-                <input type="checkbox" id="min_year" name="minYear"> 
-                <input type="checkbox" id="min_spring" name="minSpring">
-                <input type="checkbox" id="min_summer" name="minSummer"> 
-                <input type="checkbox" id="min_autumn" name="minAutumn">
-                <input type="checkbox" id="min_winter" name="minWinter">
+                <input class="checkbox" type="checkbox" id="min_year" name="minYear"> 
+                <input class="checkbox" type="checkbox" id="min_spring" name="minSpring">
+                <input class="checkbox" type="checkbox" id="min_summer" name="minSummer"> 
+                <input class="checkbox" type="checkbox" id="min_autumn" name="minAutumn">
+                <input class="checkbox" type="checkbox" id="min_winter" name="minWinter">
                 <p id="tmax">MaxTemp</p>
-                <input type="checkbox" id="max_year" name="maxYear">
-                <input type="checkbox" id="max_spring" name="maxSpring">
-                <input type="checkbox" id="max_summer" name="maxSummer">   
-                <input type="checkbox" id="max_autumn" name="maxAutumn">
-                <input type="checkbox" id="max_winter" name="maxWinter">
+                <input class="checkbox" type="checkbox" id="max_year" name="maxYear">
+                <input class="checkbox" type="checkbox" id="max_spring" name="maxSpring">
+                <input class="checkbox" type="checkbox" id="max_summer" name="maxSummer">   
+                <input class="checkbox" type="checkbox" id="max_autumn" name="maxAutumn">
+                <input class="checkbox" type="checkbox" id="max_winter" name="maxWinter">
             </div>
         </div>
+    </div>
+    <div class="error_container">
+        {% for message in get_flashed_messages() %}
+            <div class="alert alert-warning alert-dismissible fade show absolute" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
     </div>
 </body>
 </html>

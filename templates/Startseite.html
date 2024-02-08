@@ -78,7 +78,12 @@
             </div>
         </form>
     </div>
-    <div class="success_container">
+    <div class="main">
+        <div class="image_container fly_in_bottom">
+            <img src="/static/assets/Logo.png" alt="Bild" id="logo">
+        </div>
+    </div>
+    <div class="error_container">
         {% for message in get_flashed_messages() %}
             <div class="alert alert-warning alert-dismissible fade show absolute" role="alert">
             {{ message }}
@@ -86,11 +91,5 @@
         </div>
         {% endfor %}
     </div>
-    <div class="main">
-        <div class="image_container fly_in_bottom">
-            <img src="/static/assets/Logo.png" alt="Bild" id="logo">
-        </div>
-    </div>
-
 </body>
 </html>
