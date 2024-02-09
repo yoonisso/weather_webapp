@@ -11,12 +11,13 @@ from api_caller import get_stations_by_coordinates, load_all_stations, get_weath
 
 secret_key = secrets.token_urlsafe(16)
 
-
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
 app.secret_key = secret_key
 
 #Initialization
 app.allStations = load_all_stations()
+app.stationTemperatures = {}
+
 
 class SearchData:
     def __init__(self,latitude,longitude,radius,start_year,end_year,station_count):
@@ -153,6 +154,8 @@ def list():
     
     return render_template('Liste.html',form=form, stations=session["user_stations"])
 
+
+
 @app.route("/station/<id>", methods=['POST', 'GET'])
 def yearView(id):
     chosen_views = {}
@@ -178,6 +181,7 @@ def yearView(id):
                 try:
                     update_session_form(form)
                     session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
+                    app.stationTemperatures = {}
                 except Exception as e:
                     flash(f'Unerwarteter Fehler {e}')
                     return redirect(url_for('list'))
@@ -195,67 +199,74 @@ def yearView(id):
         seasons_form = fill_seasons_form()
         chosen_views = update_and_get_chosen_views(seasons_form)
 
+
         #! Folgendes nicht löschen
         
-        #Ermittlung jährlicher Mittelwert
-        # stationTemperatures = get_weather_data_of_station_by_station_id(id, session['startYear'], session['endYear'])
-        # stationTemperatures = dict(stationTemperatures)
+        # #Ermittlung jährlicher Mittelwert
+        # if id not in app.stationTemperatures.keys():
+        #     stationTemperatures = get_weather_data_of_station_by_station_id(id, session['start_year'], session['end_year'])
+        #     stationTemperatures = dict(stationTemperatures)  
+        #     app.stationTemperatures = {id:stationTemperatures}
 
-        # if not stationTemperatures:
+        # if not app.stationTemperatures:
         #     flash('Der ausgewählte Zeitraum enthält keine Daten')
         # else:
-        #     session['station_weather_data_selected_period'] = stationTemperatures #TODO: Dieser ansatz oder bei jeder Seite Daten neu laden, damit auch eine Navigation über Adresszeile öglich wäre??
         #     #Mittelwerte berechnen
-                            
-        #     averageTemperaturesYear = defaultdict(lambda: dict())
+        #     stationTemperatures = app.stationTemperatures[id]                            
+        #     averageTemperaturesYear = defaultdict(lambda: defaultdict(lambda: dict()))
         #     #Test Mittelwert Jahr
         #     for year in stationTemperatures:
         #         divisor = 0
-        #         sumMin = 0
-        #         sumMax = 0
+        #         sum_min = 0
+        #         sum_max = 0
+        #         sum_min_spring = 0
+        #         sum_max_spring = 0
+        #         divisor_spring = 0
+        #         sum_min_summer = 0
+        #         sum_max_summer = 0
+        #         divisor_summer = 0
+        #         sum_min_fall = 0
+        #         sum_max_fall = 0
+        #         divisor_fall = 0
+
         #         for month in stationTemperatures[year]:
         #             for day in stationTemperatures[year][month]:
         #                 divisor += 1
-        #                 sumMin += stationTemperatures[year][month][day]['TMIN']
-        #                 sumMax += stationTemperatures[year][month][day]['TMAX']
-        #         averageTemperaturesYear[year]['TMIN'] = round(sumMin/divisor,1)
-        #         averageTemperaturesYear[year]['TMAX'] = round(sumMax/divisor,1)
-    
-    
-       #TESTDATEN
-    averageTemperaturesYear = {
-                    1949: {'TMIN': 4.3, 'TMAX': 14.7},
-                    1950: {'TMIN': 5.1, 'TMAX': 15.2},
-                    1951: {'TMIN': 3.8, 'TMAX': 14.5},
-                    1952: {'TMIN': 6.2, 'TMAX': 16.8},
-                    1953: {'TMIN': 4.5, 'TMAX': 15.0},
-                    1954: {'TMIN': 5.3, 'TMAX': 15.7},
-                    1955: {'TMIN': 4.8, 'TMAX': 14.9},
-                    1956: {'TMIN': 6.0, 'TMAX': 16.5},
-                    1957: {'TMIN': 5.7, 'TMAX': 15.4},
-                    1958: {'TMIN': 4.1, 'TMAX': 14.2},
-                    1959: {'TMIN': 5.6, 'TMAX': 15.8},
-                    1960: {'TMIN': 4.9, 'TMAX': 15.1},
-                    1961: {'TMIN': 5.2, 'TMAX': 15.3},
-                    1962: {'TMIN': 4.4, 'TMAX': 14.6},
-                    1963: {'TMIN': 5.0, 'TMAX': 15.6},
-                    1964: {'TMIN': 6.1, 'TMAX': 16.2},
-                    1965: {'TMIN': 4.7, 'TMAX': 15.5},
-                    1966: {'TMIN': 5.4, 'TMAX': 15.9},
-                    1967: {'TMIN': 4.2, 'TMAX': 14.3},
-                    1969: {'TMIN': 5.5, 'TMAX': 16.0},
-                    1970: {'TMIN': 5.5, 'TMAX': 16.0},
-                    1971: {'TMIN': 5.5, 'TMAX': 16.0},
-                    1972: {'TMIN': 5.5, 'TMAX': 16.0},
-                    1973: {'TMIN': 5.5, 'TMAX': 16.0},
-                    1974: {'TMIN': 5.5, 'TMAX': 16.0},
-                    1975: {'TMIN': 5.5, 'TMAX': 16.0},
-                    1976: {'TMIN': 5.5, 'TMAX': 16.0},
-                    1977: {'TMIN': 5.5, 'TMAX': 16.0},
-                    1978: {'TMIN': 5.5, 'TMAX': 16.0},
-                    # Füge hier weitere Jahre mit den entsprechenden Temperaturwerten hinzu
-                }
+        #                 sum_min += stationTemperatures[year][month][day]['TMIN']
+        #                 sum_max += stationTemperatures[year][month][day]['TMAX']
+                        
+        #                 if month >= 3 and month <=5: #Frühling
+        #                     sum_min_spring += stationTemperatures[year][month][day]['TMIN']
+        #                     sum_max_spring += stationTemperatures[year][month][day]['TMAX']
+        #                     divisor_spring += 1
+                      
+        #                 elif month >= 6 and month <= 8: #Sommer
+        #                     sum_min_summer += stationTemperatures[year][month][day]['TMIN']
+        #                     sum_max_summer += stationTemperatures[year][month][day]['TMAX']
+        #                     divisor_summer += 1
 
+        #                 elif month >= 9 and month <= 11: #Herbst
+        #                     sum_min_fall += stationTemperatures[year][month][day]['TMIN']
+        #                     sum_max_fall += stationTemperatures[year][month][day]['TMAX']
+        #                     divisor_fall += 1
+
+        #         averageTemperaturesYear[year]['year']['TMIN'] = round(sum_min/divisor,1)
+        #         averageTemperaturesYear[year]['year']['TMAX'] = round(sum_max/divisor,1)
+
+        #         averageTemperaturesYear[year]['spring']['TMIN'] = round(sum_min_spring/divisor_spring,1)
+        #         averageTemperaturesYear[year]['spring']['TMAX'] = round(sum_max_spring/divisor_spring,1)
+
+        #         averageTemperaturesYear[year]['summer']['TMIN'] = round(sum_min_summer/divisor_summer,1)
+        #         averageTemperaturesYear[year]['summer']['TMAX'] = round(sum_max_summer/divisor_summer,1)
+
+        #         averageTemperaturesYear[year]['fall']['TMIN'] = round(sum_min_fall/divisor_fall,1)
+        #         averageTemperaturesYear[year]['fall']['TMAX'] = round(sum_max_fall/divisor_fall,1)
+
+        #         averageTemperaturesYear[year]['winter']['TMIN'] = 2
+        #         averageTemperaturesYear[year]['winter']['TMAX'] = 4
+
+
+    
     #TESTDATEN
     averageTemperaturesYear = {
         1951: {'spring': {'TMIN': 5.2, 'TMAX': 15.3}, 'summer': {'TMIN': 6.3, 'TMAX': 18.5}, 'fall': {'TMIN': 4.8, 'TMAX': 14.2}, 'winter': {'TMIN': 2.1, 'TMAX': 9.8}, 'year': {'TMIN': 4.6, 'TMAX': 14.5}},
@@ -272,12 +283,6 @@ def yearView(id):
         1962: {'spring': {'TMIN': 5.7, 'TMAX': 16.5}, 'summer': {'TMIN': 7.4, 'TMAX': 20.3}, 'fall': {'TMIN': 5.8, 'TMAX': 16.3}, 'winter': {'TMIN': 3.3, 'TMAX': 11.4}, 'year': {'TMIN': 4.8, 'TMAX': 15.9}},
         1963: {'spring': {'TMIN': 6.1, 'TMAX': 17.2}, 'summer': {'TMIN': 7.8, 'TMAX': 20.9}, 'fall': {'TMIN': 6.0, 'TMAX': 17.0}, 'winter': {'TMIN': 3.8, 'TMAX': 12.0}, 'year': {'TMIN': 4.8, 'TMAX': 16.2}},
     }
-    # chosen_views = {
-    #                             'spring':{'TMIN': session['spring_tmin'], 'TMAX': session['spring_tmax']},
-    #                             'summer':{'TMIN': session['summer_tmin'], 'TMAX': session['summer_tmax']},
-    #                             'fall':{'TMIN': session['fall_tmin'], 'TMAX': session['fall_tmax']},
-    #                             'winter':{'TMIN': session['winter_tmin'], 'TMAX': session['winter_tmax']},
-    #                             'year':{'TMIN': session['year_tmin'], 'TMAX': session['year_tmax']}, }
     # chosen_views = {'spring':{'TMIN': False, 'TMAX': False},'summer':{'TMIN': False, 'TMAX': False},'fall':{'TMIN': False, 'TMAX': False},'winter':{'TMIN': True, 'TMAX': True},'year':{'TMIN': True, 'TMAX': True}, }
     script, div = DiagramPloter.plotYearDiagram(averageTemperaturesYear, chosen_views)
 

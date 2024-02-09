@@ -96,8 +96,8 @@
                 {%for year in averageTemperaturesYear%}
                 <tr data-href="/station/{{id}}/{{year}}">
                     <td>{{year}}</td>
-                    <td>{{averageTemperaturesYear[year]['TMIN']}}</td>
-                    <td>{{averageTemperaturesYear[year]['TMAX']}}</td>
+                    <td>{{averageTemperaturesYear[year]['year']['TMIN']}}</td>
+                    <td>{{averageTemperaturesYear[year]['year']['TMAX']}}</td>
                 </tr>
                 {%endfor%}
             </table>
