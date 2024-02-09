@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, SelectField, DateField, FloatField, DecimalRangeField, DecimalField, IntegerRangeField
+from wtforms import IntegerField,DecimalField, IntegerRangeField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, NumberRange,InputRequired, ValidationError
 from datetime import date
 
@@ -30,5 +30,32 @@ class searchForm(FlaskForm):
     end_year = IntegerField('Endjahr', validators = [NumberRange(1800, 2999), InputRequired(message="Bitte Endjahr angeben!"), validate_year])
     station_count = IntegerField('Anzahl Stationen', validators= [NumberRange(1, 20), InputRequired("Bitte Anzahl Stationen angeben!")])
 
-  
+class seasonsFormClass(FlaskForm):
+
+    def minimum_one_selected(form,field):
+        if(      form.year_tmin.data == False
+            and  form.year_tmax.data == False
+            and  form.spring_tmin.data == False
+            and  form.spring_tmax.data == False
+            and  form.summer_tmin.data == False
+            and  form.summer_tmax.data == False
+            and  form.fall_tmin.data == False
+            and  form.fall_tmax.data == False
+            and  form.winter_tmin.data == False
+            and  form.winter_tmax.data == False
+        ):
+            raise ValidationError("Bitte mindestens eine Auswahl treffen!")
+
+    year_tmin       = BooleanField(default="checked",validators=[minimum_one_selected])
+    year_tmax      = BooleanField(default="true")
+    spring_tmin     = BooleanField()
+    spring_tmax     = BooleanField()
+    summer_tmin     = BooleanField()
+    summer_tmax    = BooleanField()
+    fall_tmin       = BooleanField()
+    fall_tmax      = BooleanField()
+    winter_tmin     = BooleanField()
+    winter_tmax    = BooleanField()
+    submit_field = SubmitField('Aktualisieren',name="action")
+
 
