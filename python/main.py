@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, session, Response
-from forms import searchForm, seasonsFormClass
+from forms import searchForm, seasonsForm
 import secrets
 from datetime import date
 from bokeh.plotting import figure
@@ -64,22 +64,31 @@ def update_seasons_form(seasonsForm):
     session['winter_tmax'] = seasonsForm.winter_tmax.data
 
 def fill_seasons_form():
-    seasonsForm = seasonsFormClass(request.form)
+    seasons_form = seasonsForm(request.form)
     if session.get('year_tmin') is None:
-        seasonsForm.year_tmin.data = "checked"
-        seasonsForm.year_tmax.data = "checked"
+        seasons_form.year_tmin.data = "checked"
+        seasons_form.year_tmax.data = "checked"
     else:
-        seasonsForm.year_tmin.data = session['year_tmin']
-        seasonsForm.year_tmax.data = session['year_tmax']
-        seasonsForm.spring_tmin.data = session['spring_tmin']
-        seasonsForm.spring_tmax.data = session['spring_tmax']
-        seasonsForm.summer_tmin.data = session['summer_tmin']
-        seasonsForm.summer_tmax.data = session['summer_tmax']
-        seasonsForm.fall_tmin.data = session['fall_tmin']
-        seasonsForm.fall_tmax.data = session['fall_tmax']
-        seasonsForm.winter_tmin.data = session['winter_tmin']
-        seasonsForm.winter_tmax.data = session['winter_tmax']
+        seasons_form.year_tmin.data = session['year_tmin']
+        seasons_form.year_tmax.data = session['year_tmax']
+        seasons_form.spring_tmin.data = session['spring_tmin']
+        seasons_form.spring_tmax.data = session['spring_tmax']
+        seasons_form.summer_tmin.data = session['summer_tmin']
+        seasons_form.summer_tmax.data = session['summer_tmax']
+        seasons_form.fall_tmin.data = session['fall_tmin']
+        seasons_form.fall_tmax.data = session['fall_tmax']
+        seasons_form.winter_tmin.data = session['winter_tmin']
+        seasons_form.winter_tmax.data = session['winter_tmax']
+    return seasons_form
 
+def update_and_get_chosen_views(seasonsForm):
+    chosen_views = {    
+                    'spring':{'TMIN': seasonsForm.spring_tmin.data, 'TMAX': seasonsForm.spring_tmax.data},
+                    'summer':{'TMIN': seasonsForm.summer_tmin.data, 'TMAX': seasonsForm.summer_tmax.data},
+                    'fall':{'TMIN': seasonsForm.fall_tmin.data, 'TMAX': seasonsForm.fall_tmax.data},
+                    'winter':{'TMIN': seasonsForm.winter_tmin.data, 'TMAX': seasonsForm.winter_tmax.data},
+                    'year':{'TMIN': seasonsForm.year_tmin.data, 'TMAX': seasonsForm.year_tmax.data}, }
+    return chosen_views
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
@@ -146,22 +155,24 @@ def list():
 
 @app.route("/station/<id>", methods=['POST', 'GET'])
 def yearView(id):
+    chosen_views = {}
     #Form
     form = searchForm(request.form)
-    seasonsForm = fill_seasons_form()
+    seasons_form = seasonsForm(request.form)
+    
 
     if request.method == 'POST':
         if request.form.get('action'): #Aktualisieren Button
 
-        # if request.form['action'] == 'Aktualisieren':
-            if seasonsForm.validate():
-                chosen_views = {
-                                'spring':{'TMIN': seasonsForm.spring_tmin.data, 'TMAX': seasonsForm.spring_tmax.data},
-                                'summer':{'TMIN': seasonsForm.summer_tmin.data, 'TMAX': seasonsForm.summer_tmax.data},
-                                'fall':{'TMIN': seasonsForm.fall_tmin.data, 'TMAX': seasonsForm.fall_tmax.data},
-                                'winter':{'TMIN': seasonsForm.winter_tmin.data, 'TMAX': seasonsForm.winter_tmax.data},
-                                'year':{'TMIN': seasonsForm.year_tmin.data, 'TMAX': seasonsForm.year_tmax.data}, }
+            
+            if seasons_form.validate():
+                update_seasons_form(seasons_form)
+                chosen_views = update_and_get_chosen_views(seasons_form)
                 return redirect(url_for('yearView', id=id))
+            else: #Fehlerhaft --> Keine Auswahl getroffen
+                return redirect(url_for('yearView', id=id))
+
+
         else: #Suchen Button
             if form.validate_on_submit():
                 try:
@@ -181,6 +192,8 @@ def yearView(id):
             form = fill_form()
         else:
             form = searchForm(request.form)
+        seasons_form = fill_seasons_form()
+        chosen_views = update_and_get_chosen_views(seasons_form)
 
         #! Folgendes nicht löschen
         
@@ -259,12 +272,16 @@ def yearView(id):
         1962: {'spring': {'TMIN': 5.7, 'TMAX': 16.5}, 'summer': {'TMIN': 7.4, 'TMAX': 20.3}, 'fall': {'TMIN': 5.8, 'TMAX': 16.3}, 'winter': {'TMIN': 3.3, 'TMAX': 11.4}, 'year': {'TMIN': 4.8, 'TMAX': 15.9}},
         1963: {'spring': {'TMIN': 6.1, 'TMAX': 17.2}, 'summer': {'TMIN': 7.8, 'TMAX': 20.9}, 'fall': {'TMIN': 6.0, 'TMAX': 17.0}, 'winter': {'TMIN': 3.8, 'TMAX': 12.0}, 'year': {'TMIN': 4.8, 'TMAX': 16.2}},
     }
-
-
-    chosen_views = {'spring':{'TMIN': True, 'TMAX': True},'summer':{'TMIN': True, 'TMAX': True},'fall':{'TMIN': True, 'TMAX': True},'winter':{'TMIN': True, 'TMAX': True},'year':{'TMIN': True, 'TMAX': True}, }
+    # chosen_views = {
+    #                             'spring':{'TMIN': session['spring_tmin'], 'TMAX': session['spring_tmax']},
+    #                             'summer':{'TMIN': session['summer_tmin'], 'TMAX': session['summer_tmax']},
+    #                             'fall':{'TMIN': session['fall_tmin'], 'TMAX': session['fall_tmax']},
+    #                             'winter':{'TMIN': session['winter_tmin'], 'TMAX': session['winter_tmax']},
+    #                             'year':{'TMIN': session['year_tmin'], 'TMAX': session['year_tmax']}, }
+    # chosen_views = {'spring':{'TMIN': False, 'TMAX': False},'summer':{'TMIN': False, 'TMAX': False},'fall':{'TMIN': False, 'TMAX': False},'winter':{'TMIN': True, 'TMAX': True},'year':{'TMIN': True, 'TMAX': True}, }
     script, div = DiagramPloter.plotYearDiagram(averageTemperaturesYear, chosen_views)
 
-    return render_template('Jahresansicht.html',form=form,seasonsForm=seasonsForm,averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
+    return render_template('Jahresansicht.html',form=form,seasons_form=seasons_form,averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
 
 @app.route("/station/<id>/<year>")
 def monthView(id, year):

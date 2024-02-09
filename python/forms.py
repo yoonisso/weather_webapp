@@ -32,7 +32,7 @@ class searchForm(FlaskForm):
     station_count = IntegerField('Anzahl Stationen', validators= [NumberRange(1, 20), InputRequired("Bitte Anzahl Stationen angeben!")])
 
 
-class seasonsFormClass(FlaskForm):
+class seasonsForm(FlaskForm):
 
     def minimum_one_selected(form,field):
         if(      form.year_tmin.data == False
