@@ -60,4 +60,14 @@ class seasonsForm(FlaskForm):
     winter_tmax    = BooleanField()
     submit_field = SubmitField('Aktualisieren',name="action")
 
+class minMaxForm(FlaskForm):
+    def minimum_one_selected(form,field):
+        if form.year_tmin.data == False and form.year_tmax.data == False:
+
+            raise ValidationError("Bitte mindestens eine Auswahl treffen!")
+        
+    tmin = BooleanField(default="checked",validators=[minimum_one_selected])
+    tmax = BooleanField(default="checked")
+    submit_field = SubmitField('Aktualisieren',name="action")
+
 

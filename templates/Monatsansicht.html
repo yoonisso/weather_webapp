@@ -107,10 +107,16 @@
             <div class="grid_container">
                 <p id="year">Monat</p>
                 <p id="tmin">MinTemp</p>
-                <input class="checkbox" type="checkbox" id="min_year" name="minYear"> 
+                <!-- <input class="checkbox" type="checkbox" id="min_year" name="minYear">  -->
                 <p id="tmax">MaxTemp</p>
-                <input class="checkbox" type="checkbox" id="max_year" name="maxYear">
+                <form action="/station/{{id}}/{{year}}" method="post">
+                    {{min_max_form.csrf_token }}
+                    {{min_max_form.tmin()}}
+                    {{min_max_form.tmax()}}
+                    {{min_max_form.submit_field()}}
+                </form>
             </div>
+
         </div>
     </div>
     <div class="error_container">

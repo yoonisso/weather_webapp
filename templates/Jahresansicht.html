@@ -119,7 +119,7 @@
                 <p id="tmax">MaxTemp</p>
                 <br>
                 <form action="/station/{{id}}" method="post">
-                    {{ form.csrf_token }}
+                    {{seasons_form.csrf_token }}
                     {{seasons_form.year_tmin()}}
                     {{seasons_form.year_tmax()}}
                     {{seasons_form.spring_tmin() }}

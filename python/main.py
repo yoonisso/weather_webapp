@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, session, Response
-from forms import searchForm, seasonsForm
+from forms import searchForm, seasonsForm, minMaxForm
 import secrets
 from datetime import date
 from bokeh.plotting import figure
@@ -291,6 +291,7 @@ def yearView(id):
 @app.route("/station/<id>/<year>")
 def monthView(id, year):
     year = int(year)
+    min_max_form = minMaxForm(request.form)
     #Suchfunktion
     if request.method == 'POST' and form.validate_on_submit():
         try:
@@ -345,11 +346,11 @@ def monthView(id, year):
 
     script, div = DiagramPloter.plotMonthDiagram(averageTemperaturesMonthly, True, True)
 
-    return render_template('Monatsansicht.html', averageTemperaturesMonthly = averageTemperaturesMonthly, id=id, form=form, script=script, div=div, year=year)
+    return render_template('Monatsansicht.html', averageTemperaturesMonthly = averageTemperaturesMonthly, id=id, form=form,min_max_form=min_max_form, script=script, div=div, year=year)
 
 @app.route("/station/<id>/<year>/<month>")
 def dayView(id,year,month):
-    
+    min_max_form = minMaxForm(request.form)
     #Suchfunktion
     if request.method == 'POST' and form.validate_on_submit():
         try:
@@ -407,7 +408,7 @@ def dayView(id,year,month):
 }
     script, div = DiagramPloter.plotDayDiagram(temperatures_daily, True, True)
 
-    return render_template('Tagesansicht.html', form=form, temperatures_daily=temperatures_daily, script=script, div=div)
+    return render_template('Tagesansicht.html', form=form,min_max_form=min_max_form, temperatures_daily=temperatures_daily, script=script, div=div)
 
 
 if __name__ == '__main__':
