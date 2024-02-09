@@ -124,8 +124,8 @@ input {
 }
 .detail_table {
     border: thin solid;
-    border-collapse: collapse;
     font-size: 1vw;
+    caption-side: top;
 
     th {
         border: thin solid;
@@ -133,27 +133,20 @@ input {
 
     td {
         border: thin solid;
-        padding: 5px;
+        padding: 0;
+        margin: 0;
     }
 
     caption {
         border: thin solid;
         background-color: lightgray;
-    }
-
-    a {
-        display: block;
-        text-decoration: none;
-        transition: all 0.25s ease-out;
         color: black;
-    }
-
-    a:hover {
-        color: black;
+        text-align: center;
     }
 }
-.detail_table tr:hover {
+.detail_table tr:nth-child(n+2):hover {
     background-color: #f7c203;
+    cursor: pointer;
 }
 .error_container {
     position: absolute;

@@ -1,6 +1,5 @@
 #table {
     border: thin solid;
-    border-collapse: collapse;
     font-size: 1vw;
     caption-side: top;
 
@@ -10,6 +9,8 @@
 
     td {
         border: thin solid;
+        padding: 0;
+        margin: 0;
     }
 
     caption {
@@ -18,16 +19,10 @@
         color: black;
         text-align: center;
     }
-
-    a {
-        display: block;
-        text-decoration: none;
-        transition: all 0.25s ease-out;
-        color: black;
-    }
 }
-#table tr:hover {
+#table tr:nth-child(n+2):hover {
     background-color: #f7c203;
+    cursor: pointer;
 }
 .left_box {
     border: 0.7vw solid #f7c203;
