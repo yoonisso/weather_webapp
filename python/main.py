@@ -139,10 +139,6 @@ def yearView(id):
     seasonsForm = seasonsFormClass(request.form)
     seasonsForm.year_tmin.data = "checked"
     seasonsForm.year_tmax.data = "checked"
-    
-
-    # if request.form.get('action') == 'search_icon':
-    #     print('HALLOO')
 
     if request.method == 'POST': 
         if request.form['action'] == 'Search':
@@ -155,9 +151,15 @@ def yearView(id):
                     return redirect()
                 return redirect(url_for('list'))
 
-        elif request.form['action'] == 'Aktualisieren':
-            if seasonsForm.validate():
-                 chosen_views = {'spring':{'TMIN': seasonsForm.spring_tmin.data, 'TMAX': seasonsForm.spring_tmax.data},'summer':{'TMIN': True, 'TMAX': True},'fall':{'TMIN': True, 'TMAX': True},'winter':{'TMIN': True, 'TMAX': True},'spring':{'TMIN': True, 'TMAX': True}, }
+        # elif request.form['action'] == 'Aktualisieren':
+        #     if seasonsForm.validate():
+        #         chosen_views = {
+        #                         'spring':{'TMIN': seasonsForm.spring_tmin.data, 'TMAX': seasonsForm.spring_tmax.data},
+        #                         'summer':{'TMIN': seasonsForm.summer_tmin.data, 'TMAX': seasonsForm.summer_tmax.data},
+        #                         'fall':{'TMIN': seasonsForm.fall_tmin.data, 'TMAX': seasonsForm.fall_tmax.data},
+        #                         'winter':{'TMIN': seasonsForm.winter_tmin.data, 'TMAX': seasonsForm.winter_tmax.data},
+        #                         'year':{'TMIN': seasonsForm.year_tmin.data, 'TMAX': seasonsForm.year_tmax.data}, }
+            
        
     
     elif request.method == 'GET':
@@ -228,7 +230,7 @@ def yearView(id):
                     }
 
 
-    # chosen_views = {'spring':{'TMIN': True, 'TMAX': True},'summer':{'TMIN': True, 'TMAX': True},'fall':{'TMIN': True, 'TMAX': True},'winter':{'TMIN': True, 'TMAX': True},'spring':{'TMIN': True, 'TMAX': True}, }
+    chosen_views = {'spring':{'TMIN': True, 'TMAX': True},'summer':{'TMIN': True, 'TMAX': True},'fall':{'TMIN': True, 'TMAX': True},'winter':{'TMIN': True, 'TMAX': True},'spring':{'TMIN': True, 'TMAX': True}, }
     script, div = DiagramPloter.plotDiagram(averageTemperaturesYear, "Jahresansicht", "Jahre")
 
     return render_template('Jahresansicht.html',form=form,seasonsForm=seasonsForm,averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
