@@ -88,13 +88,13 @@
         <div class="left_box">
             <table class="detail_table">
                 <caption>Wetterstation {{id}}</caption>
-                <tr data-href="/station/{{station['id']}}/{{year}}">
+                <tr data-href="station/{{station['id']}}/{{year}}">
                     <th>Jahr</th>
                     <th>Mittleres Temperatur Minimum</th>
                     <th>Mittleres Temperatur Maximum</th>
                 </tr>
                 {%for year in averageTemperaturesYear%}
-                <tr data-href="/station/{{station['id']}}/{{year}}">
+                <tr data-href="station/{{station['id']}}/{{year}}">
                     <td>{{year}}</td>
                     <td>{{averageTemperaturesYear[year]['TMIN']}}</td>
                     <td>{{averageTemperaturesYear[year]['TMAX']}}</td>
