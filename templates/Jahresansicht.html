@@ -116,6 +116,7 @@
                 <p id="autumn">Herbst</p>
                 <p id="winter">Winter</p>
                 <p id="tmin">MinTemp</p>
+                <p id="tmax">MaxTemp</p>
                 <br>
                 <form action="/station/{{id}}" method="post">
                     {{ form.csrf_token }}
@@ -129,10 +130,8 @@
                     {{seasonsForm.fall_tmax()}}
                     {{seasonsForm.winter_tmin()}}
                     {{seasonsForm.winter_tmax()}}
-                    <p id="tmax">MaxTemp</p>
                     {{seasonsForm.submit_field()}}
                 </form>
- 
             </div>
         </div>
     </div>

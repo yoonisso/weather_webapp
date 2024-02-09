@@ -15,8 +15,8 @@
     height: 10%;
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(6, 35%);
+    grid-template-columns: repeat(3, 30%);
+    grid-template-rows: repeat(8, 35%);
     align-items: center;    
     font-size: 1vw;
 
@@ -24,12 +24,12 @@
         margin: 0;
         padding: 0;
     }
-}
 
-.checkbox {
-    margin: 0;
-    padding: 0;
-    width: fit-content;
+    form input {
+        margin: 0;
+        padding: 0;
+        width: fit-content;
+    }
 }
 
 @keyframes flyInFromBottom {
@@ -91,43 +91,47 @@
     grid-column: 3;
     grid-row: 1;
 }
-#min_year {
+#year_tmin {
     grid-column: 2;
     grid-row: 2;
 }
-#min_spring {
+#mspring_tmin {
     grid-column: 2;
     grid-row: 3;
 }
-#min_summer {
+#summer_tim {
     grid-column: 2;
     grid-row: 4;
 }
-#min_autumn {
+#fall_tmin {
     grid-column: 2;
     grid-row: 5;
 }
-#min_winter {
+#winter_tmin {
     grid-column: 2;
     grid-row: 6;
 }
-#max_year {
+#year_tmax{
     grid-column: 3;
     grid-row: 2;
 }
-#max_spring {
+#spring_tmax {
     grid-column: 3;
     grid-row: 3;
 }
-#max_summer {
+#summer_tmax {
     grid-column: 3;
     grid-row: 4;
 }
-#max_autumn {
+#fall_tmax {
     grid-column: 3;
     grid-row: 5;
 }
-#max_winter {
+#winter_tmax {
     grid-column: 3;
     grid-row: 6;
+}
+#action {
+    grid-column: 1;
+    grid-row: 8;
 }
