@@ -262,7 +262,7 @@ def yearView(id):
 
 
     chosen_views = {'spring':{'TMIN': True, 'TMAX': True},'summer':{'TMIN': True, 'TMAX': True},'fall':{'TMIN': True, 'TMAX': True},'winter':{'TMIN': True, 'TMAX': True},'year':{'TMIN': True, 'TMAX': True}, }
-    script, div = DiagramPloter.plotDiagram(averageTemperaturesYear, "Jahresansicht", "Jahre", chosen_views)
+    script, div = DiagramPloter.plotYearDiagram(averageTemperaturesYear, chosen_views)
 
     return render_template('Jahresansicht.html',form=form,seasonsForm=seasonsForm,averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
 
@@ -321,7 +321,7 @@ def monthView(id, year):
 
     
 
-    script, div = DiagramPloter.plotDiagram(averageTemperaturesMonthly, "Monatsansicht", "Monate") #TODO change x_axis of month to jan. feb. view
+    script, div = DiagramPloter.plotMonthDiagram(averageTemperaturesMonthly, True, True)
 
     return render_template('Monatsansicht.html', averageTemperaturesMonthly = averageTemperaturesMonthly, id=id, form=form, script=script, div=div, year=year)
 
@@ -383,8 +383,9 @@ def dayView(id,year,month):
     30: {'TMIN': 3.6, 'TMAX': 15.3},
     31: {'TMIN': 4.3, 'TMAX': 14.7}
 }
+    script, div = DiagramPloter.plotDayDiagram(temperatures_daily, True, True)
 
-    return render_template('Tagesansicht.html', form=form, temperatures_daily=temperatures_daily)
+    return render_template('Tagesansicht.html', form=form, temperatures_daily=temperatures_daily, script=script, div=div)
 
 
 if __name__ == '__main__':

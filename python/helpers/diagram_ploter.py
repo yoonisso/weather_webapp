@@ -43,16 +43,12 @@ averageTemperaturesMonthly = {
     12: {'TMIN': 4.9, 'TMAX': 15.1}
 }
 
-def checkIfYearOrMonthViewByDiagramType(diagram_type):
-    #needs to check if year or month for TOOLTIPS
-    return "Jahr"
-
-
 class DiagramPloter:
     #TODO create Legend
     #TODO fix hovereffect, add time of year to hover
+    #TODO wert ändern bei hover effekt
     @staticmethod
-    def plotDiagram(averageTemperatures, diagram_type, x_axis_label, chosen_views):
+    def plotYearDiagram(averageTemperatures, chosen_views):
         min_width = 300
         min_height = 300
         max_width = 800
@@ -81,8 +77,8 @@ class DiagramPloter:
 
         p = figure(sizing_mode="scale_both", min_width=min_width,
                    min_height=min_height, max_height=max_height,
-                   max_width=max_width, title=diagram_type,
-                   x_axis_label=x_axis_label, y_axis_label='Temperatur',
+                   max_width=max_width, title='Jahresansicht',
+                   x_axis_label="Jahr", y_axis_label='Temperatur',
                    toolbar_location=None, tools=[])
 
         hover = HoverTool(tooltips=TOOLTIPS)
@@ -257,7 +253,124 @@ class DiagramPloter:
 
         return script, div
 
+    @staticmethod
+    def plotMonthDiagram(averageTemperatures, show_tmin, show_tmax):
+        min_width = 300
+        min_height = 300
+        max_width = 800
+        max_height = 600
 
-if(__name__ == "__main__"):
-    #Testing only
-    DiagramPloter.plotDiagram(averageTemperaturesYear, "Jahresansicht", "Jahre")
+        month_tmin_color = "blue"
+        month_tmax_color = "red"
+
+        #Hover Effect
+        TOOLTIPS = [
+            ("Monat", "@x"),
+            ("Temperatur", "@y")
+        ]
+
+        p = figure(sizing_mode="scale_both", min_width=min_width,
+                   min_height=min_height, max_height=max_height,
+                   max_width=max_width, title='Monatsansicht',
+                   x_axis_label="Monat", y_axis_label='Temperatur',
+                   toolbar_location=None, tools=[])
+
+        hover = HoverTool(tooltips=TOOLTIPS)
+
+        p.add_tools(hover)
+
+        #month TMAX plot
+        if show_tmax:
+            p.line(
+                x = [month for month in averageTemperatures.keys()],
+                y = [data['TMAX'] for data in averageTemperatures.values()],
+                color=month_tmax_color,
+                line_width=3
+            )
+
+            p.circle(
+                x = [month for month in averageTemperatures.keys()],
+                y = [data['TMAX'] for data in averageTemperatures.values()],
+                color=month_tmax_color,
+                size=10
+            )
+
+        #month TMIN plot
+        if show_tmin:
+            p.line(
+                x = [month for month in averageTemperatures.keys()],
+                y = [data['TMIN'] for data in averageTemperatures.values()],
+                color=month_tmin_color,
+                line_width=4
+            )
+
+            p.circle(
+                x = [month for month in averageTemperatures.keys()],
+                y = [data['TMIN'] for data in averageTemperatures.values()],
+                color=month_tmin_color,
+                size=10
+            )
+        script, div = components(p)
+
+        return script, div
+
+    @staticmethod
+    def plotDayDiagram(averageTemperatures, show_tmin, show_tmax):
+        min_width = 300
+        min_height = 300
+        max_width = 800
+        max_height = 600
+
+        day_tmin_color = "blue"
+        day_tmax_color = "red"
+
+        #Hover Effect
+        TOOLTIPS = [
+            ("Tag", "@x"),
+            ("Temperatur", "@y")
+        ]
+
+        p = figure(sizing_mode="scale_both", min_width=min_width,
+                   min_height=min_height, max_height=max_height,
+                   max_width=max_width, title='Tagesansicht',
+                   x_axis_label='Tag', y_axis_label='Temperatur',
+                   toolbar_location=None, tools=[])
+
+        hover = HoverTool(tooltips=TOOLTIPS)
+
+        p.add_tools(hover)
+
+        #day TMAX plot
+        if show_tmax:
+            p.line(
+                x = [day for day in averageTemperatures.keys()],
+                y = [data['TMAX'] for data in averageTemperatures.values()],
+                color=day_tmax_color,
+                line_width=3
+            )
+
+            p.circle(
+                x = [day for day in averageTemperatures.keys()],
+                y = [data['TMAX'] for data in averageTemperatures.values()],
+                color=day_tmax_color,
+                size=10
+            )
+
+        #day TMIN plot
+        if show_tmin:
+            p.line(
+                x = [day for day in averageTemperatures.keys()],
+                y = [data['TMIN'] for data in averageTemperatures.values()],
+                color=day_tmin_color,
+                line_width=4
+            )
+
+            p.circle(
+                x = [day for day in averageTemperatures.keys()],
+                y = [data['TMIN'] for data in averageTemperatures.values()],
+                color=day_tmin_color,
+                size=10
+            )
+        script, div = components(p)
+
+        return script, div
