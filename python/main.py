@@ -110,21 +110,21 @@ def home():
 
 @app.route("/liste", methods=['POST', 'GET'])
 def list():
-    
-    # if(session.get('latitude') is not None):
-    #     form = fill_form()
-    # else:
-    #     form = searchForm(request.form)
-
+    #Form
+    form = searchForm(request.form)
     #Suchfunktion
-    if request.method == 'POST' and form.validate_on_submit():
-        try:
-            session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
-            update_session_form(form)
-        except:
-            print(f"FEHLER:")
-            return redirect()
-        return redirect(url_for('list'))
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            try:
+                update_session_form(form)
+                session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
+            except Exception as e:
+                flash(f'Unerwarteter Fehler {e}')
+                return redirect(url_for('list'))
+            return redirect(url_for('list'))
+        else:
+            first_key = next(iter(form.errors))
+            flash(f"{form.errors[first_key][0]}!")
     
     elif request.method == 'GET':
         if(session.get('latitude') is not None):
@@ -132,33 +132,41 @@ def list():
         else:
             form = searchForm(request.form)
 
+    
     return render_template('Liste.html',form=form, stations=session["user_stations"])
 
-@app.route("/station/<id>", methods=['GET', 'POST'])
+@app.route("/station/<id>", methods=['POST', 'GET'])
 def yearView(id):
+    #Form
+    form = searchForm(request.form)
     seasonsForm = seasonsFormClass(request.form)
     seasonsForm.year_tmin.data = "checked"
     seasonsForm.year_tmax.data = "checked"
 
-    if request.method == 'POST': 
-        if request.form['action'] == 'Search':
-            if  form.validate_on_submit():
-                try:
-                    session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
-                    update_session_form(form)
-                except:
-                    print(f"FEHLER:")
-                    return redirect()
-                return redirect(url_for('list'))
+    if request.method == 'POST':
+        if request.form.get('action'): #Aktualisieren Button
 
-        # elif request.form['action'] == 'Aktualisieren':
-        #     if seasonsForm.validate():
-        #         chosen_views = {
-        #                         'spring':{'TMIN': seasonsForm.spring_tmin.data, 'TMAX': seasonsForm.spring_tmax.data},
-        #                         'summer':{'TMIN': seasonsForm.summer_tmin.data, 'TMAX': seasonsForm.summer_tmax.data},
-        #                         'fall':{'TMIN': seasonsForm.fall_tmin.data, 'TMAX': seasonsForm.fall_tmax.data},
-        #                         'winter':{'TMIN': seasonsForm.winter_tmin.data, 'TMAX': seasonsForm.winter_tmax.data},
-        #                         'year':{'TMIN': seasonsForm.year_tmin.data, 'TMAX': seasonsForm.year_tmax.data}, }
+        # if request.form['action'] == 'Aktualisieren':
+            if seasonsForm.validate():
+                chosen_views = {
+                                'spring':{'TMIN': seasonsForm.spring_tmin.data, 'TMAX': seasonsForm.spring_tmax.data},
+                                'summer':{'TMIN': seasonsForm.summer_tmin.data, 'TMAX': seasonsForm.summer_tmax.data},
+                                'fall':{'TMIN': seasonsForm.fall_tmin.data, 'TMAX': seasonsForm.fall_tmax.data},
+                                'winter':{'TMIN': seasonsForm.winter_tmin.data, 'TMAX': seasonsForm.winter_tmax.data},
+                                'year':{'TMIN': seasonsForm.year_tmin.data, 'TMAX': seasonsForm.year_tmax.data}, }
+        else: #Suchen Button
+            if form.validate_on_submit():
+                try:
+                    update_session_form(form)
+                    session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
+                except Exception as e:
+                    flash(f'Unerwarteter Fehler {e}')
+                    return redirect(url_for('list'))
+                return redirect(url_for('list'))
+            else:
+                first_key = next(iter(form.errors))
+                flash(f"{form.errors[first_key][0]}!")
+
             
        
     
@@ -196,38 +204,38 @@ def yearView(id):
     
     
        #TESTDATEN
-        averageTemperaturesYear = {
-                        1949: {'TMIN': 4.3, 'TMAX': 14.7},
-                        1950: {'TMIN': 5.1, 'TMAX': 15.2},
-                        1951: {'TMIN': 3.8, 'TMAX': 14.5},
-                        1952: {'TMIN': 6.2, 'TMAX': 16.8},
-                        1953: {'TMIN': 4.5, 'TMAX': 15.0},
-                        1954: {'TMIN': 5.3, 'TMAX': 15.7},
-                        1955: {'TMIN': 4.8, 'TMAX': 14.9},
-                        1956: {'TMIN': 6.0, 'TMAX': 16.5},
-                        1957: {'TMIN': 5.7, 'TMAX': 15.4},
-                        1958: {'TMIN': 4.1, 'TMAX': 14.2},
-                        1959: {'TMIN': 5.6, 'TMAX': 15.8},
-                        1960: {'TMIN': 4.9, 'TMAX': 15.1},
-                        1961: {'TMIN': 5.2, 'TMAX': 15.3},
-                        1962: {'TMIN': 4.4, 'TMAX': 14.6},
-                        1963: {'TMIN': 5.0, 'TMAX': 15.6},
-                        1964: {'TMIN': 6.1, 'TMAX': 16.2},
-                        1965: {'TMIN': 4.7, 'TMAX': 15.5},
-                        1966: {'TMIN': 5.4, 'TMAX': 15.9},
-                        1967: {'TMIN': 4.2, 'TMAX': 14.3},
-                        1969: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1970: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1971: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1972: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1973: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1974: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1975: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1976: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1977: {'TMIN': 5.5, 'TMAX': 16.0},
-                        1978: {'TMIN': 5.5, 'TMAX': 16.0},
-                        # Füge hier weitere Jahre mit den entsprechenden Temperaturwerten hinzu
-                    }
+    averageTemperaturesYear = {
+                    1949: {'TMIN': 4.3, 'TMAX': 14.7},
+                    1950: {'TMIN': 5.1, 'TMAX': 15.2},
+                    1951: {'TMIN': 3.8, 'TMAX': 14.5},
+                    1952: {'TMIN': 6.2, 'TMAX': 16.8},
+                    1953: {'TMIN': 4.5, 'TMAX': 15.0},
+                    1954: {'TMIN': 5.3, 'TMAX': 15.7},
+                    1955: {'TMIN': 4.8, 'TMAX': 14.9},
+                    1956: {'TMIN': 6.0, 'TMAX': 16.5},
+                    1957: {'TMIN': 5.7, 'TMAX': 15.4},
+                    1958: {'TMIN': 4.1, 'TMAX': 14.2},
+                    1959: {'TMIN': 5.6, 'TMAX': 15.8},
+                    1960: {'TMIN': 4.9, 'TMAX': 15.1},
+                    1961: {'TMIN': 5.2, 'TMAX': 15.3},
+                    1962: {'TMIN': 4.4, 'TMAX': 14.6},
+                    1963: {'TMIN': 5.0, 'TMAX': 15.6},
+                    1964: {'TMIN': 6.1, 'TMAX': 16.2},
+                    1965: {'TMIN': 4.7, 'TMAX': 15.5},
+                    1966: {'TMIN': 5.4, 'TMAX': 15.9},
+                    1967: {'TMIN': 4.2, 'TMAX': 14.3},
+                    1969: {'TMIN': 5.5, 'TMAX': 16.0},
+                    1970: {'TMIN': 5.5, 'TMAX': 16.0},
+                    1971: {'TMIN': 5.5, 'TMAX': 16.0},
+                    1972: {'TMIN': 5.5, 'TMAX': 16.0},
+                    1973: {'TMIN': 5.5, 'TMAX': 16.0},
+                    1974: {'TMIN': 5.5, 'TMAX': 16.0},
+                    1975: {'TMIN': 5.5, 'TMAX': 16.0},
+                    1976: {'TMIN': 5.5, 'TMAX': 16.0},
+                    1977: {'TMIN': 5.5, 'TMAX': 16.0},
+                    1978: {'TMIN': 5.5, 'TMAX': 16.0},
+                    # Füge hier weitere Jahre mit den entsprechenden Temperaturwerten hinzu
+                }
 
 
     chosen_views = {'spring':{'TMIN': True, 'TMAX': True},'summer':{'TMIN': True, 'TMAX': True},'fall':{'TMIN': True, 'TMAX': True},'winter':{'TMIN': True, 'TMAX': True},'spring':{'TMIN': True, 'TMAX': True}, }
@@ -241,7 +249,7 @@ def monthView(id, year):
     #Suchfunktion
     if request.method == 'POST' and form.validate_on_submit():
         try:
-            session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
+            session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
             update_session_form(form)
         except:
             print(f"FEHLER:")
@@ -300,7 +308,7 @@ def dayView(id,year,month):
     #Suchfunktion
     if request.method == 'POST' and form.validate_on_submit():
         try:
-            session["userStations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.stationCount.data)
+            session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
             update_session_form(form)
         except:
             print(f"FEHLER:")

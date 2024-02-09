@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import IntegerField,DecimalField, IntegerRangeField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, NumberRange,InputRequired, ValidationError
 from datetime import date
+from markupsafe import Markup
 
 # class MyFloatField(FloatField):
 #     def process_formdata(self, valuelist): #TODO: Wird überhaupt verwendet?
@@ -29,6 +30,7 @@ class searchForm(FlaskForm):
     start_year = IntegerField('Startjahr', validators = [NumberRange(1800, 2999), InputRequired(message="Bitte Startjahr angeben!")])
     end_year = IntegerField('Endjahr', validators = [NumberRange(1800, 2999), InputRequired(message="Bitte Endjahr angeben!"), validate_year])
     station_count = IntegerField('Anzahl Stationen', validators= [NumberRange(1, 20), InputRequired("Bitte Anzahl Stationen angeben!")])
+
 
 class seasonsFormClass(FlaskForm):
 
