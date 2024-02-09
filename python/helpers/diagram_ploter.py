@@ -1,5 +1,6 @@
 from bokeh.plotting import figure
 from bokeh.embed import components
+from bokeh.models import HoverTool, CustomJS
 
 #Testdata yearly
 averageTemperaturesYear = {
@@ -42,19 +43,41 @@ averageTemperaturesMonthly = {
     12: {'TMIN': 4.9, 'TMAX': 15.1}
 }
 
-def countAverageTempByDict(averageTemperatures):
-    return [(data['TMAX'] + data['TMIN']) / 2 for data in averageTemperatures.values()]
+def checkIfYearOrMonthViewByDiagramType(diagram_type):
+    #needs to check if year or month for TOOLTIPS
+    return "Jahr"
 
 
 class DiagramPloter:
+    #TODO create Legend
+    #TODO fix hovereffect, add time of year to hover
     @staticmethod
-    def plotDiagram(averageTemperatures, diagram_type, x_axis_label):
-
-        #TODO needs to be adjusted for laptop and monitor screens
+    def plotDiagram(averageTemperatures, diagram_type, x_axis_label, chosen_views):
         min_width = 300
         min_height = 300
         max_width = 800
         max_height = 600
+
+        year_tmin_color = "blue"
+        year_tmax_color = "red"
+
+        spring_tmin_color = "#90ee90"
+        spring_tmax_color = "#006400"
+
+        summer_tmin_color = "#add8e6"
+        summer_tmax_color = "#00008b"
+
+        fall_tmin_color = "#ffa500"
+        fall_tmax_color = "#ff8c00"
+
+        winter_tmin_color = "#d3d3d3"
+        winter_tmax_color = "#696969"
+
+        #Hover Effect
+        TOOLTIPS = [
+            ("Jahr", "@x"),
+            ("Temperatur", "@y")
+        ]
 
         p = figure(sizing_mode="scale_both", min_width=min_width,
                    min_height=min_height, max_height=max_height,
@@ -62,53 +85,174 @@ class DiagramPloter:
                    x_axis_label=x_axis_label, y_axis_label='Temperatur',
                    toolbar_location=None, tools=[])
 
-        #TMAX plot
-        p.line(
-            [year for year in averageTemperatures.keys()],
-            [data['TMAX'] for data in averageTemperatures.values()],
-            color="red",
-            line_width=3
-        )
+        hover = HoverTool(tooltips=TOOLTIPS)
 
-        p.circle(
-            [year for year in averageTemperatures.keys()],
-            [data['TMAX'] for data in averageTemperatures.values()],
-            color="red",
-            size=10
-        )
+        p.add_tools(hover)
 
-        #TMIN plot
-        p.line(
-            [year for year in averageTemperatures.keys()],
-            [data['TMIN'] for data in averageTemperatures.values()],
-            color="blue",
-            line_width=4
-        )
+        #year TMAX plot
+        if chosen_views['year']['TMAX']:
+            p.line(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['year']['TMAX'] for data in averageTemperatures.values()],
+                color=year_tmax_color,
+                line_width=3
+            )
 
-        p.circle(
-            [year for year in averageTemperatures.keys()],
-            [data['TMIN'] for data in averageTemperatures.values()],
-            color="blue",
-            size=10
-        )
+            p.circle(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['year']['TMAX'] for data in averageTemperatures.values()],
+                color=year_tmax_color,
+                size=10
+            )
 
-        #TAVG plot
-        average_temperatures= countAverageTempByDict(averageTemperatures)
+        #year TMIN plot
+        if chosen_views['year']['TMIN']:
+            p.line(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['year']['TMIN'] for data in averageTemperatures.values()],
+                color=year_tmin_color,
+                line_width=4
+            )
 
-        p.line(
-            [year for year in averageTemperatures.keys()],
-            average_temperatures,
-            color="green",
-            line_dash='dashed',
-            line_width=3
-        )
+            p.circle(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['year']['TMIN'] for data in averageTemperatures.values()],
+                color=year_tmin_color,
+                size=10
+            )
 
-        p.circle(
-            [year for year in averageTemperatures.keys()],
-            average_temperatures,
-            color="green",
-            size=10
-        )
+        #Spring TMIN
+        if chosen_views['spring']['TMIN']:
+            p.line(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['spring']['TMIN'] for data in averageTemperatures.values()],
+                color=spring_tmin_color,
+                line_width=4
+            )
+
+            p.circle(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['spring']['TMIN'] for data in averageTemperatures.values()],
+                color=spring_tmin_color,
+                size=10
+            )
+
+
+        #Spring TMAX
+        if chosen_views['spring']['TMAX']:
+            p.line(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['spring']['TMAX'] for data in averageTemperatures.values()],
+                color=spring_tmax_color,
+                line_width=4
+            )
+
+            p.circle(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['spring']['TMAX'] for data in averageTemperatures.values()],
+                color=spring_tmax_color,
+                size=10
+            )
+
+        #summer TMIN
+        if chosen_views['summer']['TMIN']:
+            p.line(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['summer']['TMIN'] for data in averageTemperatures.values()],
+                color=summer_tmin_color,
+                line_width=4
+            )
+
+            p.circle(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['summer']['TMIN'] for data in averageTemperatures.values()],
+                color=summer_tmin_color,
+                size=10
+            )
+
+
+        #Summer TMAX
+        if chosen_views['summer']['TMAX']:
+            p.line(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['summer']['TMAX'] for data in averageTemperatures.values()],
+                color=summer_tmax_color,
+                line_width=4
+            )
+
+            p.circle(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['summer']['TMAX'] for data in averageTemperatures.values()],
+                color=summer_tmax_color,
+                size=10
+            )
+
+        #Fall TMIN
+        if chosen_views['fall']['TMIN']:
+            p.line(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['fall']['TMIN'] for data in averageTemperatures.values()],
+                color=fall_tmin_color,
+                line_width=4
+            )
+
+            p.circle(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['fall']['TMIN'] for data in averageTemperatures.values()],
+                color=fall_tmin_color,
+                size=10
+            )
+
+
+        #Fall TMAX
+        if chosen_views['fall']['TMAX']:
+            p.line(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['fall']['TMAX'] for data in averageTemperatures.values()],
+                color=fall_tmax_color,
+                line_width=4
+            )
+
+            p.circle(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['fall']['TMAX'] for data in averageTemperatures.values()],
+                color=fall_tmax_color,
+                size=10
+            )
+
+        #Winter TMIN
+        if chosen_views['winter']['TMIN']:
+            p.line(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['winter']['TMIN'] for data in averageTemperatures.values()],
+                color=winter_tmin_color,
+                line_width=4
+            )
+
+            p.circle(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['winter']['TMIN'] for data in averageTemperatures.values()],
+                color=winter_tmin_color,
+                size=10
+            )
+
+
+        #Winter TMAX
+        if chosen_views['winter']['TMAX']:
+            p.line(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['winter']['TMAX'] for data in averageTemperatures.values()],
+                color=winter_tmax_color,
+                line_width=4
+            )
+
+            p.circle(
+                x = [year for year in averageTemperatures.keys()],
+                y = [data['winter']['TMAX'] for data in averageTemperatures.values()],
+                color=winter_tmax_color,
+                size=10
+            )
+
         script, div = components(p)
 
         return script, div
