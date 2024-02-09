@@ -1,10 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, session, Response
 from forms import searchForm, seasonsFormClass
 import secrets
-import io
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
-import random
 from datetime import date
 from bokeh.plotting import figure
 from bokeh.embed import components
@@ -55,22 +51,35 @@ def fill_form():
     form.end_year.data = session['end_year']
     return form
 
-#START BEISPIEL
-@app.route('/plot.png')
-def plot_png():
-    fig = create_figure()
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
+def update_seasons_form(seasonsForm):
+    session['year_tmin'] = seasonsForm.year_tmin.data
+    session['year_tmax'] = seasonsForm.year_tmax.data
+    session['spring_tmin'] = seasonsForm.spring_tmin.data
+    session['spring_tmax'] = seasonsForm.spring_tmax.data
+    session['summer_tmin'] = seasonsForm.summer_tmin.data
+    session['summer_tmax'] = seasonsForm.summer_tmax.data
+    session['fall_tmin'] = seasonsForm.fall_tmin.data
+    session['fall_tmax'] = seasonsForm.fall_tmax.data
+    session['winter_tmin'] = seasonsForm.winter_tmin.data
+    session['winter_tmax'] = seasonsForm.winter_tmax.data
 
-def create_figure():
-    fig = Figure()
-    axis = fig.add_subplot(1, 1, 1)
-    xs = range(100)
-    ys = [random.randint(1, 50) for x in xs]
-    axis.plot(xs, ys)
-    return fig
-#ENDE BESIPIEL
+def fill_seasons_form():
+    seasonsForm = seasonsFormClass(request.form)
+    if session.get('year_tmin') is None:
+        seasonsForm.year_tmin.data = "checked"
+        seasonsForm.year_tmax.data = "checked"
+    else:
+        seasonsForm.year_tmin.data = session['year_tmin']
+        seasonsForm.year_tmax.data = session['year_tmax']
+        seasonsForm.spring_tmin.data = session['spring_tmin']
+        seasonsForm.spring_tmax.data = session['spring_tmax']
+        seasonsForm.summer_tmin.data = session['summer_tmin']
+        seasonsForm.summer_tmax.data = session['summer_tmax']
+        seasonsForm.fall_tmin.data = session['fall_tmin']
+        seasonsForm.fall_tmax.data = session['fall_tmax']
+        seasonsForm.winter_tmin.data = session['winter_tmin']
+        seasonsForm.winter_tmax.data = session['winter_tmax']
+
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
@@ -139,9 +148,7 @@ def list():
 def yearView(id):
     #Form
     form = searchForm(request.form)
-    seasonsForm = seasonsFormClass(request.form)
-    seasonsForm.year_tmin.data = "checked"
-    seasonsForm.year_tmax.data = "checked"
+    seasonsForm = fill_seasons_form()
 
     if request.method == 'POST':
         if request.form.get('action'): #Aktualisieren Button
@@ -154,6 +161,7 @@ def yearView(id):
                                 'fall':{'TMIN': seasonsForm.fall_tmin.data, 'TMAX': seasonsForm.fall_tmax.data},
                                 'winter':{'TMIN': seasonsForm.winter_tmin.data, 'TMAX': seasonsForm.winter_tmax.data},
                                 'year':{'TMIN': seasonsForm.year_tmin.data, 'TMAX': seasonsForm.year_tmax.data}, }
+                return redirect(url_for('yearView', id=id))
         else: #Suchen Button
             if form.validate_on_submit():
                 try:
@@ -167,8 +175,6 @@ def yearView(id):
                 first_key = next(iter(form.errors))
                 flash(f"{form.errors[first_key][0]}!")
 
-            
-       
     
     elif request.method == 'GET':
         if(session.get('latitude') is not None):
