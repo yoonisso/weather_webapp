@@ -91,9 +91,19 @@
                 </tr>
                 {%for station in stations%} 
                     {% if station['first_year'] == 0 %}
-                        <tr data-href="station/{{station['id']}}"><td>{{station['id']}}</td><td>{{station['city']}}</td><td>{{station['distance']}}</td><td>{{station['latitude']}} {{station['longitude']}}</td><td>keine Temperaturwerte vorhanden</td></tr>
+                        <tr data-href="/station/{{station['id']}}">
+                            <td>{{station['id']}}</td><td>{{station['city']}}</td>
+                            <td>{{station['distance']}}</td>
+                            <td>{{station['latitude']}} {{station['longitude']}}</td>
+                            <td>keine Temperaturwerte vorhanden</td>
+                        </tr>
                     {% else %}
-                        <tr data-href="station/{{station['id']}}"><td>{{station['id']}}</td><td>{{station['city']}}</td><td>{{station['distance']}}</td><td>{{station['latitude']}} {{station['longitude']}}</td><td>{{station['first_year']}}-{{station['last_year']}}</td></tr>
+                        <tr data-href="/station/{{station['id']}}">
+                            <td>{{station['id']}}</td><td>{{station['city']}}</td>
+                            <td>{{station['distance']}}</td>
+                            <td>{{station['latitude']}} {{station['longitude']}}</td>
+                            <td>{{station['first_year']}}-{{station['last_year']}}</td>
+                        </tr>
                     {% endif %}
                 {%endfor%}
             </table>
