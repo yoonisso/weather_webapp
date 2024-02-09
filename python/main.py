@@ -260,7 +260,7 @@ def yearView(id):
 
     return render_template('Jahresansicht.html',form=form,seasonsForm=seasonsForm,averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
 
-@app.route("/<id>/<year>")
+@app.route("/station/<id>/<year>")
 def monthView(id, year):
     year = int(year)
     #Suchfunktion
@@ -319,7 +319,7 @@ def monthView(id, year):
 
     return render_template('Monatsansicht.html', averageTemperaturesMonthly = averageTemperaturesMonthly, id=id, form=form, script=script, div=div, year=year)
 
-@app.route("/<id>/<year>/<month>")
+@app.route("/station/<id>/<year>/<month>")
 def dayView(id,year,month):
     
     #Suchfunktion
