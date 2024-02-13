@@ -81,7 +81,7 @@ class DiagramPloter:
                    x_axis_label="Jahr", y_axis_label='Temperatur',
                    toolbar_location=None, tools=[])
 
-        hover = HoverTool(tooltips=TOOLTIPS)
+        hover = HoverTool(tooltips=[("Jahr", "@x"), ("Temperatur", "@y{0.0}°C")])
 
         p.add_tools(hover)
 
