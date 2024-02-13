@@ -12,11 +12,11 @@
     width: 15%;
 }
 .grid_container {
-    height: 10%;
+    height: 25%;
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(3, 30%);
-    grid-template-rows: repeat(8, 35%);
+    grid-template-columns: repeat(3, 32%);
+    grid-template-rows: repeat(8, 15%);
     align-items: center;    
     font-size: 1vw;
 
