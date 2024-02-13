@@ -111,8 +111,8 @@
                 <p id="tmax">MaxTemp</p>
                 <form action="/station/{{id}}/{{year}}" method="post">
                     {{min_max_form.csrf_token }}
-                    {{min_max_form.tmin()}}
-                    {{min_max_form.tmax()}}
+                    {{min_max_form.year_tmin()}}
+                    {{min_max_form.year_tmin()}}
                     {{min_max_form.submit_field()}}
                 </form>
             </div>
