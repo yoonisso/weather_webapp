@@ -66,8 +66,8 @@ class minMaxForm(FlaskForm):
 
             raise ValidationError("Bitte mindestens eine Auswahl treffen!")
         
-    tmin = BooleanField(default="checked",validators=[minimum_one_selected])
-    tmax = BooleanField(default="checked")
+    year_tmin = BooleanField(default="checked",validators=[minimum_one_selected])
+    year_tmax = BooleanField(default="checked")
     submit_field = SubmitField('Aktualisieren',name="action")
 
 
