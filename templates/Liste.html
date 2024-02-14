@@ -24,23 +24,13 @@
                     {{ form.longitude() }}
                 </div>
             </div>
-            <div>
-                <div id="search_range_slider">
-                    <div>
-                        <p>
-                            {{ form.radius.label }}
-                        </p>
-                    </div>
-                    <div>
-                        <p>
-                            <output for="radius" id="selected_radius">{{ form.radius.data }} km</output>
-                        </p>
-                    </div>
-                </div>
+            <div id="search_range_slider">
                 <div>
-                    <p>
-                        {{ form.radius(oninput="outputUpdate(value)") }}
-                    </p>
+                    {{ form.radius.label }}
+                    <output for="radius" id="selected_radius">{{ form.radius.data }} km</output>
+                </div>
+                <div id="slider">
+                    {{ form.radius(oninput="outputUpdate(value)") }}
                 </div>
             </div>
             <div class="align_input_fields">
