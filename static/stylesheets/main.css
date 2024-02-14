@@ -42,11 +42,10 @@ input {
 
 .align_input_fields {
     display: grid;
-    height: 80%;
-    grid-template-columns: repeat(2);
-    grid-template-rows: repeat(3);
-    align-items: center;  
-
+    height: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    align-items: center;
 }
 
 #start_year_label {
@@ -86,6 +85,10 @@ input {
     grid-column: 2;
     display: flex;
     align-items: center;
+}
+
+#kilometer_value {
+    margin: 0px 0px 0px 5px;
 }
 
 #input_discriptions {
