@@ -1,9 +1,14 @@
-#logo {
-    max-height: 80%;
-}
+/* styling for the main container */
 .main {
     justify-content: center;
 }
+/* ----------------------------------------------------------------- */
+
+/* styling for the big logo */
+#logo {
+    max-height: 80%;
+}
+/* fly in animation for the big logo */
 @keyframes flyInFromBottom {
     0% {
         transform: translateY(100%);
@@ -12,8 +17,7 @@
         transform: translateY(0);
     }
 }
-
-/* Wende die Keyframe-Animation auf das Div-Element an */
 .fly_in_bottom {
-    animation: flyInFromBottom 1s ease-out; /* Die Animation dauert 1 Sekunde und endet mit einer Abbremsung */
+    animation: flyInFromBottom 1s ease-out; /* the animation takes 1 seconds and ends with a slowing down effect */
 }
+/* ----------------------------------------------------------------- */

@@ -1,4 +1,6 @@
+/* The refresh button is positioned in the fourth row of the grid */
 #action {
     grid-column: 1;
     grid-row: 4;
 }
+/* ----------------------------------------------------------------- */
