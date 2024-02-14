@@ -1,17 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import IntegerField,DecimalField, IntegerRangeField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, NumberRange,InputRequired, ValidationError
+from wtforms.validators import NumberRange,InputRequired, ValidationError
 from datetime import date
-from markupsafe import Markup
-
-# class MyFloatField(FloatField):
-#     def process_formdata(self, valuelist): #TODO: Wird überhaupt verwendet?
-#         if valuelist:
-#             try:
-#                 self.data = float(valuelist[0].replace(',', '.'))
-#             except ValueError:
-#                 self.data = None
-#                 raise ValueError(self.gettext('Not a valid float value'))
+from flask import session, request
 
 class searchForm(FlaskForm):
 
@@ -31,9 +22,7 @@ class searchForm(FlaskForm):
     end_year = IntegerField('Endjahr', validators = [NumberRange(1800, 2999), InputRequired(message="Bitte Endjahr angeben!"), validate_year])
     station_count = IntegerField('Anzahl Stationen', validators= [NumberRange(1, 20), InputRequired("Bitte Anzahl Stationen angeben!")])
 
-
 class seasonsForm(FlaskForm):
-
     def minimum_one_selected(form,field):
         if(      form.year_tmin.data == False
             and  form.year_tmax.data == False
@@ -70,3 +59,86 @@ class minMaxForm(FlaskForm):
     submit_field = SubmitField('Aktualisieren',name="action")
 
 
+def fill_form():
+    form = searchForm(request.form)
+    if(session.get('latitude') is not None):
+        form.latitude.data = float(session['latitude'])
+        form.longitude.data = float(session['longitude'])
+        form.radius.data = session['radius']
+        form.station_count.data = session['station_count']
+        form.start_year.data = session['start_year']
+        form.end_year.data = session['end_year']
+    else:
+            #Standort Fürth
+            form.latitude.data = 49.4771
+            form.longitude.data = 10.9887
+            current_year = date.today().year
+            #Standard-Werte
+            form.radius.data = 50
+            form.station_count.data = 5
+            form.start_year.data = 1960 
+            form.end_year.data = current_year
+    return form
+
+
+def update_form_session(form):
+    #Update Session (Form)
+    session['latitude'] = form.latitude.data
+    session['longitude'] = form.longitude.data
+    session['radius'] = form.radius.data
+    session['station_count'] = form.station_count.data
+    session['start_year'] = form.start_year.data
+    session['end_year'] = form.end_year.data
+
+def update_seasons_sessions(seasonsForm):
+    session['year_tmin'] = seasonsForm.year_tmin.data
+    session['year_tmax'] = seasonsForm.year_tmax.data
+    session['spring_tmin'] = seasonsForm.spring_tmin.data
+    session['spring_tmax'] = seasonsForm.spring_tmax.data
+    session['summer_tmin'] = seasonsForm.summer_tmin.data
+    session['summer_tmax'] = seasonsForm.summer_tmax.data
+    session['fall_tmin'] = seasonsForm.fall_tmin.data
+    session['fall_tmax'] = seasonsForm.fall_tmax.data
+    session['winter_tmin'] = seasonsForm.winter_tmin.data
+    session['winter_tmax'] = seasonsForm.winter_tmax.data
+
+def fill_seasons_form():
+    seasons_form = seasonsForm(request.form)
+    if session.get('year_tmin') is None:
+        seasons_form.year_tmin.data = "checked"
+        seasons_form.year_tmax.data = "checked"
+    else:
+        seasons_form.year_tmin.data = session['year_tmin']
+        seasons_form.year_tmax.data = session['year_tmax']
+        seasons_form.spring_tmin.data = session['spring_tmin']
+        seasons_form.spring_tmax.data = session['spring_tmax']
+        seasons_form.summer_tmin.data = session['summer_tmin']
+        seasons_form.summer_tmax.data = session['summer_tmax']
+        seasons_form.fall_tmin.data = session['fall_tmin']
+        seasons_form.fall_tmax.data = session['fall_tmax']
+        seasons_form.winter_tmin.data = session['winter_tmin']
+        seasons_form.winter_tmax.data = session['winter_tmax']
+    return seasons_form
+
+def update_min_max_session(min_max_form):
+    session['show_tmin'] = min_max_form.year_tmin.data
+    session['show_tmax'] = min_max_form.year_tmax.data
+
+def fill_min_max_form():
+    min_max_form = minMaxForm(request.form)
+    if session.get('show_tmin') is None:
+        min_max_form.year_tmin.data = "checked"
+        min_max_form.year_tmax.data = "checked"
+    else:
+        min_max_form.year_tmin.data = session['show_tmin']
+        min_max_form.year_tmax.data = session['show_tmax']
+    return min_max_form
+
+def update_and_get_chosen_views(seasonsForm):
+    chosen_views = {    
+                    'spring':{'TMIN': seasonsForm.spring_tmin.data, 'TMAX': seasonsForm.spring_tmax.data},
+                    'summer':{'TMIN': seasonsForm.summer_tmin.data, 'TMAX': seasonsForm.summer_tmax.data},
+                    'fall':{'TMIN': seasonsForm.fall_tmin.data, 'TMAX': seasonsForm.fall_tmax.data},
+                    'winter':{'TMIN': seasonsForm.winter_tmin.data, 'TMAX': seasonsForm.winter_tmax.data},
+                    'year':{'TMIN': seasonsForm.year_tmin.data, 'TMAX': seasonsForm.year_tmax.data}, }
+    return chosen_views

@@ -1,138 +1,38 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, session
-from forms import searchForm, seasonsForm, minMaxForm
+from forms import searchForm, seasonsForm, minMaxForm, update_form_session, fill_form, update_seasons_sessions, fill_seasons_form, update_min_max_session, fill_min_max_form, update_and_get_chosen_views
 import secrets
 from datetime import date
 from helpers.diagram_ploter import DiagramPloter
 from collections import defaultdict
 from api_caller import get_stations_by_coordinates, load_all_stations
 
-#TODO: user_stations in App, nicht in session
 #TODO: FORM link auf jeweilige Seite anpassen + POST handling
-#TODO: Session in eigene datei?
+
 secret_key = secrets.token_urlsafe(16)
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
 app.secret_key = secret_key
 
 #Initialization
-app.allStations = load_all_stations()
-app.stationTemperatures = {}
-
-class SearchData:
-    def __init__(self,latitude,longitude,radius,start_year,end_year,station_count):
-        self.latitude = latitude
-        self.longitude = longitude
-        self.radius = radius
-        self.startYear = start_year
-        self.endYear = end_year
-        self.stationCount = station_count
-
-    #TODO: in klasse lassen? oder direkt aufruden?
-    def getStations(latitude, longitude, radius, stationCount):
-        print("Stationen werden ermittelt...")
-        return get_stations_by_coordinates(app.allStations,latitude, longitude, radius, stationCount)
-
-def update_form_session(form):
-    #Update Session (Form)
-    session['latitude'] = form.latitude.data
-    session['longitude'] = form.longitude.data
-    session['radius'] = form.radius.data
-    session['station_count'] = form.station_count.data
-    session['start_year'] = form.start_year.data #Keine Anforderung
-    session['end_year'] = form.end_year.data #Keine Anforderung
-
-def fill_form():
-    form = searchForm(request.form)
-    form.latitude.data = float(session['latitude'])
-    form.longitude.data = float(session['longitude'])
-    form.radius.data = session['radius']
-    form.station_count.data = session['station_count']
-    form.start_year.data = session['start_year']
-    form.end_year.data = session['end_year']
-    return form
-
-def update_seasons_sessions(seasonsForm):
-    session['year_tmin'] = seasonsForm.year_tmin.data
-    session['year_tmax'] = seasonsForm.year_tmax.data
-    session['spring_tmin'] = seasonsForm.spring_tmin.data
-    session['spring_tmax'] = seasonsForm.spring_tmax.data
-    session['summer_tmin'] = seasonsForm.summer_tmin.data
-    session['summer_tmax'] = seasonsForm.summer_tmax.data
-    session['fall_tmin'] = seasonsForm.fall_tmin.data
-    session['fall_tmax'] = seasonsForm.fall_tmax.data
-    session['winter_tmin'] = seasonsForm.winter_tmin.data
-    session['winter_tmax'] = seasonsForm.winter_tmax.data
-
-def fill_seasons_form():
-    seasons_form = seasonsForm(request.form)
-    if session.get('year_tmin') is None:
-        seasons_form.year_tmin.data = "checked"
-        seasons_form.year_tmax.data = "checked"
-    else:
-        seasons_form.year_tmin.data = session['year_tmin']
-        seasons_form.year_tmax.data = session['year_tmax']
-        seasons_form.spring_tmin.data = session['spring_tmin']
-        seasons_form.spring_tmax.data = session['spring_tmax']
-        seasons_form.summer_tmin.data = session['summer_tmin']
-        seasons_form.summer_tmax.data = session['summer_tmax']
-        seasons_form.fall_tmin.data = session['fall_tmin']
-        seasons_form.fall_tmax.data = session['fall_tmax']
-        seasons_form.winter_tmin.data = session['winter_tmin']
-        seasons_form.winter_tmax.data = session['winter_tmax']
-    return seasons_form
-
-def update_min_max_session(min_max_form):
-    session['show_tmin'] = min_max_form.year_tmin.data
-    session['show_tmax'] = min_max_form.year_tmax.data
-
-def fill_min_max_form():
-    min_max_form = minMaxForm(request.form)
-    if session.get('show_tmin') is None:
-        min_max_form.year_tmin.data = "checked"
-        min_max_form.year_tmax.data = "checked"
-    else:
-        min_max_form.year_tmin.data = session['show_tmin']
-        min_max_form.year_tmax.data = session['show_tmax']
-    return min_max_form
-
-def update_and_get_chosen_views(seasonsForm):
-    chosen_views = {    
-                    'spring':{'TMIN': seasonsForm.spring_tmin.data, 'TMAX': seasonsForm.spring_tmax.data},
-                    'summer':{'TMIN': seasonsForm.summer_tmin.data, 'TMAX': seasonsForm.summer_tmax.data},
-                    'fall':{'TMIN': seasonsForm.fall_tmin.data, 'TMAX': seasonsForm.fall_tmax.data},
-                    'winter':{'TMIN': seasonsForm.winter_tmin.data, 'TMAX': seasonsForm.winter_tmax.data},
-                    'year':{'TMIN': seasonsForm.year_tmin.data, 'TMAX': seasonsForm.year_tmax.data}, }
-    return chosen_views
+app.all_stations = load_all_stations()
+app.station_temperatures = {}
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
     form = searchForm(request.form)
     if request.method == 'GET':
-        #Beim ersten mal aufrufen der App
-        if(session.get('latitude') is not None):
-            form = fill_form()
-        else:
-            form = searchForm(request.form)
-            #Standort Fürth
-            form.latitude.data = 49.4771
-            form.longitude.data = 10.9887
-
-            current_year = date.today().year
-            #Standard-Werte
-            form.radius.data = 50
-            form.station_count.data = 5
-            form.start_year.data = 1960 
-            form.end_year.data = current_year
+        form = fill_form()
         return render_template('Startseite.html', form=form)
 
     elif request.method == 'POST':
         if form.validate_on_submit():
             try:
                 update_form_session(form)
-                session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
-            except:
-                print("FEHLER")
-            return redirect(url_for('list'))   
+                session["user_stations"] = get_stations_by_coordinates(app.all_stations,form.latitude.data,form.longitude.data,form.radius.data,form.station_count.data)
+            except Exception as e:
+                flash(f'Unerwarteter Fehler: {e}')
+                return redirect(url_for('list'))
+            return redirect(url_for('list'))
 
         else: #Fehlerhaftes Form
             first_key = next(iter(form.errors))
@@ -142,14 +42,13 @@ def home():
 
 @app.route("/liste", methods=['POST', 'GET'])
 def list():
-    #Form
-    form = searchForm(request.form)
+    form = searchForm(request.form) #Nur notwendig, wenn man über Adresszeile navigiert??
     #Suchfunktion
     if request.method == 'POST':
         if form.validate_on_submit():
             try:
                 update_form_session(form)
-                session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
+                session["user_stations"] = get_stations_by_coordinates(app.all_stations,form.latitude.data,form.longitude.data,form.radius.data,form.station_count.data)
             except Exception as e:
                 flash(f'Unerwarteter Fehler {e}')
                 return redirect(url_for('list'))
@@ -159,16 +58,12 @@ def list():
             flash(f"{form.errors[first_key][0]}!")
     
     elif request.method == 'GET':
-        if(session.get('latitude') is not None):
-            form = fill_form()
-        else:
-            form = searchForm(request.form)
+        form = fill_form()
 
     return render_template('Liste.html',form=form, stations=session["user_stations"])
 
 @app.route("/station/<id>", methods=['POST', 'GET'])
 def yearlyView(id):
-    chosen_views = {}
     #Form
     form = searchForm(request.form)
     seasons_form = seasonsForm(request.form)
@@ -178,7 +73,7 @@ def yearlyView(id):
             
             if seasons_form.validate():
                 update_seasons_sessions(seasons_form)
-                chosen_views = update_and_get_chosen_views(seasons_form)
+                session['chosen_views'] = update_and_get_chosen_views(seasons_form)
                 return redirect(url_for('yearlyView', id=id))
             else: #Fehlerhaft --> Keine Auswahl getroffen
                 flash("Es muss mindestens eine Sicht ausgewählt werden!")
@@ -189,8 +84,8 @@ def yearlyView(id):
             if form.validate_on_submit():
                 try:
                     update_form_session(form)
-                    session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
-                    app.stationTemperatures = {}
+                    session["user_stations"] = get_stations_by_coordinates(app.all_stations,form.latitude.data,form.longitude.data,form.radius.data,form.station_count.data)
+                    app.station_temperatures = {}
                 except Exception as e:
                     flash(f'Unerwarteter Fehler {e}')
                     return redirect(url_for('list'))
@@ -200,31 +95,25 @@ def yearlyView(id):
                 flash(f"{form.errors[first_key][0]}!")
 
     
-    elif request.method == 'GET':
-        if(session.get('latitude') is not None):
-            form = fill_form()
-        else:
-            form = searchForm(request.form)
-        seasons_form = fill_seasons_form()
-        chosen_views = update_and_get_chosen_views(seasons_form)
-
-
+    # elif request.method == 'GET':
+   
+        
         #! Folgendes nicht löschen
         
         # #Ermittlung jährlicher Mittelwert
-        # if id not in app.stationTemperatures.keys():
-        #     stationTemperatures = get_weather_data_of_station_by_station_id(id, session['start_year'], session['end_year'])
-        #     stationTemperatures = dict(stationTemperatures)  
-        #     app.stationTemperatures = {id:stationTemperatures}
+        # if id not in app.station_temperatures.keys():
+        #     station_temperatures = get_weather_data_of_station_by_station_id(id, session['start_year'], session['end_year'])
+        #     station_temperatures = dict(station_temperatures)  
+        #     app.station_temperatures = {id:station_temperatures}
 
-        # if not app.stationTemperatures:
+        # if not app.station_temperatures:
         #     flash('Der ausgewählte Zeitraum enthält keine Daten')
         # else:
         #     #Mittelwerte berechnen
-        #     stationTemperatures = app.stationTemperatures[id]                            
+        #     station_temperatures = app.station_temperatures[id]                            
         #     averageTemperaturesYear = defaultdict(lambda: defaultdict(lambda: dict()))
         #     #Test Mittelwert Jahr
-        #     for year in stationTemperatures:
+        #     for year in station_temperatures:
         #         divisor = 0
         #         sum_min = 0
         #         sum_max = 0
@@ -238,25 +127,25 @@ def yearlyView(id):
         #         sum_max_fall = 0
         #         divisor_fall = 0
 
-        #         for month in stationTemperatures[year]:
-        #             for day in stationTemperatures[year][month]:
+        #         for month in station_temperatures[year]:
+        #             for day in station_temperatures[year][month]:
         #                 divisor += 1
-        #                 sum_min += stationTemperatures[year][month][day]['TMIN']
-        #                 sum_max += stationTemperatures[year][month][day]['TMAX']
+        #                 sum_min += station_temperatures[year][month][day]['TMIN']
+        #                 sum_max += station_temperatures[year][month][day]['TMAX']
                         
         #                 if month >= 3 and month <=5: #Frühling
-        #                     sum_min_spring += stationTemperatures[year][month][day]['TMIN']
-        #                     sum_max_spring += stationTemperatures[year][month][day]['TMAX']
+        #                     sum_min_spring += station_temperatures[year][month][day]['TMIN']
+        #                     sum_max_spring += station_temperatures[year][month][day]['TMAX']
         #                     divisor_spring += 1
                       
         #                 elif month >= 6 and month <= 8: #Sommer
-        #                     sum_min_summer += stationTemperatures[year][month][day]['TMIN']
-        #                     sum_max_summer += stationTemperatures[year][month][day]['TMAX']
+        #                     sum_min_summer += station_temperatures[year][month][day]['TMIN']
+        #                     sum_max_summer += station_temperatures[year][month][day]['TMAX']
         #                     divisor_summer += 1
 
         #                 elif month >= 9 and month <= 11: #Herbst
-        #                     sum_min_fall += stationTemperatures[year][month][day]['TMIN']
-        #                     sum_max_fall += stationTemperatures[year][month][day]['TMAX']
+        #                     sum_min_fall += station_temperatures[year][month][day]['TMIN']
+        #                     sum_max_fall += station_temperatures[year][month][day]['TMAX']
         #                     divisor_fall += 1
 
         #         averageTemperaturesYear[year]['year']['TMIN'] = round(sum_min/divisor,1)
@@ -273,8 +162,6 @@ def yearlyView(id):
 
         #         averageTemperaturesYear[year]['winter']['TMIN'] = 2
         #         averageTemperaturesYear[year]['winter']['TMAX'] = 4
-
-
     
     #TESTDATEN
     averageTemperaturesYear = {
@@ -292,7 +179,16 @@ def yearlyView(id):
         1962: {'spring': {'TMIN': 5.7, 'TMAX': 16.5}, 'summer': {'TMIN': 7.4, 'TMAX': 20.3}, 'fall': {'TMIN': 5.8, 'TMAX': 16.3}, 'winter': {'TMIN': 3.3, 'TMAX': 11.4}, 'year': {'TMIN': 4.8, 'TMAX': 15.9}},
         1963: {'spring': {'TMIN': 6.1, 'TMAX': 17.2}, 'summer': {'TMIN': 7.8, 'TMAX': 20.9}, 'fall': {'TMIN': 6.0, 'TMAX': 17.0}, 'winter': {'TMIN': 3.8, 'TMAX': 12.0}, 'year': {'TMIN': 4.8, 'TMAX': 16.2}},
     }
-    # chosen_views = {'spring':{'TMIN': False, 'TMAX': False},'summer':{'TMIN': False, 'TMAX': False},'fall':{'TMIN': False, 'TMAX': False},'winter':{'TMIN': True, 'TMAX': True},'year':{'TMIN': True, 'TMAX': True}, }
+
+
+    form = fill_form()
+    seasons_form = fill_seasons_form()
+
+    if(session.get('chosen_views') is None):
+        chosen_views = update_and_get_chosen_views(seasons_form)
+    else:
+        chosen_views = session['chosen_views']
+    
     script, div = DiagramPloter.plotYearDiagram(averageTemperaturesYear, chosen_views)
 
     return render_template('Jahresansicht.html',form=form,seasons_form=seasons_form,averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
@@ -312,7 +208,7 @@ def monthlyView(id, year):
         #Suchfunktion
         elif form.validate_on_submit():
             try:
-                session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
+                session["user_stations"] = get_stations_by_coordinates(app.all_stations,form.latitude.data,form.longitude.data,form.radius.data,form.station_count.data)
                 update_form_session(form)
             except:
                 print(f"FEHLER:")
@@ -320,11 +216,7 @@ def monthlyView(id, year):
         return redirect(url_for('list'))
     
     elif request.method == 'GET':
-        if(session.get('latitude') is not None):
-            form = fill_form()
-        else:
-            form = searchForm(request.form)
-
+        form = fill_form()
         min_max_form = fill_min_max_form()
 
     averageTemperaturesMonthly = defaultdict(lambda: dict())
@@ -345,10 +237,10 @@ def monthlyView(id, year):
     }
 
     #Ermittlung monatlicher Mittelwert
-    # stationTemperatures = session['station_weather_data_selected_period'] 
-    # stationTemperatures = dict(stationTemperatures)
+    # station_temperatures = session['station_weather_data_selected_period'] 
+    # station_temperatures = dict(station_temperatures)
 
-    # monthlyRaw = stationTemperatures[year]
+    # monthlyRaw = station_temperatures[year]
 
     # for month in monthlyRaw:
     #     divisor = 0
@@ -381,7 +273,7 @@ def daylyView(id,year,month):
             return redirect(url_for('monthlyView', id=id, year=year, month=month))
         elif form.validate_on_submit(): #Suchfunktion
             try:
-                session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
+                session["user_stations"] = get_stations_by_coordinates(app.all_stations,form.latitude.data,form.longitude.data,form.radius.data,form.station_count.data)
                 update_form_session(form)
             except:
                 print(f"FEHLER:")
@@ -389,16 +281,13 @@ def daylyView(id,year,month):
             return redirect(url_for('list'))
     
     elif request.method == 'GET':
-        if(session.get('latitude') is not None):
-            form = fill_form()
-        else:
-            form = searchForm(request.form)
+        form = fill_form()
         min_max_form = fill_min_max_form()
 
     #Tageswerte ermitteln
-    # stationTemperatures = session['station_weather_data_selected_period'] 
-    # stationTemperatures = dict(stationTemperatures)
-    # temperatures_daily = stationTemperatures[year][month]
+    # station_temperatures = session['station_weather_data_selected_period'] 
+    # station_temperatures = dict(station_temperatures)
+    # temperatures_daily = station_temperatures[year][month]
  
     #Testdaten
     temperatures_daily = { 
