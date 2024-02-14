@@ -109,7 +109,7 @@
                 <p id="year">Tag</p>
                 <p id="tmin">MinTemp</p>
                 <p id="tmax">MaxTemp</p>
-                <form action="/station/{{id}}/{{year}}" method="post">
+                <form action="/station/{{id}}/{{year}}/{{month}}" method="post">
                     {{min_max_form.csrf_token }}
                     {{min_max_form.year_tmin()}}
                     {{min_max_form.year_tmax()}}
