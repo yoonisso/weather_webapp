@@ -12,17 +12,17 @@
 </head>
 <body>
     <div class="header">
-        <form action="/liste" method="post" novalidate>
+        <form action="/" method="post" novalidate>
             {{ form.csrf_token }}
             <div class="m_left">
-                <p>
+                <div class="coordinates">
                     {{ form.latitude.label }}
                     {{ form.latitude() }}
-                </p>
-                <p>
+                </div>
+                <div class="coordinates">
                     {{ form.longitude.label }}
                     {{ form.longitude() }}
-                </p>
+                </div>
             </div>
             <div>
                 <div id="search_range_slider">
@@ -44,33 +44,23 @@
                 </div>
             </div>
             <div class="align_input_fields">
-                <div id="input_discriptions">
-                    <div>
-                        <p>
-                            {{ form.start_year.label }}
-                        </p>
-                    </div>
-                    <div>
-                        <p>
-                            {{ form.end_year.label }}
-                        </p>
-                    </div>
-                    <div class="last_element">
-                        <p>
-                            {{ form.station_count.label }}
-                        </p>
-                    </div>
+                <p id="start_year_label">
+                    {{ form.start_year.label }}
+                </p>
+                <p id="end_year_label">
+                    {{ form.end_year.label }}
+                </p>
+                <p id="station_count_label">
+                    {{ form.station_count.label }}
+                </p>
+                <div id="start_year_input">
+                    {{ form.start_year() }}
                 </div>
-                <div id="stacked_input_fields">
-                    <p>
-                        {{ form.start_year() }}
-                    </p>
-                    <p>
-                        {{ form.end_year() }}
-                    </p>
-                    <p class="last_element">
-                        {{ form.station_count() }}
-                    </p>
+                <div id="end_year_input">
+                    {{ form.end_year() }}
+                </div>
+                <div id="station_count_input">
+                    {{ form.station_count() }}
                 </div>
             </div>
             <div class="m_right">
