@@ -1,13 +1,10 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, session, Response
+from flask import Flask, render_template, request, flash, redirect, url_for, session
 from forms import searchForm, seasonsForm, minMaxForm
 import secrets
 from datetime import date
-from bokeh.plotting import figure
-from bokeh.embed import components
 from helpers.diagram_ploter import DiagramPloter
 from collections import defaultdict
-
-from api_caller import get_stations_by_coordinates, load_all_stations, get_weather_data_of_station_by_station_id
+from api_caller import get_stations_by_coordinates, load_all_stations
 
 secret_key = secrets.token_urlsafe(16)
 
@@ -17,7 +14,6 @@ app.secret_key = secret_key
 #Initialization
 app.allStations = load_all_stations()
 app.stationTemperatures = {}
-
 
 class SearchData:
     def __init__(self,latitude,longitude,radius,start_year,end_year,station_count):
@@ -33,7 +29,7 @@ class SearchData:
         print("Stationen werden ermittelt...")
         return get_stations_by_coordinates(app.allStations,latitude, longitude, radius, stationCount)
 
-def update_session_form(form):
+def update_form_session(form):
     #Update Session (Form)
     session['latitude'] = form.latitude.data
     session['longitude'] = form.longitude.data
@@ -52,7 +48,7 @@ def fill_form():
     form.end_year.data = session['end_year']
     return form
 
-def update_seasons_form(seasonsForm):
+def update_seasons_sessions(seasonsForm):
     session['year_tmin'] = seasonsForm.year_tmin.data
     session['year_tmax'] = seasonsForm.year_tmax.data
     session['spring_tmin'] = seasonsForm.spring_tmin.data
@@ -129,7 +125,7 @@ def home():
     elif request.method == 'POST':
         if form.validate_on_submit():
             try:
-                update_session_form(form)
+                update_form_session(form)
                 session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
             except:
                 print("FEHLER")
@@ -149,7 +145,7 @@ def list():
     if request.method == 'POST':
         if form.validate_on_submit():
             try:
-                update_session_form(form)
+                update_form_session(form)
                 session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
             except Exception as e:
                 flash(f'Unerwarteter Fehler {e}')
@@ -165,10 +161,7 @@ def list():
         else:
             form = searchForm(request.form)
 
-    
     return render_template('Liste.html',form=form, stations=session["user_stations"])
-
-
 
 @app.route("/station/<id>", methods=['POST', 'GET'])
 def yearlyView(id):
@@ -182,7 +175,7 @@ def yearlyView(id):
         if request.form.get('action'): #Aktualisieren Button
             
             if seasons_form.validate():
-                update_seasons_form(seasons_form)
+                update_seasons_sessions(seasons_form)
                 chosen_views = update_and_get_chosen_views(seasons_form)
                 return redirect(url_for('yearlyView', id=id))
             else: #Fehlerhaft --> Keine Auswahl getroffen
@@ -192,7 +185,7 @@ def yearlyView(id):
         else: #Suchen Button
             if form.validate_on_submit():
                 try:
-                    update_session_form(form)
+                    update_form_session(form)
                     session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
                     app.stationTemperatures = {}
                 except Exception as e:
@@ -315,7 +308,7 @@ def monthlyView(id, year):
         elif form.validate_on_submit():
             try:
                 session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
-                update_session_form(form)
+                update_form_session(form)
             except:
                 print(f"FEHLER:")
                 return redirect()
@@ -382,7 +375,7 @@ def daylyView(id,year,month):
         elif form.validate_on_submit(): #Suchfunktion
             try:
                 session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
-                update_session_form(form)
+                update_form_session(form)
             except:
                 print(f"FEHLER:")
                 return redirect()
