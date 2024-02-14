@@ -87,26 +87,13 @@ input {
     align-items: center;
 }
 
-#kilometer_value {
-    margin: 0px 0px 0px 5px;
-}
-
-#input_discriptions {
-    display: grid;
-    margin-right: 10px;
-    height: 100%;
-
-    div {
-        margin-bottom: 5px;
-    }
-}
-
 #search_range_slider {
     display: flex;
-    justify-content: space-between;
-    div {
-        width: 50%;
-    }
+    flex-direction: column;
+}
+
+#slider {
+    margin: 0;
 }
 
 #logo {
@@ -125,19 +112,6 @@ input {
 #search_icon:hover {
     width: 105%;
     height: 105%;
-}
-
-.last_element {
-    margin-bottom: 0px !important;
-}
-
-#stacked_input_fields {
-    display: grid;
-    height: 100%;
-
-    p {
-        margin: 100px;
-    }
 }
 
 .right_box {
@@ -168,9 +142,7 @@ input {
 .m_right {
     margin-right: 1%;
 }
-.no_margin {
-    margin: 0%;
-}
+
 .image_container {
     position: absolute;
     display: flex;
