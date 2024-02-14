@@ -6,6 +6,9 @@ from helpers.diagram_ploter import DiagramPloter
 from collections import defaultdict
 from api_caller import get_stations_by_coordinates, load_all_stations
 
+#TODO: user_stations in App, nicht in session
+#TODO: FORM link auf jeweilige Seite anpassen + POST handling
+#TODO: Session in eigene datei?
 secret_key = secrets.token_urlsafe(16)
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
@@ -169,7 +172,6 @@ def yearlyView(id):
     #Form
     form = searchForm(request.form)
     seasons_form = seasonsForm(request.form)
-    
 
     if request.method == 'POST':
         if request.form.get('action'): #Aktualisieren Button
@@ -179,6 +181,7 @@ def yearlyView(id):
                 chosen_views = update_and_get_chosen_views(seasons_form)
                 return redirect(url_for('yearlyView', id=id))
             else: #Fehlerhaft --> Keine Auswahl getroffen
+                flash("Es muss mindestens eine Sicht ausgewählt werden!")
                 return redirect(url_for('yearlyView', id=id))
 
 
@@ -303,6 +306,8 @@ def monthlyView(id, year):
         if request.form.get('action'): #Aktualisieren Button
             if min_max_form.validate(): #Mindestens eine Auswahl getroffen
                 update_min_max_session(min_max_form)
+            else:
+                flash("Es muss mindestens eine Sicht ausgewählt werden!")
             return redirect(url_for('monthlyView', id=id, year=year))
         #Suchfunktion
         elif form.validate_on_submit():
@@ -371,6 +376,8 @@ def daylyView(id,year,month):
         if request.form.get('action'): #Aktualisieren Button
             if min_max_form.validate(): #Mindestens eine Auswahl getroffen
                 update_min_max_session(min_max_form)
+            else:
+                flash("Es muss mindestens eine Sicht ausgewählt werden!")
             return redirect(url_for('monthlyView', id=id, year=year, month=month))
         elif form.validate_on_submit(): #Suchfunktion
             try:
