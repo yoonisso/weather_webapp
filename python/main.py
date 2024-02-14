@@ -82,6 +82,20 @@ def fill_seasons_form():
         seasons_form.winter_tmax.data = session['winter_tmax']
     return seasons_form
 
+def update_min_max_session(min_max_form):
+    session['show_tmin'] = min_max_form.year_tmin.data
+    session['show_tmax'] = min_max_form.year_tmax.data
+
+def fill_min_max_form():
+    min_max_form = minMaxForm(request.form)
+    if session.get('show_tmin') is None:
+        min_max_form.year_tmin.data = "checked"
+        min_max_form.year_tmax.data = "checked"
+    else:
+        min_max_form.year_tmin.data = session['show_tmin']
+        min_max_form.year_tmax.data = session['show_tmax']
+    return min_max_form
+
 def update_and_get_chosen_views(seasonsForm):
     chosen_views = {    
                     'spring':{'TMIN': seasonsForm.spring_tmin.data, 'TMAX': seasonsForm.spring_tmax.data},
@@ -157,7 +171,7 @@ def list():
 
 
 @app.route("/station/<id>", methods=['POST', 'GET'])
-def yearView(id):
+def yearlyView(id):
     chosen_views = {}
     #Form
     form = searchForm(request.form)
@@ -166,14 +180,13 @@ def yearView(id):
 
     if request.method == 'POST':
         if request.form.get('action'): #Aktualisieren Button
-
             
             if seasons_form.validate():
                 update_seasons_form(seasons_form)
                 chosen_views = update_and_get_chosen_views(seasons_form)
-                return redirect(url_for('yearView', id=id))
+                return redirect(url_for('yearlyView', id=id))
             else: #Fehlerhaft --> Keine Auswahl getroffen
-                return redirect(url_for('yearView', id=id))
+                return redirect(url_for('yearlyView', id=id))
 
 
         else: #Suchen Button
@@ -288,18 +301,24 @@ def yearView(id):
 
     return render_template('Jahresansicht.html',form=form,seasons_form=seasons_form,averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
 
-@app.route("/station/<id>/<year>")
-def monthView(id, year):
+@app.route("/station/<id>/<year>", methods=['POST', 'GET'])
+def monthlyView(id, year):
     year = int(year)
     min_max_form = minMaxForm(request.form)
-    #Suchfunktion
-    if request.method == 'POST' and form.validate_on_submit():
-        try:
-            session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
-            update_session_form(form)
-        except:
-            print(f"FEHLER:")
-            return redirect()
+    
+    if request.method == 'POST':
+        if request.form.get('action'): #Aktualisieren Button
+            if min_max_form.validate(): #Mindestens eine Auswahl getroffen
+                update_min_max_session(min_max_form)
+            return redirect(url_for('monthlyView', id=id, year=year))
+        #Suchfunktion
+        elif form.validate_on_submit():
+            try:
+                session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
+                update_session_form(form)
+            except:
+                print(f"FEHLER:")
+                return redirect()
         return redirect(url_for('list'))
     
     elif request.method == 'GET':
@@ -307,6 +326,8 @@ def monthView(id, year):
             form = fill_form()
         else:
             form = searchForm(request.form)
+
+        min_max_form = fill_min_max_form()
 
     averageTemperaturesMonthly = defaultdict(lambda: dict())
     # #Testdata monthly
@@ -344,28 +365,35 @@ def monthView(id, year):
 
     
 
-    script, div = DiagramPloter.plotMonthDiagram(averageTemperaturesMonthly, True, True)
+    script, div = DiagramPloter.plotMonthDiagram(averageTemperaturesMonthly, min_max_form.year_tmin.data, min_max_form.year_tmax.data)
 
     return render_template('Monatsansicht.html', averageTemperaturesMonthly = averageTemperaturesMonthly, id=id, form=form,min_max_form=min_max_form, script=script, div=div, year=year)
 
-@app.route("/station/<id>/<year>/<month>")
-def dayView(id,year,month):
+@app.route("/station/<id>/<year>/<month>", methods=['POST', 'GET'])
+def daylyView(id,year,month):
+    
     min_max_form = minMaxForm(request.form)
     #Suchfunktion
-    if request.method == 'POST' and form.validate_on_submit():
-        try:
-            session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
-            update_session_form(form)
-        except:
-            print(f"FEHLER:")
-            return redirect()
-        return redirect(url_for('list'))
+    if request.method == 'POST':
+        if request.form.get('action'): #Aktualisieren Button
+            if min_max_form.validate(): #Mindestens eine Auswahl getroffen
+                update_min_max_session(min_max_form)
+            return redirect(url_for('monthlyView', id=id, year=year, month=month))
+        elif form.validate_on_submit(): #Suchfunktion
+            try:
+                session["user_stations"] = SearchData.getStations(form.latitude.data, form.longitude.data, form.radius.data, form.station_count.data)
+                update_session_form(form)
+            except:
+                print(f"FEHLER:")
+                return redirect()
+            return redirect(url_for('list'))
     
     elif request.method == 'GET':
         if(session.get('latitude') is not None):
             form = fill_form()
         else:
             form = searchForm(request.form)
+        min_max_form = fill_min_max_form()
 
     #Tageswerte ermitteln
     # stationTemperatures = session['station_weather_data_selected_period'] 
@@ -406,10 +434,9 @@ def dayView(id,year,month):
     30: {'TMIN': 3.6, 'TMAX': 15.3},
     31: {'TMIN': 4.3, 'TMAX': 14.7}
 }
-    script, div = DiagramPloter.plotDayDiagram(temperatures_daily, True, True)
+    script, div = DiagramPloter.plotDayDiagram(temperatures_daily, min_max_form.year_tmin.data, min_max_form.year_tmax.data)
 
-    return render_template('Tagesansicht.html', form=form,min_max_form=min_max_form, temperatures_daily=temperatures_daily, script=script, div=div)
-
+    return render_template('Tagesansicht.html', form=form,min_max_form=min_max_form, temperatures_daily=temperatures_daily, script=script, div=div,id=id, year=year, month=month)
 
 if __name__ == '__main__':
     app.run(debug=False) #changed because of performance

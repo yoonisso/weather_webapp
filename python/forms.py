@@ -63,7 +63,6 @@ class seasonsForm(FlaskForm):
 class minMaxForm(FlaskForm):
     def minimum_one_selected(form,field):
         if form.year_tmin.data == False and form.year_tmax.data == False:
-
             raise ValidationError("Bitte mindestens eine Auswahl treffen!")
         
     year_tmin = BooleanField(default="checked",validators=[minimum_one_selected])
