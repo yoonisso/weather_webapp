@@ -2,50 +2,22 @@ from bokeh.plotting import figure
 from bokeh.embed import components
 from bokeh.models import HoverTool, Legend, TapTool, CustomJS, OpenURL
 
-#Testdata yearly
-averageTemperaturesYear = {
-    1949: {'TMIN': 4.3, 'TMAX': 14.7},
-    1950: {'TMIN': 5.1, 'TMAX': 15.2},
-    1951: {'TMIN': 3.8, 'TMAX': 14.5},
-    1952: {'TMIN': 6.2, 'TMAX': 16.8},
-    1953: {'TMIN': 4.5, 'TMAX': 15.0},
-    1954: {'TMIN': 5.3, 'TMAX': 15.7},
-    1955: {'TMIN': 4.8, 'TMAX': 14.9},
-    1956: {'TMIN': 6.0, 'TMAX': 16.5},
-    1957: {'TMIN': 5.7, 'TMAX': 15.4},
-    1958: {'TMIN': 4.1, 'TMAX': 14.2},
-    1959: {'TMIN': 5.6, 'TMAX': 15.8},
-    1960: {'TMIN': 4.9, 'TMAX': 15.1},
-    1961: {'TMIN': 5.2, 'TMAX': 15.3},
-    1962: {'TMIN': 4.4, 'TMAX': 14.6},
-    1963: {'TMIN': 5.0, 'TMAX': 15.6},
-    1964: {'TMIN': 6.1, 'TMAX': 16.2},
-    1965: {'TMIN': 4.7, 'TMAX': 15.5},
-    1966: {'TMIN': 5.4, 'TMAX': 15.9},
-    1967: {'TMIN': 4.2, 'TMAX': 14.3},
-    1968: {'TMIN': 5.5, 'TMAX': 16.0},
-    # Füge hier weitere Jahre mit den entsprechenden Temperaturwerten hinzu
-}
-
-#Testdata monthly
-averageTemperaturesMonthly = {
-    1: {'TMIN': 4.3, 'TMAX': 14.7},
-    2: {'TMIN': 5.1, 'TMAX': 15.2},
-    3: {'TMIN': 3.8, 'TMAX': 14.5},
-    4: {'TMIN': 6.2, 'TMAX': 16.8},
-    5: {'TMIN': 4.5, 'TMAX': 15.0},
-    6: {'TMIN': 5.3, 'TMAX': 15.7},
-    7: {'TMIN': 4.8, 'TMAX': 14.9},
-    8: {'TMIN': 6.0, 'TMAX': 16.5},
-    9: {'TMIN': 5.7, 'TMAX': 15.4},
-    10: {'TMIN': 4.1, 'TMAX': 14.2},
-    11: {'TMIN': 5.6, 'TMAX': 15.8},
-    12: {'TMIN': 4.9, 'TMAX': 15.1}
-}
-
 class DiagramPloter:
     @staticmethod
     def plotYearDiagram(averageTemperatures, chosen_views, url):
+        """
+        Plots a yearly temperature diagram.
+
+        Parameters:
+            averageTemperatures (dict): A dictionary containing average temperatures data.
+            chosen_views (dict): A dictionary specifying which temperature views to include.
+            url (str): The base URL to navigate to upon clicking on a data point.
+
+        Returns:
+            tuple: A tuple containing Bokeh script and div components.
+        """
+
+        # Setup colors, dimensions, and tooltips
         min_width = 300
         min_height = 300
         max_width = 800
@@ -83,13 +55,12 @@ class DiagramPloter:
             line_width = 1
             circle_size = 5
 
-
-        #Hover Effect
         TOOLTIPS = [
             ("Jahr", "@x"),
             ("Temperatur", "@y")
         ]
 
+        # Create Bokeh figure
         p = figure(sizing_mode="scale_both", min_width=min_width,
                    min_height=min_height, max_height=max_height,
                    max_width=max_width, title='Jahresansicht',
@@ -272,9 +243,11 @@ class DiagramPloter:
             )
             legend_items.append(("TMIN Winter", [line_winter_tmin, circle_winter_tmin]))
 
+        # Add legebd to the plot
         legend = Legend(items=legend_items)
         p.add_layout(legend, 'right')
 
+        # Setup tap callback to navigate to URLs
         tap_callback = CustomJS(args=dict(url=url), code="""
             const selected_index = cb_data.source.selected.indices[0];
             const year = cb_data.source.data['x'][selected_index];
@@ -289,12 +262,27 @@ class DiagramPloter:
         taptool = p.select(type=TapTool)
         taptool.callback = tap_callback
 
+        # Setup Bokeh components and return
         script, div = components(p)
 
         return script, div
 
     @staticmethod
     def plotMonthDiagram(averageTemperatures, show_tmin, show_tmax, url):
+        """
+        Plots a monthly temperature diagram.
+
+        Parameters:
+            averageTemperatures (dict): A dictionary containing average temperatures data.
+            show_tmin (bool): Whether to show minimum temperatures.
+            show_tmax (bool): Whether to show maximum temperatures.
+            url (str): The base URL to navigate to upon clicking on a data point.
+
+        Returns:
+            tuple: A tuple containing Bokeh script and div components.
+        """
+
+        # Setup colors, dimensions, and tooltips
         min_width = 300
         min_height = 300
         max_width = 800
@@ -303,12 +291,12 @@ class DiagramPloter:
         month_tmin_color = "blue"
         month_tmax_color = "red"
 
-        #Hover Effect
         TOOLTIPS = [
             ("Monat", "@x"),
             ("Temperatur", "@y")
         ]
 
+        # Create Bokeh figure
         p = figure(sizing_mode="scale_both", min_width=min_width,
                    min_height=min_height, max_height=max_height,
                    max_width=max_width, title='Monatsansicht',
@@ -355,9 +343,11 @@ class DiagramPloter:
             )
             legend_items.append(("TMIN Monat", [line_tmin, circle_tmin]))
 
+        # Create legend
         legend = Legend(items=legend_items)
         p.add_layout(legend, 'right')
 
+        # Setup tap callback to navigate to URLs
         tap_callback = CustomJS(args=dict(url=url), code="""
             const selected_index = cb_data.source.selected.indices[0];
             const month = cb_data.source.data['x'][selected_index];
@@ -372,12 +362,26 @@ class DiagramPloter:
         taptool = p.select(type=TapTool)
         taptool.callback = tap_callback
 
+        # Generate Bokeh components and return
         script, div = components(p)
 
         return script, div
 
     @staticmethod
     def plotDayDiagram(averageTemperatures, show_tmin, show_tmax):
+        """
+        Plots a daily temperature diagram.
+
+        Parameters:
+            averageTemperatures (dict): A dictionary containing average temperatures data.
+            show_tmin (bool): Whether to show minimum temperatures.
+            show_tmax (bool): Whether to show maximum temperatures.
+
+        Returns:
+            tuple: A tuple containing Bokeh script and div components.
+        """
+
+        # Setup colors, dimensions, and tooltips
         min_width = 300
         min_height = 300
         max_width = 800
@@ -386,12 +390,12 @@ class DiagramPloter:
         day_tmin_color = "blue"
         day_tmax_color = "red"
 
-        #Hover Effect
         TOOLTIPS = [
             ("Tag", "@x"),
             ("Temperatur", "@y")
         ]
 
+        # Create the Bokeh figure
         p = figure(sizing_mode="scale_both", min_width=min_width,
                    min_height=min_height, max_height=max_height,
                    max_width=max_width, title='Tagesansicht',
@@ -453,9 +457,11 @@ class DiagramPloter:
             )
             legend_items.append(("TMIN Tag", [line_tmin, circle_tmin]))
 
+        # Create Legend
         legend = Legend(items=legend_items)
         p.add_layout(legend, 'right')
 
+         # Generate Bokeh components and return
         script, div = components(p)
 
         return script, div
