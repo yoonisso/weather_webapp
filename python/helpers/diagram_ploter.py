@@ -66,6 +66,24 @@ class DiagramPloter:
         winter_tmin_color = "#D3D3D3"
         winter_tmax_color = "#B0E0E6"
 
+        amount_chosen_views = 0
+        for season, data in chosen_views.items():
+            for value in data.values():
+                if value == False:
+                    amount_chosen_views += 1
+        amount_chosen_views = 10 - amount_chosen_views
+
+        if amount_chosen_views < 4:
+            line_width = 3
+            circle_size = 9
+        elif amount_chosen_views <= 7:
+            line_width = 2
+            circle_size = 7
+        else:
+            line_width = 1
+            circle_size = 5
+
+
         #Hover Effect
         TOOLTIPS = [
             ("Jahr", "@x"),
@@ -90,14 +108,14 @@ class DiagramPloter:
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['year']['TMAX'] for data in averageTemperatures.values()],
                 color=year_tmax_color,
-                line_width=3
+                line_width=line_width
             )
 
             circle_tmax = p.circle(
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['year']['TMAX'] for data in averageTemperatures.values()],
                 color=year_tmax_color,
-                size=10
+                size=circle_size
             )
             legend_items.append(("TMAX Jahr", [line_tmax, circle_tmax]))
 
@@ -107,14 +125,14 @@ class DiagramPloter:
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['year']['TMIN'] for data in averageTemperatures.values()],
                 color=year_tmin_color,
-                line_width=4
+                line_width=line_width
             )
 
             circle_tmin = p.circle(
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['year']['TMIN'] for data in averageTemperatures.values()],
                 color=year_tmin_color,
-                size=10
+                size=circle_size
             )
             legend_items.append(("TMIN Jahr", [line_tmin, circle_tmin]))
 
@@ -124,14 +142,14 @@ class DiagramPloter:
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['spring']['TMAX'] for data in averageTemperatures.values()],
                 color=spring_tmax_color,
-                line_width=4
+                line_width=line_width
             )
 
             circle_spring_tmax = p.circle(
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['spring']['TMAX'] for data in averageTemperatures.values()],
                 color=spring_tmax_color,
-                size=10
+                size=circle_size
             )
             legend_items.append(("TMAX Frühling", [line_spring_tmax, circle_spring_tmax]))
 
@@ -141,14 +159,14 @@ class DiagramPloter:
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['spring']['TMIN'] for data in averageTemperatures.values()],
                 color=spring_tmin_color,
-                line_width=4
+                line_width=line_width
             )
 
             circle_spring_tmin = p.circle(
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['spring']['TMIN'] for data in averageTemperatures.values()],
                 color=spring_tmin_color,
-                size=10
+                size=circle_size
             )
             legend_items.append(("TMIN Frühling", [line_spring_tmin, circle_spring_tmin]))
 
@@ -158,14 +176,14 @@ class DiagramPloter:
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['summer']['TMAX'] for data in averageTemperatures.values()],
                 color=summer_tmax_color,
-                line_width=4
+                line_width=line_width
             )
 
             circle_summer_tmax = p.circle(
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['summer']['TMAX'] for data in averageTemperatures.values()],
                 color=summer_tmax_color,
-                size=10
+                size=circle_size
             )
             legend_items.append(("TMAX Sommer", [line_summer_tmax, circle_summer_tmax]))
 
@@ -175,14 +193,14 @@ class DiagramPloter:
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['summer']['TMIN'] for data in averageTemperatures.values()],
                 color=summer_tmin_color,
-                line_width=4
+                line_width=line_width
             )
 
             circle_summer_tmin = p.circle(
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['summer']['TMIN'] for data in averageTemperatures.values()],
                 color=summer_tmin_color,
-                size=10
+                size=circle_size
             )
             legend_items.append(("TMIN Sommer", [line_summer_tmin, circle_summer_tmin]))
 
@@ -192,14 +210,14 @@ class DiagramPloter:
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['fall']['TMAX'] for data in averageTemperatures.values()],
                 color=fall_tmax_color,
-                line_width=4
+                line_width=line_width
             )
 
             circle_fall_tmax = p.circle(
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['fall']['TMAX'] for data in averageTemperatures.values()],
                 color=fall_tmax_color,
-                size=10
+                size=circle_size
             )
             legend_items.append(("TMAX Herbst", [line_fall_tmax, circle_fall_tmax]))
 
@@ -209,14 +227,14 @@ class DiagramPloter:
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['fall']['TMIN'] for data in averageTemperatures.values()],
                 color=fall_tmin_color,
-                line_width=4
+                line_width=line_width
             )
 
             circle_fall_tmin = p.circle(
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['fall']['TMIN'] for data in averageTemperatures.values()],
                 color=fall_tmin_color,
-                size=10
+                size=circle_size
             )
             legend_items.append(("TMIN Herbst", [line_fall_tmin, circle_fall_tmin]))
 
@@ -226,14 +244,14 @@ class DiagramPloter:
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['winter']['TMAX'] for data in averageTemperatures.values()],
                 color=winter_tmax_color,
-                line_width=4
+                line_width=line_width
             )
 
             circle_winter_tmax=p.circle(
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['winter']['TMAX'] for data in averageTemperatures.values()],
                 color=winter_tmax_color,
-                size=10
+                size=circle_size
             )
             legend_items.append(("TMAX Winter", [line_winter_tmax, circle_winter_tmax]))
 
@@ -243,14 +261,14 @@ class DiagramPloter:
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['winter']['TMIN'] for data in averageTemperatures.values()],
                 color=winter_tmin_color,
-                line_width=4
+                line_width=line_width
             )
 
             circle_winter_tmin= p.circle(
                 x = [year for year in averageTemperatures.keys()],
                 y = [data['winter']['TMIN'] for data in averageTemperatures.values()],
                 color=winter_tmin_color,
-                size=10
+                size=circle_size
             )
             legend_items.append(("TMIN Winter", [line_winter_tmin, circle_winter_tmin]))
 
