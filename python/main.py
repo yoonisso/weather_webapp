@@ -17,6 +17,9 @@ app.station_selected_period = {}
 
 #TODO: Funktionen Beschreibung
 #TODO: Fehlermeldung, wenn Station keine Daten
+#TODO: CustomValidation + Fehlermeldung
+#TODO: minmax Form??
+
 
 def search_stations(form, redirect_on_error):
     """
@@ -128,45 +131,59 @@ def yearly_view(id):
 
                 for month in station_selected_period[year]:
                     for day in station_selected_period[year][month]:
-                        divisor += 1
-                        sum_min += station_selected_period[year][month][day]['TMIN']
-                        sum_max += station_selected_period[year][month][day]['TMAX']
+                        if 'TMIN' in station_selected_period[year][month][day].keys() and 'TMAX' in station_selected_period[year][month][day].keys():
+                            divisor += 1
+                            sum_min += station_selected_period[year][month][day]['TMIN']
+                            sum_max += station_selected_period[year][month][day]['TMAX']
+
+                            
+                            if month >= 3 and month <=5: #Frühling
+                                sum_min_spring += station_selected_period[year][month][day]['TMIN']
+                                sum_max_spring += station_selected_period[year][month][day]['TMAX']
+                                divisor_spring += 1
                         
-                        if month >= 3 and month <=5: #Frühling
-                            sum_min_spring += station_selected_period[year][month][day]['TMIN']
-                            sum_max_spring += station_selected_period[year][month][day]['TMAX']
-                            divisor_spring += 1
-                      
-                        elif month >= 6 and month <= 8: #Sommer
-                            sum_min_summer += station_selected_period[year][month][day]['TMIN']
-                            sum_max_summer += station_selected_period[year][month][day]['TMAX']
-                            divisor_summer += 1
+                            elif month >= 6 and month <= 8: #Sommer
+                                sum_min_summer += station_selected_period[year][month][day]['TMIN']
+                                sum_max_summer += station_selected_period[year][month][day]['TMAX']
+                                divisor_summer += 1
 
-                        elif month >= 9 and month <= 11: #Herbst
-                            sum_min_fall += station_selected_period[year][month][day]['TMIN']
-                            sum_max_fall += station_selected_period[year][month][day]['TMAX']
-                            divisor_fall += 1
-                        elif month == 1 or month == 2: #Winter
-                            sum_min_winter += station_selected_period[year][month][day]['TMIN']
-                            sum_max_winter += station_selected_period[year][month][day]['TMAX']
-                            divisor_winter += 1
-                        elif month == 12: #Winter vom Vorjahr
-                            sum_min_winter += all_station_temperatures[year-1][month][day]['TMIN']
-                            sum_max_winter += all_station_temperatures[year-1][month][day]['TMAX']
-                            divisor_winter += 1
+                            elif month >= 9 and month <= 11: #Herbst
+                                sum_min_fall += station_selected_period[year][month][day]['TMIN']
+                                sum_max_fall += station_selected_period[year][month][day]['TMAX']
+                                divisor_fall += 1
+                            elif month == 1 or month == 2: #Winter
+                                sum_min_winter += station_selected_period[year][month][day]['TMIN']
+                                sum_max_winter += station_selected_period[year][month][day]['TMAX']
+                                divisor_winter += 1
+                            elif month == 12: #Winter vom Vorjahr
+                                if year-1 in all_station_temperatures.keys():
+                                    if 'TMIN' in all_station_temperatures[year-1][month][day].keys() and 'TMAX' in all_station_temperatures[year-1][month][day].keys():
+                                        sum_min_winter += all_station_temperatures[year-1][month][day]['TMIN']
+                                        sum_max_winter += all_station_temperatures[year-1][month][day]['TMAX']
+                                        divisor_winter += 1
 
+                if divisor == 0:
+                    divisor = 1
                 average_temperatures_year[year]['year']['TMIN'] = round(sum_min/divisor,1)
                 average_temperatures_year[year]['year']['TMAX'] = round(sum_max/divisor,1)
 
+                if divisor_spring == 0:
+                    divisor_spring = 1
                 average_temperatures_year[year]['spring']['TMIN'] = round(sum_min_spring/divisor_spring,1)
                 average_temperatures_year[year]['spring']['TMAX'] = round(sum_max_spring/divisor_spring,1)
 
+                if divisor_summer == 0:
+                    divisor_summer = 1
                 average_temperatures_year[year]['summer']['TMIN'] = round(sum_min_summer/divisor_summer,1)
                 average_temperatures_year[year]['summer']['TMAX'] = round(sum_max_summer/divisor_summer,1)
 
+                if divisor_fall == 0:
+                    divisor_fall = 1
                 average_temperatures_year[year]['fall']['TMIN'] = round(sum_min_fall/divisor_fall,1)
                 average_temperatures_year[year]['fall']['TMAX'] = round(sum_max_fall/divisor_fall,1)
 
+                if divisor_winter == 0:
+                    divisor_winter = 1
                 average_temperatures_year[year]['winter']['TMIN'] = round(sum_min_winter/divisor_winter,1)
                 average_temperatures_year[year]['winter']['TMAX'] = round(sum_max_winter/divisor_winter,1)
     
@@ -260,8 +277,10 @@ def monthly_view(id, year):
         sumMax = 0
         for day in monthly_raw[month]:
                 divisor += 1
-                sumMin += monthly_raw[month][day]['TMIN']
-                sumMax += monthly_raw[month][day]['TMAX']
+                if 'TMIN' in  monthly_raw[month][day].keys():
+                    sumMin += monthly_raw[month][day]['TMIN']
+                if 'TMAX' in  monthly_raw[month][day].keys():
+                    sumMax += monthly_raw[month][day]['TMAX']
         averageTemperaturesMonthly[month]['TMIN'] = round(sumMin/divisor,1)
         averageTemperaturesMonthly[month]['TMAX'] = round(sumMax/divisor,1)
 

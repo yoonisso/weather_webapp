@@ -73,11 +73,11 @@
                     <th>Mittleres Temperatur Minimum in &#176;C </th>
                     <th>Mittleres Temperatur Maximum in &#176;C</th>
                 </tr>
-                {%for year in averageTemperaturesYear%}
+                {%for year in average_temperatures_year%}
                 <tr data-href="/station/{{id}}/{{year}}">
                     <td>{{year}}</td>
-                    <td>{{averageTemperaturesYear[year]['year']['TMIN']}}</td>
-                    <td>{{averageTemperaturesYear[year]['year']['TMAX']}}</td>
+                    <td>{{average_temperatures_year[year]['year']['TMIN']}}</td>
+                    <td>{{average_temperatures_year[year]['year']['TMAX']}}</td>
                 </tr>
                 {%endfor%}
             </table>
