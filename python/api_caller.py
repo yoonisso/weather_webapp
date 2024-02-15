@@ -93,7 +93,7 @@ def get_stations_by_coordinates(allStations, latitude, longitude, radius, statio
     else:
         return filtered_coords[0:stationCount]
 
-def get_weather_data_of_station_by_station_id(stationId, startYear, endYear):
+def get_weather_data_of_station_by_station_id(stationId):
     url = f"https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_station/{stationId}.csv.gz"
     response = requests.get((url), stream=True)
 
@@ -106,8 +106,8 @@ def get_weather_data_of_station_by_station_id(stationId, startYear, endYear):
 
     for record in stationWeatherData:
         year = int(record[1][0:4])
-        if year < startYear or year > endYear:
-            continue
+        # if year < startYear or year > endYear:
+        #     continue
         month = record[1][4:6]
         if month[0] == '0':
             month = int(month[1])
