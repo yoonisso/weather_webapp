@@ -51,20 +51,20 @@ class DiagramPloter:
         max_width = 800
         max_height = 600
 
-        year_tmin_color = "blue"
-        year_tmax_color = "red"
+        year_tmin_color = "#0000FF"
+        year_tmax_color = "#FF0000"
 
-        spring_tmin_color = "#90ee90"
-        spring_tmax_color = "#006400"
+        spring_tmin_color = "#7CFC00"
+        spring_tmax_color = "#9ACD32"
 
-        summer_tmin_color = "#add8e6"
-        summer_tmax_color = "#00008b"
+        summer_tmin_color = "#FFD700"
+        summer_tmax_color = "#ffff00"
 
-        fall_tmin_color = "#ffa500"
-        fall_tmax_color = "#ff8c00"
+        fall_tmin_color = "#FFA500"
+        fall_tmax_color = "#FF8C00"
 
-        winter_tmin_color = "#d3d3d3"
-        winter_tmax_color = "#696969"
+        winter_tmin_color = "#D3D3D3"
+        winter_tmax_color = "#B0E0E6"
 
         #Hover Effect
         TOOLTIPS = [
