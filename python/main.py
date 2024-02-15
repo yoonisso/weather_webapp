@@ -6,8 +6,6 @@ from helpers.diagram_ploter import DiagramPloter
 from collections import defaultdict
 from api_caller import get_stations_by_coordinates, load_all_stations
 
-#TODO: FORM link auf jeweilige Seite anpassen + POST handling
-
 secret_key = secrets.token_urlsafe(16)
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
@@ -17,53 +15,45 @@ app.secret_key = secret_key
 app.all_stations = load_all_stations()
 app.station_temperatures = {}
 
+def search_stations(form, redirect_on_error):
+    """
+    Sucht Stationen (aber nur für Startseite und Liste)
+    redirect_on_error: LIST[NAME, ID, YEAR, MONTH]
+    """
+    update_form_session(form)
+    if form.validate():
+        try:
+            session["user_stations"] = get_stations_by_coordinates(app.all_stations,form.latitude.data,form.longitude.data,form.radius.data,form.station_count.data)
+        except Exception as e:
+            flash(f'Unerwarteter Fehler: {e}')
+            return redirect(url_for(redirect_on_error))
+        return redirect(url_for('list'))
+    else: #Fehlerhaftes Form
+        first_key = next(iter(form.errors))
+        flash(f"{form.errors[first_key][0]}!")
+        return redirect(url_for(redirect_on_error))
+
 @app.route("/", methods=['GET', 'POST'])
 def home():
     form = searchForm(request.form)
-    if request.method == 'GET':
+    if request.method == 'POST':
+        return search_stations(form,'home')
+    elif request.method == 'GET':
         form = fill_form()
-        return render_template('Startseite.html', form=form)
-
-    elif request.method == 'POST':
-        if form.validate_on_submit():
-            try:
-                update_form_session(form)
-                session["user_stations"] = get_stations_by_coordinates(app.all_stations,form.latitude.data,form.longitude.data,form.radius.data,form.station_count.data)
-            except Exception as e:
-                flash(f'Unerwarteter Fehler: {e}')
-                return redirect(url_for('list'))
-            return redirect(url_for('list'))
-
-        else: #Fehlerhaftes Form
-            first_key = next(iter(form.errors))
-            flash(f"{form.errors[first_key][0]}!")
-            
-            return render_template("Startseite.html", form=form)
+    return render_template('Startseite.html', form=form)
 
 @app.route("/liste", methods=['POST', 'GET'])
 def list():
     form = searchForm(request.form) #Nur notwendig, wenn man über Adresszeile navigiert??
     #Suchfunktion
     if request.method == 'POST':
-        if form.validate_on_submit():
-            try:
-                update_form_session(form)
-                session["user_stations"] = get_stations_by_coordinates(app.all_stations,form.latitude.data,form.longitude.data,form.radius.data,form.station_count.data)
-            except Exception as e:
-                flash(f'Unerwarteter Fehler {e}')
-                return redirect(url_for('list'))
-            return redirect(url_for('list'))
-        else:
-            first_key = next(iter(form.errors))
-            flash(f"{form.errors[first_key][0]}!")
-    
+        search_stations(form, 'list')
     elif request.method == 'GET':
         form = fill_form()
-
     return render_template('Liste.html',form=form, stations=session["user_stations"])
 
 @app.route("/station/<id>", methods=['POST', 'GET'])
-def yearlyView(id):
+def yearly_view(id):
     #Form
     form = searchForm(request.form)
     seasons_form = seasonsForm(request.form)
@@ -74,26 +64,24 @@ def yearlyView(id):
             if seasons_form.validate():
                 update_seasons_sessions(seasons_form)
                 session['chosen_views'] = update_and_get_chosen_views(seasons_form)
-                return redirect(url_for('yearlyView', id=id))
+                return redirect(url_for('yearly_view', id=id))
             else: #Fehlerhaft --> Keine Auswahl getroffen
                 flash("Es muss mindestens eine Sicht ausgewählt werden!")
-                return redirect(url_for('yearlyView', id=id))
-
+                return redirect(url_for('yearly_view', id=id))
 
         else: #Suchen Button
-            if form.validate_on_submit():
+            update_form_session(form)
+            if form.validate():
                 try:
-                    update_form_session(form)
                     session["user_stations"] = get_stations_by_coordinates(app.all_stations,form.latitude.data,form.longitude.data,form.radius.data,form.station_count.data)
-                    app.station_temperatures = {}
                 except Exception as e:
-                    flash(f'Unerwarteter Fehler {e}')
-                    return redirect(url_for('list'))
+                    flash(f'Unerwarteter Fehler: {e}')
+                    return redirect(url_for('yearly_view', id=id))
                 return redirect(url_for('list'))
-            else:
+            else: #Fehlerhaftes Form
                 first_key = next(iter(form.errors))
                 flash(f"{form.errors[first_key][0]}!")
-
+                return redirect(url_for('yearly_view', id=id))
     
     # elif request.method == 'GET':
    
@@ -194,9 +182,11 @@ def yearlyView(id):
     return render_template('Jahresansicht.html',form=form,seasons_form=seasons_form,averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
 
 @app.route("/station/<id>/<year>", methods=['POST', 'GET'])
-def monthlyView(id, year):
+def monthly_view(id, year):
     year = int(year)
+    #Form
     min_max_form = minMaxForm(request.form)
+    form = searchForm(request.form)
     
     if request.method == 'POST':
         if request.form.get('action'): #Aktualisieren Button
@@ -205,20 +195,24 @@ def monthlyView(id, year):
             else:
                 flash("Es muss mindestens eine Sicht ausgewählt werden!")
             return redirect(url_for('monthlyView', id=id, year=year))
-        #Suchfunktion
-        elif form.validate_on_submit():
-            try:
-                session["user_stations"] = get_stations_by_coordinates(app.all_stations,form.latitude.data,form.longitude.data,form.radius.data,form.station_count.data)
-                update_form_session(form)
-            except:
-                print(f"FEHLER:")
-                return redirect()
-        return redirect(url_for('list'))
-    
+        else: #Suchfunktion
+            update_form_session(form)
+            if form.validate():
+                try:
+                    session["user_stations"] = get_stations_by_coordinates(app.all_stations,form.latitude.data,form.longitude.data,form.radius.data,form.station_count.data)
+                except Exception as e:
+                    flash(f'Unerwarteter Fehler: {e}')
+                    return redirect(url_for('monthly_view', id=id, year=year))
+                return redirect(url_for('list'))
+            else: #Fehlerhaftes Form
+                first_key = next(iter(form.errors))
+                flash(f"{form.errors[first_key][0]}!")
+                return redirect(url_for('monthly_view', id=id, year=year))
+            
     elif request.method == 'GET':
         form = fill_form()
         min_max_form = fill_min_max_form()
-
+    
     averageTemperaturesMonthly = defaultdict(lambda: dict())
     # #Testdata monthly
     averageTemperaturesMonthly = {
@@ -253,15 +247,14 @@ def monthlyView(id, year):
     #     averageTemperaturesMonthly[month]['TMIN'] = round(sumMin/divisor,1)
     #     averageTemperaturesMonthly[month]['TMAX'] = round(sumMax/divisor,1)
 
-    
-
     script, div = DiagramPloter.plotMonthDiagram(averageTemperaturesMonthly, min_max_form.year_tmin.data, min_max_form.year_tmax.data,f"http://127.0.0.1:5000/station/{id}/{year}")
 
     return render_template('Monatsansicht.html', averageTemperaturesMonthly = averageTemperaturesMonthly, id=id, form=form,min_max_form=min_max_form, script=script, div=div, year=year)
 
 @app.route("/station/<id>/<year>/<month>", methods=['POST', 'GET'])
-def daylyView(id,year,month):
-    
+def dayly_view(id,year,month):
+    #Form
+    form = searchForm(request.form)
     min_max_form = minMaxForm(request.form)
     #Suchfunktion
     if request.method == 'POST':
@@ -270,15 +263,20 @@ def daylyView(id,year,month):
                 update_min_max_session(min_max_form)
             else:
                 flash("Es muss mindestens eine Sicht ausgewählt werden!")
-            return redirect(url_for('monthlyView', id=id, year=year, month=month))
-        elif form.validate_on_submit(): #Suchfunktion
-            try:
-                session["user_stations"] = get_stations_by_coordinates(app.all_stations,form.latitude.data,form.longitude.data,form.radius.data,form.station_count.data)
-                update_form_session(form)
-            except:
-                print(f"FEHLER:")
-                return redirect()
-            return redirect(url_for('list'))
+            return redirect(url_for('dayly_view', id=id, year=year, month=month))
+        else: #Suchfunktion
+            update_form_session(form)
+            if form.validate():
+                try:
+                    session["user_stations"] = get_stations_by_coordinates(app.all_stations,form.latitude.data,form.longitude.data,form.radius.data,form.station_count.data)
+                except Exception as e:
+                    flash(f'Unerwarteter Fehler: {e}')
+                    return redirect(url_for('dayly_view',id=id,year=year,month=month))
+                return redirect(url_for('list'))
+            else: #Fehlerhaftes Form
+                first_key = next(iter(form.errors))
+                flash(f"{form.errors[first_key][0]}!")
+                return redirect(url_for('dayly_view',id=id,year=year,month=month))
     
     elif request.method == 'GET':
         form = fill_form()
