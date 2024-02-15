@@ -397,7 +397,6 @@ class DiagramPloter:
 
             line_tmax = p.line(
                 x = [day for day in averageTemperatures.keys()],
-                # y = [data['TMAX'] for data in averageTemperatures.values()],
                 y = y_values,
                 color=day_tmax_color,
                 line_width=3
@@ -405,7 +404,6 @@ class DiagramPloter:
 
             circle_tmax = p.circle(
                 x = [day for day in averageTemperatures.keys()],
-                # y = [data['TMAX'] for data in averageTemperatures.values()],
                 y = y_values,
                 color=day_tmax_color,
                 size=10
@@ -424,7 +422,6 @@ class DiagramPloter:
                     
             line_tmin = p.line(
                 x = [day for day in averageTemperatures.keys()],
-                # y = [data['TMIN'] for data in averageTemperatures.values()],
                 y = y_values,
                 color=day_tmin_color,
                 line_width=4
@@ -432,7 +429,6 @@ class DiagramPloter:
 
             circle_tmin = p.circle(
                 x = [day for day in averageTemperatures.keys()],
-                # y = [data['TMIN'] for data in averageTemperatures.values()],
                 y = y_values,
                 color=day_tmin_color,
                 size=10
