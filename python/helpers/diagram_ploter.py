@@ -385,19 +385,28 @@ class DiagramPloter:
         p.add_tools(hover)
 
         legend_items = []
-
+        
         #day TMAX plot
         if show_tmax:
+            y_values = []
+            for data in averageTemperatures.values():
+                if 'TMAX' in data.keys():
+                    y_values.append(data['TMAX'])
+                else:
+                    y_values.append(None)
+
             line_tmax = p.line(
                 x = [day for day in averageTemperatures.keys()],
-                y = [data['TMAX'] for data in averageTemperatures.values()],
+                # y = [data['TMAX'] for data in averageTemperatures.values()],
+                y = y_values,
                 color=day_tmax_color,
                 line_width=3
             )
 
             circle_tmax = p.circle(
                 x = [day for day in averageTemperatures.keys()],
-                y = [data['TMAX'] for data in averageTemperatures.values()],
+                # y = [data['TMAX'] for data in averageTemperatures.values()],
+                y = y_values,
                 color=day_tmax_color,
                 size=10
             )
@@ -405,16 +414,26 @@ class DiagramPloter:
 
         #day TMIN plot
         if show_tmin:
+            y_values = []
+            for data in averageTemperatures.values():
+                if 'TMIN' in data.keys():
+                    y_values.append(data['TMIN'])
+                else:
+                    y_values.append(None)
+                
+                    
             line_tmin = p.line(
                 x = [day for day in averageTemperatures.keys()],
-                y = [data['TMIN'] for data in averageTemperatures.values()],
+                # y = [data['TMIN'] for data in averageTemperatures.values()],
+                y = y_values,
                 color=day_tmin_color,
                 line_width=4
             )
 
             circle_tmin = p.circle(
                 x = [day for day in averageTemperatures.keys()],
-                y = [data['TMIN'] for data in averageTemperatures.values()],
+                # y = [data['TMIN'] for data in averageTemperatures.values()],
+                y = y_values,
                 color=day_tmin_color,
                 size=10
             )

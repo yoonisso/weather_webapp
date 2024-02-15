@@ -19,6 +19,7 @@ app.station_selected_period = {}
 #TODO: Fehlermeldung, wenn Station keine Daten
 #TODO: CustomValidation + Fehlermeldung
 #TODO: minmax Form??
+#TODO: Station Mannheim CITY
 
 
 def search_stations(form, redirect_on_error):
@@ -328,6 +329,8 @@ def daily_view(id,year,month):
 
     monthly_raw = dict(all_stations_temperatures[id][year])
     temperatures_daily = monthly_raw[month]
+    temperatures_daily = dict(sorted(temperatures_daily.items()))
+
  
     #Testdaten
 #     temperatures_daily = { 
