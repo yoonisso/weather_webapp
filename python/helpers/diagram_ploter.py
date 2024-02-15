@@ -264,6 +264,8 @@ class DiagramPloter:
             const new_url = url + "/" + year;
             
             window.location.href = new_url;
+            
+            cb_data.source.selected.indices = [];
             """)
 
         taptool = p.select(type=TapTool)
@@ -345,6 +347,8 @@ class DiagramPloter:
             const new_url = url + "/" + month;
             
             window.location.href = new_url;
+            
+            cb_data.source.selected.indices = [];
             """)
 
         taptool = p.select(type=TapTool)
