@@ -166,28 +166,27 @@ input {
     border: thin solid;
     font-size: 1vw;
     caption-side: top;
-
-    th {
-        border: thin solid;
-    }
-
-    td {
-        border: thin solid;
-        padding: 0;
-        margin: 0;
-    }
-
-    caption {
-        border: thin solid;
-        background-color: lightgray;
-        color: black;
-        text-align: center;
-    }
 }
 /* hover effect for the rows of the detail table except the caption */
 .detail_table tr:nth-child(n+2):hover {
     background-color: #f7c203;
     cursor: pointer;
+}
+caption {
+    border: thin solid !important;
+    background-color: lightgray !important;
+    color: black !important;
+    text-align: center !important;
+}
+th {
+    border: thin solid !important;
+    text-align: center !important;
+}
+td {
+    text-align: center !important;
+    border: thin solid !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 /* ----------------------------------------------------------------- */
 
