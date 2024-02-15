@@ -108,7 +108,7 @@ def yearly_view(id):
         else:
             #Mittelwerte berechnen
             # all_stations_temperatures = app.all_stations_temperatures[id]                            
-            averageTemperaturesYear = defaultdict(lambda: defaultdict(lambda: dict()))
+            average_temperatures_year = defaultdict(lambda: defaultdict(lambda: dict()))
             for year in station_selected_period:
                 divisor = 0
                 sum_min = 0
@@ -155,23 +155,23 @@ def yearly_view(id):
                             sum_max_winter += all_station_temperatures[year-1][month][day]['TMAX']
                             divisor_winter += 1
 
-                averageTemperaturesYear[year]['year']['TMIN'] = round(sum_min/divisor,1)
-                averageTemperaturesYear[year]['year']['TMAX'] = round(sum_max/divisor,1)
+                average_temperatures_year[year]['year']['TMIN'] = round(sum_min/divisor,1)
+                average_temperatures_year[year]['year']['TMAX'] = round(sum_max/divisor,1)
 
-                averageTemperaturesYear[year]['spring']['TMIN'] = round(sum_min_spring/divisor_spring,1)
-                averageTemperaturesYear[year]['spring']['TMAX'] = round(sum_max_spring/divisor_spring,1)
+                average_temperatures_year[year]['spring']['TMIN'] = round(sum_min_spring/divisor_spring,1)
+                average_temperatures_year[year]['spring']['TMAX'] = round(sum_max_spring/divisor_spring,1)
 
-                averageTemperaturesYear[year]['summer']['TMIN'] = round(sum_min_summer/divisor_summer,1)
-                averageTemperaturesYear[year]['summer']['TMAX'] = round(sum_max_summer/divisor_summer,1)
+                average_temperatures_year[year]['summer']['TMIN'] = round(sum_min_summer/divisor_summer,1)
+                average_temperatures_year[year]['summer']['TMAX'] = round(sum_max_summer/divisor_summer,1)
 
-                averageTemperaturesYear[year]['fall']['TMIN'] = round(sum_min_fall/divisor_fall,1)
-                averageTemperaturesYear[year]['fall']['TMAX'] = round(sum_max_fall/divisor_fall,1)
+                average_temperatures_year[year]['fall']['TMIN'] = round(sum_min_fall/divisor_fall,1)
+                average_temperatures_year[year]['fall']['TMAX'] = round(sum_max_fall/divisor_fall,1)
 
-                averageTemperaturesYear[year]['winter']['TMIN'] = round(sum_min_winter/divisor_winter,1)
-                averageTemperaturesYear[year]['winter']['TMAX'] = round(sum_max_winter/divisor_winter,1)
+                average_temperatures_year[year]['winter']['TMIN'] = round(sum_min_winter/divisor_winter,1)
+                average_temperatures_year[year]['winter']['TMAX'] = round(sum_max_winter/divisor_winter,1)
     
     #TESTDATEN
-    # averageTemperaturesYear = {
+    # average_temperatures_year = {
     #     1951: {'spring': {'TMIN': 5.2, 'TMAX': 15.3}, 'summer': {'TMIN': 6.3, 'TMAX': 18.5}, 'fall': {'TMIN': 4.8, 'TMAX': 14.2}, 'winter': {'TMIN': 2.1, 'TMAX': 9.8}, 'year': {'TMIN': 4.6, 'TMAX': 14.5}},
     #     1952: {'spring': {'TMIN': 4.9, 'TMAX': 14.8}, 'summer': {'TMIN': 6.1, 'TMAX': 17.9}, 'fall': {'TMIN': 5.2, 'TMAX': 14.7}, 'winter': {'TMIN': 1.9, 'TMAX': 9.5}, 'year': {'TMIN': 4.8, 'TMAX': 14.2}},
     #     1953: {'spring': {'TMIN': 5.4, 'TMAX': 15.9}, 'summer': {'TMIN': 6.0, 'TMAX': 18.3}, 'fall': {'TMIN': 5.0, 'TMAX': 15.1}, 'winter': {'TMIN': 2.5, 'TMAX': 10.2}, 'year': {'TMIN': 4.8, 'TMAX': 14.8}},
@@ -195,9 +195,9 @@ def yearly_view(id):
     else:
         chosen_views = session['chosen_views']
     
-    script, div = DiagramPloter.plotYearDiagram(averageTemperaturesYear, chosen_views, f"http://127.0.0.1:5000/station/{id}")
+    script, div = DiagramPloter.plotYearDiagram(average_temperatures_year, chosen_views, f"http://127.0.0.1:5000/station/{id}")
 
-    return render_template('Jahresansicht.html',form=form,seasons_form=seasons_form,averageTemperaturesYear = averageTemperaturesYear, id=id, script=script, div=div)
+    return render_template('Jahresansicht.html',form=form,seasons_form=seasons_form,average_temperatures_year = average_temperatures_year, id=id, script=script, div=div)
 
 @app.route("/station/<id>/<year>", methods=['POST', 'GET'])
 def monthly_view(id, year):
