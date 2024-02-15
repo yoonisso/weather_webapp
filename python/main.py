@@ -194,7 +194,7 @@ def monthly_view(id, year):
                 update_min_max_session(min_max_form)
             else:
                 flash("Es muss mindestens eine Sicht ausgewählt werden!")
-            return redirect(url_for('monthlyView', id=id, year=year))
+            return redirect(url_for('monthly_view', id=id, year=year))
         else: #Suchfunktion
             update_form_session(form)
             if form.validate():
@@ -252,7 +252,7 @@ def monthly_view(id, year):
     return render_template('Monatsansicht.html', averageTemperaturesMonthly = averageTemperaturesMonthly, id=id, form=form,min_max_form=min_max_form, script=script, div=div, year=year)
 
 @app.route("/station/<id>/<year>/<month>", methods=['POST', 'GET'])
-def dayly_view(id,year,month):
+def daily_view(id,year,month):
     #Form
     form = searchForm(request.form)
     min_max_form = minMaxForm(request.form)
@@ -263,7 +263,7 @@ def dayly_view(id,year,month):
                 update_min_max_session(min_max_form)
             else:
                 flash("Es muss mindestens eine Sicht ausgewählt werden!")
-            return redirect(url_for('dayly_view', id=id, year=year, month=month))
+            return redirect(url_for('daily_view', id=id, year=year, month=month))
         else: #Suchfunktion
             update_form_session(form)
             if form.validate():
@@ -271,12 +271,12 @@ def dayly_view(id,year,month):
                     session["user_stations"] = get_stations_by_coordinates(app.all_stations,form.latitude.data,form.longitude.data,form.radius.data,form.station_count.data)
                 except Exception as e:
                     flash(f'Unerwarteter Fehler: {e}')
-                    return redirect(url_for('dayly_view',id=id,year=year,month=month))
+                    return redirect(url_for('daily_view',id=id,year=year,month=month))
                 return redirect(url_for('list'))
             else: #Fehlerhaftes Form
                 first_key = next(iter(form.errors))
                 flash(f"{form.errors[first_key][0]}!")
-                return redirect(url_for('dayly_view',id=id,year=year,month=month))
+                return redirect(url_for('daily_view',id=id,year=year,month=month))
     
     elif request.method == 'GET':
         form = fill_form()
