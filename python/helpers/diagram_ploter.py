@@ -1,6 +1,6 @@
 from bokeh.plotting import figure
 from bokeh.embed import components
-from bokeh.models import HoverTool, Legend
+from bokeh.models import HoverTool, Legend, TapTool, CustomJS, OpenURL
 
 #Testdata yearly
 averageTemperaturesYear = {
@@ -45,7 +45,7 @@ averageTemperaturesMonthly = {
 
 class DiagramPloter:
     @staticmethod
-    def plotYearDiagram(averageTemperatures, chosen_views):
+    def plotYearDiagram(averageTemperatures, chosen_views, url):
         min_width = 300
         min_height = 300
         max_width = 800
@@ -76,7 +76,7 @@ class DiagramPloter:
                    min_height=min_height, max_height=max_height,
                    max_width=max_width, title='Jahresansicht',
                    x_axis_label="Jahr", y_axis_label='Temperatur',
-                   toolbar_location=None, tools=[])
+                   toolbar_location=None, tools=["tap"])
 
         hover = HoverTool(tooltips=[("Jahr", "@x"), ("Temperatur", "@y{0.0}°C")])
 
@@ -257,12 +257,24 @@ class DiagramPloter:
         legend = Legend(items=legend_items)
         p.add_layout(legend, 'right')
 
+        tap_callback = CustomJS(args=dict(url=url), code="""
+            const selected_index = cb_data.source.selected.indices[0];
+            const year = cb_data.source.data['x'][selected_index];
+            
+            const new_url = url + "/" + year;
+            
+            window.location.href = new_url;
+            """)
+
+        taptool = p.select(type=TapTool)
+        taptool.callback = tap_callback
+
         script, div = components(p)
 
         return script, div
 
     @staticmethod
-    def plotMonthDiagram(averageTemperatures, show_tmin, show_tmax):
+    def plotMonthDiagram(averageTemperatures, show_tmin, show_tmax, url):
         min_width = 300
         min_height = 300
         max_width = 800
@@ -281,7 +293,7 @@ class DiagramPloter:
                    min_height=min_height, max_height=max_height,
                    max_width=max_width, title='Monatsansicht',
                    x_axis_label="Monat", y_axis_label='Temperatur',
-                   toolbar_location=None, tools=[])
+                   toolbar_location=None, tools=["tap"])
 
         hover = HoverTool(tooltips=[("Monat", "@x"), ("Temperatur", "@y{0.0}°C")])
 
@@ -326,6 +338,18 @@ class DiagramPloter:
         legend = Legend(items=legend_items)
         p.add_layout(legend, 'right')
 
+        tap_callback = CustomJS(args=dict(url=url), code="""
+            const selected_index = cb_data.source.selected.indices[0];
+            const month = cb_data.source.data['x'][selected_index];
+            
+            const new_url = url + "/" + month;
+            
+            window.location.href = new_url;
+            """)
+
+        taptool = p.select(type=TapTool)
+        taptool.callback = tap_callback
+
         script, div = components(p)
 
         return script, div
@@ -350,7 +374,7 @@ class DiagramPloter:
                    min_height=min_height, max_height=max_height,
                    max_width=max_width, title='Tagesansicht',
                    x_axis_label='Tag', y_axis_label='Temperatur',
-                   toolbar_location=None, tools=[])
+                   toolbar_location=None, tools=["tap"])
 
         hover = HoverTool(tooltips=[("Tag", "@x"), ("Temperatur", "@y{0.0}°C")])
 
