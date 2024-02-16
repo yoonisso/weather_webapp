@@ -15,12 +15,12 @@ class searchForm(FlaskForm):
         if(form.end_year.data > current_year):
             raise ValidationError('Endjahr liegt in der Zukunft')
 
-    latitude = DecimalField('Breitengrad', places=6, validators=[InputRequired(message="Bitte Breitengrad angeben!")])
-    longitude = DecimalField('Längengrad', places=6, validators=[InputRequired(message="Bitte Längengrad angeben!")]) 
-    radius =  IntegerRangeField('Radius', validators = [NumberRange(1, 100),InputRequired(message="Bitte Radius angeben!")] )
-    start_year = IntegerField('Startjahr', validators = [NumberRange(1800, 2999), InputRequired(message="Bitte Startjahr angeben!")])
-    end_year = IntegerField('Endjahr', validators = [NumberRange(1800, 2999), InputRequired(message="Bitte Endjahr angeben!"), validate_year])
-    station_count = IntegerField('Anzahl Stationen', validators= [NumberRange(1, 20), InputRequired("Bitte Anzahl Stationen angeben!")])
+    latitude = DecimalField('Breitengrad', places=6, validators=[InputRequired(message="Bitte Breitengrad angeben"), NumberRange(-90,90, message="Bitte gültigen Breitengrad angeben. Breitengrad muss zwischen -90 und 90 liegen.")])
+    longitude = DecimalField('Längengrad', places=6, validators=[InputRequired(message="Bitte Längengrad angeben"), NumberRange(-180,180,message="Bitte gültigen Längengrad angeben. Längengrad muss zwischen -180 und 180 liegen.")]) 
+    radius =  IntegerRangeField('Radius', validators = [NumberRange(1, 100),InputRequired(message="Bitte Radius angeben")] )
+    start_year = IntegerField('Startjahr', validators = [NumberRange(1800, 2999), InputRequired(message="Bitte Startjahr angeben")])
+    end_year = IntegerField('Endjahr', validators = [NumberRange(1800, 2999), InputRequired(message="Bitte Endjahr angeben"), validate_year])
+    station_count = IntegerField('Anzahl Stationen', validators= [NumberRange(1, 20, message="Anzahl Stationen muss zwischen 1 und 20 sein"), InputRequired("Bitte Anzahl Stationen angeben")])
 
 class seasonsForm(FlaskForm):
     def minimum_one_selected(form,field):

@@ -16,11 +16,6 @@ app.all_stations_temperatures = {}
 app.station_selected_period = {}
 
 #TODO: Funktionen Beschreibung
-#TODO: Fehlermeldung, wenn Station keine Daten
-#TODO: CustomValidation + Fehlermeldung
-#TODO: minmax Form??
-#TODO: Station Mannheim CITY
-
 
 def search_stations(form, redirect_on_error):
     """
@@ -108,7 +103,9 @@ def yearly_view(id):
                 station_selected_period[year] = all_station_temperatures[year]
 
         if len(station_selected_period.keys()) == 0:
-            flash('Der ausgewählte Zeitraum enthält keine Daten')
+            flash('Die Station enthält für den ausgewählten Zeitraum keine Daten')
+            return redirect(url_for('list'))
+            
         else:
             #Mittelwerte berechnen
             # all_stations_temperatures = app.all_stations_temperatures[id]                            
