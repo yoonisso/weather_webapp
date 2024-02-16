@@ -5,12 +5,11 @@ from helpers.diagram_ploter import DiagramPloter
 from collections import defaultdict
 from api_caller import get_stations_by_coordinates, load_all_stations, get_weather_data_of_station_by_station_id
 
+#Initialization
 secret_key = secrets.token_urlsafe(16)
-
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
 app.secret_key = secret_key
 
-#Initialization
 app.all_stations = load_all_stations()
 app.all_stations_temperatures = {}
 app.station_selected_period = {}
