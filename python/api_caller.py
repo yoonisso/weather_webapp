@@ -7,7 +7,10 @@ from collections import defaultdict
 
 def load_all_stations():
     """
-    Loads all stations from given URL + load inventory. Result is list of coords and id 
+    Loads all stations from soecified URL + load inventory of stations
+     
+    Returns:
+        Returns list of coords, id, name and distance 
 
     """
     file_url = 'https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt'
@@ -22,17 +25,11 @@ def load_all_stations():
         inventory = {}
 
         for line in inventory_content_lines:
-            # station_id = line[0:10]
-            # first_year = line[36:40]
-            # last_year = line[41:45]
-            # element = line[31:36].strip()
             if(line[31:36].strip() == 'TMIN' or line[31:36].strip() == 'TMAX'):
                 station_id = line[0:11]
                 first_year = line[36:40]
                 last_year = line[41:45]
                 inventory[station_id] = [first_year,last_year]  
-
-
 
         #Stations
         response_stations = requests.get(file_url)
@@ -67,34 +64,46 @@ def load_all_stations():
     except requests.exceptions.RequestException as e:
         print(f'Fehler bei der Anfrage: {e}')
 
-def get_stations_by_coordinates(allStations, latitude, longitude, radius, stationCount):
+def get_stations_by_coordinates(all_stations, latitude, longitude, radius, station_count):
     """
-    Sorts the stations by distance and returns the closest ones (stationCount)
+    Sorts the stations by distance
     
+    Args:
+        all_stations (list of stations): all available stations (id, city, latitude, longitude, first_year, last_year)
+        latitude (float): latitude of search point
+        longitude (float): longitude of search point
+        radius (int): Radius around latitude and longitude to be searched for stations
+        station_count (int): count of stations to be selected
+    
+    Returns:
+        closest stations (count: station_count)
     """
 
     filtered_coords = []
 
-    for station in allStations:
+    for station in all_stations:
         distance = HarversineCalculator.haversine(latitude, longitude, station['latitude'], station['longitude'])
         if distance <= radius:
             station['distance'] = round(distance,2)
             filtered_coords.append(station)
 
-    # #Testdaten
-    # filtered_coords = [(49.5042, 11.0567, 'GME00102380', 5.762299315009502),
-    #                    (49.6506, 11.0083, 'GME00121882', 19.344037382016104),
-    #                    (49.5703, 10.9942, 'GME00121894', 10.370968197733994),
-    #                    (49.1792, 11.375, 'GME00122494', 43.369941499575)]
     filtered_coords.sort(key=lambda a: a['distance'])
 
-    if len(filtered_coords) < stationCount:
+    if len(filtered_coords) < station_count:
         return filtered_coords
     else:
-        return filtered_coords[0:stationCount]
+        return filtered_coords[0:station_count]
 
-def get_weather_data_of_station_by_station_id(stationId):
-    url = f"https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_station/{stationId}.csv.gz"
+def get_weather_data_of_station_by_station_id(station_id):
+    """
+    Gets weather data of a station from Daily Global Historical Climatology Network
+    Args:
+        station_id (string): ID of station to be called
+    Returns:
+        defaultdict with data of every available year
+    """
+
+    url = f"https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/by_station/{station_id}.csv.gz"
     response = requests.get((url), stream=True)
 
     if response.status_code == 200:
@@ -106,8 +115,6 @@ def get_weather_data_of_station_by_station_id(stationId):
 
     for record in stationWeatherData:
         year = int(record[1][0:4])
-        # if year < startYear or year > endYear:
-        #     continue
         month = record[1][4:6]
         if month[0] == '0':
             month = int(month[1])
@@ -126,11 +133,10 @@ def get_weather_data_of_station_by_station_id(stationId):
                 stationTemperatures[year][month][day]['TMAX'] = temperature        
 
     return stationTemperatures
-    
 
 #Currently testing getWeatherDataOfStationByStationId-Method
 if __name__ == "__main__":
-    print(get_weather_data_of_station_by_station_id("GME00122614", 1949, 1951))
+    print(get_weather_data_of_station_by_station_id("GME00122614"))
 
 
   
