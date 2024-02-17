@@ -166,6 +166,7 @@ input {
     border: thin solid;
     font-size: 1vw;
     caption-side: top;
+    width: 100%;
 }
 /* hover effect for the rows of the detail table except the caption */
 .detail_table tr:nth-child(n+2):hover {
